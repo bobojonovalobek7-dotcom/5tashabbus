@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fakultetlar Reytingi va Shon-sharaf Doskasi — Urganch Davlat Universiteti 5 Tashabbus</title>
+  
+  <meta name="description" content="Urganch davlat universitetining 5 ta muhim tashabbus bo'yicha fakultetlar umumiy reytingi, ballari hamda respublika va xalqaro g'olib talabalari shon-sharaf doskasi.">
+  <link rel="shortcut icon" href="assets/images/urdu_logo.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/accessibility.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="top-bar-badge"><i class="fa-solid fa-flag"></i> <span>UrDU 5 Tashabbus</span></span>
+        <span><i class="fa-solid fa-location-dot"></i> <span>Urganch sh., Hamid Olimjon ko'chasi, 14-uy</span></span>
+        <span><i class="fa-solid fa-phone"></i> +998 (62) 224-67-00</span>
+        <span><i class="fa-solid fa-envelope"></i> info@urdu.uz</span>
+      </div>
+
+      <div class="top-bar-right">
+        <div class="lang-selector">
+          <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
+          <button type="button" class="lang-btn" data-lang="oz">ЎЗ</button>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <button type="button" class="icon-toggle-btn" id="theme-toggle-btn" title="Mavzuni o'zgartirish">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <button type="button" class="icon-toggle-btn a11y-quick-btn" id="top-a11y-trigger" title="Maxsus imkoniyatlar">
+          <i class="fa-solid fa-universal-access"></i>
+          <span style="font-size:0.8rem;font-weight:600;">Maxsus imkoniyatlar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <header class="main-header" id="site-header">
+    <div class="container header-inner nav-container">
+      <a href="index.html" class="brand-group" title="Urganch Davlat Universiteti — 5 Muhim Tashabbus Markazi">
+        <img src="assets/images/urdu_5t_logo.png" alt="UrDU Besh Muhim Tashabbus Markazi" class="brand-official-logo">
+      </a>
+
+      <nav class="nav-menu" id="primary-nav-menu">
+        <li><a href="index.html" class="nav-link">Bosh sahifa</a></li>
+        <li class="nav-dropdown" id="markaz-dropdown">
+          <a href="markaz.html" class="nav-link nav-dropdown-btn" id="markaz-dropdown-btn">
+            <span>Markaz haqida</span>
+            <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+          </a>
+          <div class="nav-dropdown-content" id="markaz-dropdown-menu">
+            <a href="markaz.html#haqida" class="dropdown-item"><i class="fa-solid fa-landmark"></i> Markaz haqida</a>
+            <a href="markaz.html#rahbariyat" class="dropdown-item"><i class="fa-solid fa-users-line"></i> Rahbariyat</a>
+            <a href="markaz.html#nizom" class="dropdown-item"><i class="fa-solid fa-file-shield"></i> Nizom</a>
+            <a href="markaz.html#yoriqnoma" class="dropdown-item"><i class="fa-solid fa-book-bookmark"></i> Yo'riqnoma</a>
+          </div>
+        </li>
+        <li><a href="togaraklar.html" class="nav-link">To'garaklar</a></li>
+        <li><a href="tanlovlar.html" class="nav-link">Tanlovlar</a></li>
+        <li><a href="reyting.html" class="nav-link active">Reyting</a></li>
+        <li><a href="kutubxona.html" class="nav-link">Kutubxona</a></li>
+        <li><a href="aloqa.html" class="nav-link">Aloqa</a></li>
+      </nav>
+
+      <div class="nav-right-actions">
+        <!-- Search Trigger -->
+        <button type="button" class="search-icon-btn js-open-search" title="Qidiruv">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+        <!-- Hemis orqali Kirish -->
+        <button type="button" class="btn-hemis-login" onclick="window.appUI.openHemisModal()" title="HEMIS yagona axborot tizimi orqali kirish">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>HEMIS Kirish</span>
+        </button>
+
+        <button type="button" class="mobile-nav-toggle" id="mobile-menu-btn" aria-label="Menyu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Subpage Hero Banner -->
+  <section class="subpage-banner" style="background: linear-gradient(135deg, #0F766E 0%, #0D4836 60%, #15803D 100%);">
+    <div class="container">
+      <div class="subpage-badge" style="background:rgba(255,255,255,0.18); color:#99F6E4;">
+        <i class="fa-solid fa-chart-line"></i> Natijalar va Faollik Ko'rsatkichi
+      </div>
+      <h1 class="subpage-title">Fakultetlar Reytingi va Shon-sharaf Doskasi</h1>
+      <p class="subpage-desc">
+        Urganch davlat universitetining 11 ta fakultetining 5 ta muhim tashabbus bo'yicha to'plagan umumiy ballari, talabalar qamrovi hamda Respublika va xalqaro miqyosda g'olib bo'lgan faxriy yoshlarimiz doskasi.
+      </p>
+    </div>
+  </section>
+
+  <!-- Leaderboard Table Section -->
+  <section class="section-padding" style="padding-top: 40px;">
+    <div class="container">
+      <div class="leaderboard-grid">
+        <!-- Faculty Leaderboard Table -->
+        <div class="leaderboard-table-card">
+          <h3 class="card-inner-title"><i class="fa-solid fa-chart-line" style="color:var(--primary);"></i> Fakultetlararo 5 Tashabbus Umumiy Reytingi</h3>
+          <p class="card-inner-subtitle">2026-o'quv yili hisoboti: To'garaklar qamrovi, musobaqalardagi faollik va talabalar yutuqlari asosida shakllantirilgan</p>
+
+          <div class="leaderboard-list" id="faculty-leaderboard-list">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Hall of Fame / Shon-sharaf doskasi -->
+        <div class="hall-of-fame-card">
+          <h3 class="card-inner-title"><i class="fa-solid fa-crown" style="color:#F59E0B;"></i> Shon-sharaf Doskasi</h3>
+          <p class="card-inner-subtitle">Universitetimiz nomini yuksak cho'qqilarga olib chiqqan talabalar</p>
+
+          <div class="hall-of-fame-list" id="hall-of-fame-target">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <div class="brand-group" style="margin-bottom: 16px;">
+            <div class="brand-emblem-box">
+              <img src="assets/images/urdu_5t_emblem_white.png" alt="UrDU Logotipi" class="brand-logo-img" style="width:56px; height:56px; object-fit:contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));">
+            </div>
+            <div class="brand-titles">
+              <span class="brand-title-main" style="color:#FFFFFF;">Urganch Davlat Universiteti</span>
+              <span class="brand-title-sub" style="color:#A3CEC0;">5 Ta Muhim Tashabbus</span>
+            </div>
+          </div>
+          <p class="footer-desc">
+            Yoshlarning bo'sh vaqtini mazmunli tashkil etish, iqtidorlarini qo'llab-quvvatlash va barkamol avlodni tarbiyalash portali.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Sahifalar</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Bosh sahifa</a></li>
+            <li><a href="markaz.html">Markaz haqida</a></li>
+            <li><a href="togaraklar.html">To'garaklar</a></li>
+            <li><a href="tanlovlar.html">Tanlovlar</a></li>
+            <li><a href="reyting.html">Fakultetlar Reytingi</a></li>
+            <li><a href="kutubxona.html">Kutubxona</a></li>
+            <li><a href="aloqa.html">Aloqa</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Foydali Havolalar</h4>
+          <ul class="footer-links">
+            <li><a href="https://hemis.urdu.uz" target="_blank">HEMIS Talaba</a></li>
+            <li><a href="https://urdu.uz" target="_blank">UrDU Rasmiy Sayti</a></li>
+            <li><a href="dashboard.html">Admin Dashboard</a></li>
+            <li><a href="aloqa.html#nizom">Universitet Nizomi</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Aloqa</h4>
+          <p style="font-size:0.85rem;color:#A3CEC0;line-height:1.7;margin-bottom:12px;">
+            <i class="fa-solid fa-location-dot"></i> Urganch sh., Hamid Olimjon ko'chasi, 14-uy<br>
+            <i class="fa-solid fa-phone"></i> +998 (62) 224-67-00<br>
+            <i class="fa-solid fa-envelope"></i> info@urdu.uz
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>&copy; 2026 Urganch Davlat Universiteti. Barcha huquqlar himoyalangan.</div>
+        <div>5 Muhim Tashabbus Yagona Axborot Tizimi</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/translations.js"></script>
+  <script src="js/registration.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

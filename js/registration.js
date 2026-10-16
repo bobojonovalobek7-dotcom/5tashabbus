@@ -65,6 +65,23 @@ class RegistrationManager {
       this.initiativeSelect.value = initiativeId;
       this.populateClubs(initiativeId, clubId);
     }
+    const modalTitle = document.querySelector('#registration-modal .modal-header-banner h3');
+    if (modalTitle) {
+      modalTitle.innerHTML = `<i class="fa-solid fa-file-pen"></i> To'garakka Onlayn A'zo Bo'lish`;
+    }
+    this.openModal();
+  }
+
+  openWithContest(contestId, contestTitle, initiativeId) {
+    this.populateInitiatives();
+    if (this.initiativeSelect) {
+      this.initiativeSelect.value = initiativeId || 3;
+      this.populateClubs(initiativeId || 3);
+    }
+    const modalTitle = document.querySelector('#registration-modal .modal-header-banner h3');
+    if (modalTitle) {
+      modalTitle.innerHTML = `<i class="fa-solid fa-trophy"></i> Tanlovga Qatnashish: ${contestTitle}`;
+    }
     this.openModal();
   }
 

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boshqaruv Paneli (Dashboard) — Urganch Davlat Universiteti 5 Tashabbus</title>
+  
+  <link rel="shortcut icon" href="assets/images/urdu_logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/accessibility.css">
+</head>
+<body class="dashboard-body">
+
+  <!-- Dashboard Main Layout -->
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="dashboard-sidebar-header">
+        <img src="assets/images/urdu_5t_emblem_white.png" alt="UrDU Logo" style="width:42px;height:42px;object-fit:contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
+        <div>
+          <div style="font-weight:800;font-size:0.95rem;line-height:1.2;">UrDU 5 Tashabbus</div>
+          <div style="font-size:0.75rem;color:#A7F3D0;">Boshqaruv Markazi</div>
+        </div>
+      </div>
+
+      <ul class="dashboard-sidebar-menu">
+        <li>
+          <a class="dashboard-menu-link active" data-tab="tab-overview">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Ko'rsatkichlar</span>
+          </a>
+        </li>
+        <li>
+          <a class="dashboard-menu-link" data-tab="tab-clubs">
+            <i class="fa-solid fa-shapes"></i>
+            <span>To'garaklar Bazasi</span>
+          </a>
+        </li>
+        <li>
+          <a class="dashboard-menu-link" data-tab="tab-contests">
+            <i class="fa-solid fa-trophy"></i>
+            <span>Tanlovlar & E'lonlar</span>
+          </a>
+        </li>
+        <li>
+          <a class="dashboard-menu-link" data-tab="tab-applications">
+            <i class="fa-solid fa-id-card-clip"></i>
+            <span>Talabalar Arizalari</span>
+          </a>
+        </li>
+        <li>
+          <a class="dashboard-menu-link" data-tab="tab-settings">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Sozlamalar & Zaxira</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="dashboard-sidebar-footer">
+        <a href="index.html" class="dashboard-menu-link" style="color:#A7F3D0; border:1px solid rgba(255,255,255,0.15);">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Saytga Qaytish</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="dashboard-content-area">
+      <!-- Topbar -->
+      <div class="dashboard-topbar">
+        <div>
+          <h2 style="font-family:var(--font-display);font-size:1.6rem;font-weight:800;color:var(--text-primary);margin:0 0 4px;" id="dashboard-section-title">
+            Umumiy Ko'rsatkichlar
+          </h2>
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;">
+            UrDU 5 muhim tashabbus to'garaklari va tadbirlarini boshqarish tizimi
+          </p>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;">
+          <button type="button" class="icon-toggle-btn" id="theme-toggle-btn" title="Mavzuni almashtirish">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <div style="display:flex;align-items:center;gap:10px;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div>
+              <div style="font-size:0.85rem;font-weight:700;color:var(--text-primary);">Administrator</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">Yoshlar bo'limi</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 1: OVERVIEW -->
+      <section id="tab-overview" class="dashboard-tab-pane">
+        <!-- KPI Cards -->
+        <div class="dashboard-kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon-box" style="background:#0D4836;">
+              <i class="fa-solid fa-shapes"></i>
+            </div>
+            <div class="kpi-details">
+              <h4>Jami To'garaklar</h4>
+              <div class="kpi-num" id="kpi-clubs-count">0</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon-box" style="background:#2563EB;">
+              <i class="fa-solid fa-id-card"></i>
+            </div>
+            <div class="kpi-details">
+              <h4>Kelib Tushgan Arizalar</h4>
+              <div class="kpi-num" id="kpi-apps-count">0</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon-box" style="background:#D97706;">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <div class="kpi-details">
+              <h4>Faol Tanlovlar</h4>
+              <div class="kpi-num" id="kpi-events-count">0</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon-box" style="background:#7C3AED;">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="kpi-details">
+              <h4>Faol Talabalar</h4>
+              <div class="kpi-num">18,500+</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Applications Panel -->
+        <div class="dashboard-panel-card">
+          <div class="dashboard-panel-header">
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:1.15rem;margin:0 0 4px;color:var(--text-primary);">
+                <i class="fa-solid fa-clock-rotate-left" style="color:var(--primary);"></i> So'nggi Kelib Tushgan Arizalar
+              </h3>
+              <p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">To'garaklarga onlayn ro'yxatdan o'tgan talabalar</p>
+            </div>
+            <button class="btn-primary-action" style="padding:6px 14px;font-size:0.85rem;" onclick="switchDashboardTab('tab-applications')">
+              Barchasini ko'rish <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+
+          <div class="dashboard-table-responsive">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Guvohnoma ID</th>
+                  <th>Talaba F.I.Sh.</th>
+                  <th>Fakultet</th>
+                  <th>Tanlagan To'garak</th>
+                  <th>Telefon</th>
+                  <th>Sana</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="overview-recent-apps-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: CLUBS MANAGEMENT -->
+      <section id="tab-clubs" class="dashboard-tab-pane" style="display:none;">
+        <div class="dashboard-panel-card">
+          <div class="dashboard-panel-header">
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:1.25rem;margin:0 0 4px;color:var(--text-primary);">
+                <i class="fa-solid fa-shapes" style="color:var(--primary);"></i> To'garaklar Ro'yxati
+              </h3>
+              <p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">Yangi to'garaklar qo'shish, tahrirlash va o'chirish</p>
+            </div>
+            <button class="btn-primary-action" onclick="openAddClubModal()">
+              <i class="fa-solid fa-plus"></i> Yangi To'garak Qo'shish
+            </button>
+          </div>
+
+          <div class="dashboard-table-responsive">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Tashabbus</th>
+                  <th>To'garak Nomi</th>
+                  <th>Kategoriya</th>
+                  <th>Murabbiy</th>
+                  <th>Dars Jadvali</th>
+                  <th>Joyi</th>
+                  <th>Qamrov</th>
+                  <th>Amal</th>
+                </tr>
+              </thead>
+              <tbody id="clubs-management-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: CONTESTS MANAGEMENT -->
+      <section id="tab-contests" class="dashboard-tab-pane" style="display:none;">
+        <div class="dashboard-panel-card">
+          <div class="dashboard-panel-header">
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:1.25rem;margin:0 0 4px;color:var(--text-primary);">
+                <i class="fa-solid fa-trophy" style="color:#D97706;"></i> Tanlovlar va Musobaqalar
+              </h3>
+              <p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">Yangi tanlov va hakatolar e'lon qilish</p>
+            </div>
+            <button class="btn-primary-action" onclick="openAddContestModal()">
+              <i class="fa-solid fa-plus"></i> Yangi Tanlov E'lon Qilish
+            </button>
+          </div>
+
+          <div class="dashboard-table-responsive">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Tashabbus</th>
+                  <th>Tanlov Nomi</th>
+                  <th>Turi</th>
+                  <th>Muddati</th>
+                  <th>Tashkilotchi</th>
+                  <th>Joyi</th>
+                  <th>Amal</th>
+                </tr>
+              </thead>
+              <tbody id="contests-management-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: APPLICATIONS MANAGEMENT -->
+      <section id="tab-applications" class="dashboard-tab-pane" style="display:none;">
+        <div class="dashboard-panel-card">
+          <div class="dashboard-panel-header">
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:1.25rem;margin:0 0 4px;color:var(--text-primary);">
+                <i class="fa-solid fa-id-card" style="color:var(--primary);"></i> Ro'yxatdan O'tgan Talabalar Bazasi
+              </h3>
+              <p style="font-size:0.8rem;color:var(--text-secondary);margin:0;">Talabalar arizalarini ko'rib chiqish, statusini o'zgartirish va guvohnoma chiqarish</p>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <input type="text" id="app-search-input" class="form-control" placeholder="Talaba F.I.Sh. yoki ID..." style="width:220px;padding:8px 12px;font-size:0.85rem;">
+            </div>
+          </div>
+
+          <div class="dashboard-table-responsive">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Guvohnoma ID</th>
+                  <th>Talaba F.I.Sh.</th>
+                  <th>Fakultet / Kurs</th>
+                  <th>To'garak</th>
+                  <th>Telefon</th>
+                  <th>Sana</th>
+                  <th>Status</th>
+                  <th>Amallar</th>
+                </tr>
+              </thead>
+              <tbody id="applications-management-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: SETTINGS & BACKUP -->
+      <section id="tab-settings" class="dashboard-tab-pane" style="display:none;">
+        <div class="dashboard-panel-card" style="max-width:700px;">
+          <h3 style="font-family:var(--font-display);font-size:1.25rem;margin:0 0 12px;color:var(--text-primary);">
+            <i class="fa-solid fa-sliders" style="color:var(--primary);"></i> Tizim Sozlamalari
+          </h3>
+          <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.6;margin-bottom:24px;">
+            Boshqaruv paneli ma'lumotlari brauzer xotirasi (LocalStorage) bilan to'liq sinxronlangan. Istalgan vaqtda ma'lumotlarni eksport qilishingiz yoki boshlang'ich holatga qaytarishingiz mumkin.
+          </p>
+
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="padding:16px;background:var(--bg-page);border:1px solid var(--border);border-radius:12px;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <strong style="color:var(--text-primary);">Boshlang'ich Ma'lumotlarni Qayta Tiklash</strong>
+                <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">Standart to'garaklar va tanlovlar bazasini tiklaydi.</p>
+              </div>
+              <button class="btn-primary-action" style="background:#EF4444;border-color:#EF4444;" onclick="resetPortalData()">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Tiklash (Reset)
+              </button>
+            </div>
+
+            <div style="padding:16px;background:var(--bg-page);border:1px solid var(--border);border-radius:12px;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <strong style="color:var(--text-primary);">Zaxira Nusxani Yuklab Olish (Export)</strong>
+                <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">To'garaklar va arizalarni JSON formatida saqlab oladi.</p>
+              </div>
+              <button class="btn-primary-action" onclick="exportPortalData()">
+                <i class="fa-solid fa-file-export"></i> Ma'lumotlarni Eksport Qilish
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: ADD NEW CLUB -->
+  <div class="modal-overlay" id="add-club-modal">
+    <div class="modal-container" style="max-width: 620px;">
+      <button type="button" class="modal-close-btn" onclick="closeAddClubModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-header-banner">
+        <h3><i class="fa-solid fa-shapes"></i> Yangi To'garak Qo'shish</h3>
+        <p>5 Tashabbus to'garaklar bazasiga yangi mashg'ulot kiritish</p>
+      </div>
+      <div class="modal-body">
+        <form id="add-club-form" onsubmit="handleCreateClub(event)">
+          <div class="form-grid">
+            <div class="form-group-full">
+              <label class="form-label">To'garak Nomi *</label>
+              <input type="text" id="new-club-name" class="form-control" placeholder="Masalan: Sun'iy Intellekt va Neyron To'rlar Klubi" required>
+            </div>
+
+            <div>
+              <label class="form-label">Tashabbus Yo'nalishi *</label>
+              <select id="new-club-initiative" class="form-control" required>
+                <option value="1">1-Madaniyat, San'at va Teatr</option>
+                <option value="2">2-Sport va Jismoniy Chiniqish</option>
+                <option value="3" selected>3-Raqamli Texnologiyalar va IT</option>
+                <option value="4">4-Kitobxonlik va Ma'naviyat</option>
+                <option value="5">5-Xotin-qizlar Bandligi & Kasb-hunar</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Kategoriya *</label>
+              <input type="text" id="new-club-category" class="form-control" placeholder="Masalan: AI & Dasturlash" required>
+            </div>
+
+            <div>
+              <label class="form-label">Murabbiy (F.I.Sh.) *</label>
+              <input type="text" id="new-club-leader" class="form-control" placeholder="Masalan: Anvar Karimov (PhD)" required>
+            </div>
+
+            <div>
+              <label class="form-label">Joyi (Xona / Bino) *</label>
+              <input type="text" id="new-club-location" class="form-control" placeholder="Masalan: IT-Park binosi, 305-laboratoriya" required>
+            </div>
+
+            <div>
+              <label class="form-label">Dars Jadvali *</label>
+              <input type="text" id="new-club-schedule" class="form-control" placeholder="Masalan: Dush, Chor, Juma 15:00 - 17:00" required>
+            </div>
+
+            <div>
+              <label class="form-label">Maksimal Sig'imi (Talaba) *</label>
+              <input type="number" id="new-club-capacity" class="form-control" value="60" required>
+            </div>
+
+            <div class="form-group-full">
+              <label class="form-label">Qisqacha Tavsif</label>
+              <textarea id="new-club-desc" class="form-control" rows="2" placeholder="To'garak maqsadi va dasturi haqida..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="form-submit-btn">
+            <i class="fa-solid fa-check"></i> To'garakni Bazaga Qo'shish
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD NEW CONTEST -->
+  <div class="modal-overlay" id="add-contest-modal">
+    <div class="modal-container" style="max-width: 600px;">
+      <button type="button" class="modal-close-btn" onclick="closeAddContestModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-header-banner" style="background: linear-gradient(135deg, #1E3A8A 0%, #0D4836 100%);">
+        <h3><i class="fa-solid fa-trophy"></i> Yangi Tanlov E'lon Qilish</h3>
+        <p>Talabalar uchun yangi musobaqa yoki olimpiada joylash</p>
+      </div>
+      <div class="modal-body">
+        <form id="add-contest-form" onsubmit="handleCreateContest(event)">
+          <div class="form-grid">
+            <div class="form-group-full">
+              <label class="form-label">Tanlov Nomi *</label>
+              <input type="text" id="new-event-title" class="form-control" placeholder="Masalan: UrDU AI Hackathon 2026" required>
+            </div>
+
+            <div>
+              <label class="form-label">Tashabbus *</label>
+              <select id="new-event-initiative" class="form-control" required>
+                <option value="1">1-Madaniyat va San'at</option>
+                <option value="2">2-Sport</option>
+                <option value="3" selected>3-IT va Dasturlash</option>
+                <option value="4">4-Kitobxonlik</option>
+                <option value="5">5-Kasb-hunar</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Turi *</label>
+              <input type="text" id="new-event-type" class="form-control" placeholder="Masalan: Hakaton / Tanlov" required>
+            </div>
+
+            <div>
+              <label class="form-label">O'tkazilish Sanasi *</label>
+              <input type="date" id="new-event-date" class="form-control" required>
+            </div>
+
+            <div>
+              <label class="form-label">O'tkazilish Vaqti *</label>
+              <input type="time" id="new-event-time" class="form-control" value="14:00" required>
+            </div>
+
+            <div class="form-group-full">
+              <label class="form-label">O'tkaziladigan Joyi *</label>
+              <input type="text" id="new-event-location" class="form-control" placeholder="Masalan: UrDU Bosh Madaniyat Saroyi" required>
+            </div>
+
+            <div class="form-group-full">
+              <label class="form-label">Tashkilotchi Kafedra yoki Bo'lim *</label>
+              <input type="text" id="new-event-organizer" class="form-control" placeholder="Masalan: Raqamli ta'lim markazi" required>
+            </div>
+
+            <div class="form-group-full">
+              <label class="form-label">Qisqacha Tavsif</label>
+              <textarea id="new-event-desc" class="form-control" rows="2" placeholder="Tanlov shartlari va sovrinlari haqida..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="form-submit-btn">
+            <i class="fa-solid fa-paper-plane"></i> Tanlovni E'lon Qilish
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASS PREVIEW MODAL -->
+  <div class="modal-overlay" id="idcard-modal">
+    <div class="modal-container" style="max-width: 560px;">
+      <button type="button" class="modal-close-btn" onclick="document.getElementById('idcard-modal').classList.remove('open')" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-header-banner" style="text-align: center;">
+        <h3><i class="fa-solid fa-id-card"></i> Talabalik Elektron Passi</h3>
+      </div>
+      <div class="modal-body" id="pass-render-box"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/registration.js"></script>
+  
+  <script>
+    // Tab Switching Logic
+    const tabLinks = document.querySelectorAll('.dashboard-menu-link[data-tab]');
+    const tabPanes = document.querySelectorAll('.dashboard-tab-pane');
+    const titleHeader = document.getElementById('dashboard-section-title');
+
+    const tabTitles = {
+      'tab-overview': 'Umumiy Ko\'rsatkichlar',
+      'tab-clubs': 'To\'garaklar Boshqaruvi',
+      'tab-contests': 'Tanlovlar va Musobaqalar',
+      'tab-applications': 'Talabalar Arizalari Bazasi',
+      'tab-settings': 'Tizim Sozlamalari & Zaxira'
+    };
+
+    function switchDashboardTab(tabId) {
+      tabLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('data-tab') === tabId);
+      });
+      tabPanes.forEach(pane => {
+        pane.style.display = (pane.id === tabId) ? 'block' : 'none';
+      });
+      if (titleHeader) titleHeader.textContent = tabTitles[tabId] || 'Boshqaruv Paneli';
+    }
+
+    tabLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tabId = link.getAttribute('data-tab');
+        if (tabId) switchDashboardTab(tabId);
+      });
+    });
+
+    // Theme toggle
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const cur = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('urdu_theme', next);
+      });
+    }
+
+    // Modal helpers
+    function openAddClubModal() {
+      document.getElementById('add-club-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeAddClubModal() {
+      document.getElementById('add-club-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function openAddContestModal() {
+      document.getElementById('add-contest-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeAddContestModal() {
+      document.getElementById('add-contest-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Toast notification
+    function notify(msg) {
+      const c = document.getElementById('toast-container');
+      if (!c) return;
+      const el = document.createElement('div');
+      el.className = 'toast-msg toast-success';
+      el.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${msg}</span>`;
+      c.appendChild(el);
+      setTimeout(() => { el.remove(); }, 3500);
+    }
+
+    // Render Data
+    function renderDashboard() {
+      // KPI counters
+      const clubsCountEl = document.getElementById('kpi-clubs-count');
+      const appsCountEl = document.getElementById('kpi-apps-count');
+      const eventsCountEl = document.getElementById('kpi-events-count');
+
+      const clubs = URDUDATA.clubs || [];
+      const events = URDUDATA.upcomingEvents || [];
+      const apps = URDUDATA.getRegistrations();
+
+      if (clubsCountEl) clubsCountEl.textContent = clubs.length;
+      if (eventsCountEl) eventsCountEl.textContent = events.length;
+      if (appsCountEl) appsCountEl.textContent = apps.length;
+
+      // Overview recent apps
+      const recentAppsTbody = document.getElementById('overview-recent-apps-tbody');
+      if (recentAppsTbody) {
+        if (apps.length === 0) {
+          recentAppsTbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">Hozircha arizalar kelib tushmagan.</td></tr>`;
+        } else {
+          recentAppsTbody.innerHTML = apps.slice(0, 5).map(a => `
+            <tr>
+              <td><strong>${a.id}</strong></td>
+              <td>${a.fullName}</td>
+              <td>${a.faculty}</td>
+              <td>${a.clubName}</td>
+              <td>${a.phone}</td>
+              <td>${a.date}</td>
+              <td><span class="status-badge ${a.status === 'Tasdiqlangan' ? 'approved' : 'pending'}">${a.status}</span></td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // Clubs management table
+      const clubsTbody = document.getElementById('clubs-management-tbody');
+      if (clubsTbody) {
+        clubsTbody.innerHTML = clubs.map(c => {
+          const init = URDUDATA.initiatives.find(i => i.id === c.initiativeId) || { number: `${c.initiativeId}-tashabbus` };
+          return `
+            <tr>
+              <td><span class="status-badge approved">${init.number}</span></td>
+              <td><strong>${c.name}</strong></td>
+              <td>${c.category || ''}</td>
+              <td>${c.leader || ''}</td>
+              <td><small>${c.schedule || ''}</small></td>
+              <td><small>${c.location || ''}</small></td>
+              <td>${c.enrolled || 0} / ${c.capacity || 50}</td>
+              <td>
+                <div class="table-actions-cell">
+                  <button class="btn-table-action delete" title="O'chirish" onclick="removeClub('${c.id}')">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Contests management table
+      const contestsTbody = document.getElementById('contests-management-tbody');
+      if (contestsTbody) {
+        contestsTbody.innerHTML = events.map(e => {
+          const init = URDUDATA.initiatives.find(i => i.id === e.initiativeId) || { number: `${e.initiativeId}-tashabbus` };
+          return `
+            <tr>
+              <td><span class="status-badge pending">${init.number}</span></td>
+              <td><strong>${e.title}</strong></td>
+              <td>${e.type || 'Tanlov'}</td>
+              <td><small>${e.displayDate || e.date}</small></td>
+              <td>${e.organizer || ''}</td>
+              <td><small>${e.location || ''}</small></td>
+              <td>
+                <button class="btn-table-action delete" title="O'chirish" onclick="removeContest('${e.id}')">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Applications management table
+      renderApplicationsTable(apps);
+    }
+
+    function renderApplicationsTable(apps) {
+      const tbody = document.getElementById('applications-management-tbody');
+      if (!tbody) return;
+      if (apps.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-muted);">Arizalar mavjud emas. Talabalar sayt orqali to'garakka ro'yxatdan o'tganida bu yerda aks etadi.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = apps.map(a => `
+        <tr>
+          <td><strong>${a.id}</strong></td>
+          <td><strong>${a.fullName}</strong></td>
+          <td>${a.faculty} (${a.course}-bosqich)</td>
+          <td>${a.clubName}</td>
+          <td>${a.phone}</td>
+          <td>${a.date}</td>
+          <td>
+            <button class="status-badge ${a.status === 'Tasdiqlangan' ? 'approved' : 'pending'}" style="cursor:pointer;border:0;" onclick="toggleAppStatus('${a.id}')">
+              ${a.status} <i class="fa-solid fa-rotate" style="margin-left:4px;"></i>
+            </button>
+          </td>
+          <td>
+            <div class="table-actions-cell">
+              <button class="btn-table-action" title="Elektron passni ko'rish" onclick="viewStudentPass('${a.id}')">
+                <i class="fa-solid fa-id-card"></i>
+              </button>
+              <button class="btn-table-action delete" title="O'chirish" onclick="removeApplication('${a.id}')">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Create Club
+    function handleCreateClub(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-club-name').value.trim();
+      const initiativeId = parseInt(document.getElementById('new-club-initiative').value, 10);
+      const category = document.getElementById('new-club-category').value.trim();
+      const leader = document.getElementById('new-club-leader').value.trim();
+      const location = document.getElementById('new-club-location').value.trim();
+      const schedule = document.getElementById('new-club-schedule').value.trim();
+      const capacity = parseInt(document.getElementById('new-club-capacity').value, 10) || 50;
+      const desc = document.getElementById('new-club-desc').value.trim();
+
+      const newClub = {
+        id: "c_" + Date.now(),
+        name,
+        initiativeId,
+        category,
+        leader,
+        location,
+        schedule,
+        enrolled: 1,
+        capacity,
+        desc,
+        badge: "Yangi"
+      };
+
+      URDUDATA.addClub(newClub);
+      closeAddClubModal();
+      document.getElementById('add-club-form').reset();
+      renderDashboard();
+      notify(`"${name}" to'garagi muvaffaqiyatli qo'shildi! 🎉`);
+    }
+
+    function removeClub(id) {
+      if (confirm("Rostdan ham ushbu to'garakni o'chirmoqchimisiz?")) {
+        URDUDATA.deleteClub(id);
+        renderDashboard();
+        notify("To'garak o'chirildi.");
+      }
+    }
+
+    // Create Contest
+    function handleCreateContest(e) {
+      e.preventDefault();
+      const title = document.getElementById('new-event-title').value.trim();
+      const initiativeId = parseInt(document.getElementById('new-event-initiative').value, 10);
+      const type = document.getElementById('new-event-type').value.trim();
+      const date = document.getElementById('new-event-date').value;
+      const time = document.getElementById('new-event-time').value;
+      const location = document.getElementById('new-event-location').value.trim();
+      const organizer = document.getElementById('new-event-organizer').value.trim();
+      const desc = document.getElementById('new-event-desc').value.trim();
+
+      const newEvent = {
+        id: "e_" + Date.now(),
+        title,
+        initiativeId,
+        type,
+        date,
+        time,
+        displayDate: date,
+        location,
+        organizer,
+        desc
+      };
+
+      URDUDATA.addEvent(newEvent);
+      closeAddContestModal();
+      document.getElementById('add-contest-form').reset();
+      renderDashboard();
+      notify(`"${title}" tanlovi e'lon qilindi! 🏆`);
+    }
+
+    function removeContest(id) {
+      if (confirm("Ushbu tanlovni o'chirmoqchimisiz?")) {
+        URDUDATA.deleteEvent(id);
+        renderDashboard();
+        notify("Tanlov o'chirildi.");
+      }
+    }
+
+    // Toggle Application Status
+    function toggleAppStatus(id) {
+      const apps = URDUDATA.getRegistrations();
+      const item = apps.find(a => a.id === id);
+      if (item) {
+        const nextStatus = item.status === 'Tasdiqlangan' ? 'Kutilmoqda' : 'Tasdiqlangan';
+        URDUDATA.updateRegistrationStatus(id, nextStatus);
+        renderDashboard();
+        notify(`Status "${nextStatus}" ga o'zgartirildi.`);
+      }
+    }
+
+    function removeApplication(id) {
+      if (confirm("Ushbu arizani o'chirmoqchimisiz?")) {
+        URDUDATA.deleteRegistration(id);
+        renderDashboard();
+        notify("Ariza o'chirildi.");
+      }
+    }
+
+    function viewStudentPass(id) {
+      const apps = URDUDATA.getRegistrations();
+      const data = apps.find(a => a.id === id);
+      if (!data) return;
+      const passBox = document.getElementById('pass-render-box');
+      const qrText = encodeURIComponent(`URDU-5-TASHABBUS|PASS:${data.id}|TALABA:${data.fullName}|TOGARAK:${data.clubName}`);
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrText}&color=085041`;
+
+      passBox.innerHTML = `
+        <div class="id-card-view-wrapper">
+          <div class="student-pass-card">
+            <div class="pass-card-header">
+              <div class="pass-card-logo-group">
+                <img src="assets/images/urdu_logo.png" alt="UrDU Logo" class="pass-card-logo">
+                <div class="pass-card-titles">
+                  <h4>Urganch Davlat Universiteti</h4>
+                  <p>5 Muhim Tashabbus Markazi A'zosi</p>
+                </div>
+              </div>
+            </div>
+            <div class="pass-card-body" style="margin-top:16px;">
+              <div>
+                <h3 class="pass-student-name">${data.fullName}</h3>
+                <div class="pass-meta-row"><strong>ID:</strong> ${data.id}</div>
+                <div class="pass-meta-row"><strong>Fakultet:</strong> ${data.faculty}</div>
+                <div class="pass-meta-row"><strong>To'garak:</strong> ${data.clubName}</div>
+                <div class="pass-meta-row"><strong>Dars vaqti:</strong> ${data.clubSchedule || 'Haftalik mashg\'ulot'}</div>
+              </div>
+              <div class="pass-qr-box">
+                <img src="${qrUrl}" alt="QR Code" class="pass-qr-img" onerror="this.src='assets/images/urdu_logo.png'">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:14px;">
+          <button class="btn-primary-action" onclick="window.print()"><i class="fa-solid fa-print"></i> Guvohnomani Chop Etish</button>
+        </div>
+      `;
+      document.getElementById('idcard-modal').classList.add('open');
+    }
+
+    // Reset data
+    function resetPortalData() {
+      if (confirm("Haqiqatdan ham barcha o'zgartirishlarni o'chirib, dastlabki standart ma'lumotlarni tiklamoqchimisiz?")) {
+        localStorage.removeItem('urdu_custom_clubs');
+        localStorage.removeItem('urdu_custom_events');
+        localStorage.removeItem('urdu_custom_stats');
+        location.reload();
+      }
+    }
+
+    function exportPortalData() {
+      const data = {
+        clubs: URDUDATA.clubs,
+        events: URDUDATA.upcomingEvents,
+        registrations: URDUDATA.getRegistrations(),
+        exportDate: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `urdu_5tashabbus_backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      notify("Ma'lumotlar zaxirasi yuklab olindi! 💾");
+    }
+
+    // Search filter in Applications tab
+    const appSearch = document.getElementById('app-search-input');
+    if (appSearch) {
+      appSearch.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        const allApps = URDUDATA.getRegistrations();
+        const filtered = allApps.filter(a => 
+          a.fullName.toLowerCase().includes(q) || 
+          a.id.toLowerCase().includes(q) || 
+          a.clubName.toLowerCase().includes(q)
+        );
+        renderApplicationsTable(filtered);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDashboard();
+    });
+  </script>
+</body>
+</html>

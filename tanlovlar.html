@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tanlovlar va Musobaqalar — Urganch Davlat Universiteti (UrDU) 5 Tashabbus</title>
+  
+  <meta name="description" content="Urganch davlat universitetida 5 ta muhim tashabbus doirasida o'tkaziladigan barcha musobaqalar, tanlovlar, IT hakatonlar va stipendiya dasturlari.">
+  <link rel="shortcut icon" href="assets/images/urdu_logo.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/accessibility.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="top-bar-badge"><i class="fa-solid fa-flag"></i> <span>UrDU 5 Tashabbus</span></span>
+        <span><i class="fa-solid fa-location-dot"></i> <span>Urganch sh., Hamid Olimjon ko'chasi, 14-uy</span></span>
+        <span><i class="fa-solid fa-phone"></i> +998 (62) 224-67-00</span>
+        <span><i class="fa-solid fa-envelope"></i> info@urdu.uz</span>
+      </div>
+
+      <div class="top-bar-right">
+        <div class="lang-selector">
+          <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
+          <button type="button" class="lang-btn" data-lang="oz">ЎЗ</button>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <button type="button" class="icon-toggle-btn" id="theme-toggle-btn" title="Mavzuni o'zgartirish">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <button type="button" class="icon-toggle-btn a11y-quick-btn" id="top-a11y-trigger" title="Maxsus imkoniyatlar">
+          <i class="fa-solid fa-universal-access"></i>
+          <span style="font-size:0.8rem;font-weight:600;">Maxsus imkoniyatlar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <header class="main-header" id="site-header">
+    <div class="container header-inner nav-container">
+      <a href="index.html" class="brand-group" title="Urganch Davlat Universiteti — 5 Muhim Tashabbus Markazi">
+        <img src="assets/images/urdu_5t_logo.png" alt="UrDU Besh Muhim Tashabbus Markazi" class="brand-official-logo">
+      </a>
+
+      <nav class="nav-menu" id="primary-nav-menu">
+        <li><a href="index.html" class="nav-link">Bosh sahifa</a></li>
+        <li class="nav-dropdown" id="markaz-dropdown">
+          <a href="markaz.html" class="nav-link nav-dropdown-btn" id="markaz-dropdown-btn">
+            <span>Markaz haqida</span>
+            <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+          </a>
+          <div class="nav-dropdown-content" id="markaz-dropdown-menu">
+            <a href="markaz.html#haqida" class="dropdown-item"><i class="fa-solid fa-landmark"></i> Markaz haqida</a>
+            <a href="markaz.html#rahbariyat" class="dropdown-item"><i class="fa-solid fa-users-line"></i> Rahbariyat</a>
+            <a href="markaz.html#nizom" class="dropdown-item"><i class="fa-solid fa-file-shield"></i> Nizom</a>
+            <a href="markaz.html#yoriqnoma" class="dropdown-item"><i class="fa-solid fa-book-bookmark"></i> Yo'riqnoma</a>
+          </div>
+        </li>
+        <li><a href="togaraklar.html" class="nav-link">To'garaklar</a></li>
+        <li><a href="tanlovlar.html" class="nav-link active">Tanlovlar</a></li>
+        <li><a href="reyting.html" class="nav-link">Reyting</a></li>
+        <li><a href="kutubxona.html" class="nav-link">Kutubxona</a></li>
+        <li><a href="aloqa.html" class="nav-link">Aloqa</a></li>
+      </nav>
+
+      <div class="nav-right-actions">
+        <!-- Search Trigger -->
+        <button type="button" class="search-icon-btn js-open-search" title="Qidiruv">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+        <!-- Hemis orqali Kirish -->
+        <button type="button" class="btn-hemis-login" onclick="window.appUI.openHemisModal()" title="HEMIS yagona axborot tizimi orqali kirish">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>HEMIS Kirish</span>
+        </button>
+
+        <button type="button" class="mobile-nav-toggle" id="mobile-menu-btn" aria-label="Menyu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Subpage Hero Banner -->
+  <section class="subpage-banner" style="background: linear-gradient(135deg, #1E3A8A 0%, #0D4836 60%, #15803D 100%);">
+    <div class="container">
+      <div class="subpage-badge" style="background:rgba(255,255,255,0.18); color:#93C5FD;">
+        <i class="fa-solid fa-trophy"></i> Musobaqalar va Grantlar Portali
+      </div>
+      <h1 class="subpage-title">Talabalar Tanlovlari va Musobaqalar</h1>
+      <p class="subpage-desc">
+        O'z iqtidoringizni namoyon eting, Respublika va xalqaro tanlovlarga yo'llanma oling hamda qimmatbaho mukofot jamg'armalari sohibiga aylaning! Har bir tanlovda ishtirok etish uchun onlayn ro'yxatdan o'tishingiz mumkin.
+      </p>
+    </div>
+  </section>
+
+  <!-- 1) STATISTIKA: Jami tanlovlar, Faol tanlovlar, Yakunlangan tanlovlar -->
+  <section class="container" style="margin-top: 32px; margin-bottom: 24px;">
+    <div class="contests-stats-row" style="margin-bottom: 0;">
+      <!-- Jami tanlovlar -->
+      <div class="contest-stat-metric-card total">
+        <div class="contest-stat-icon-wrap">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div class="contest-stat-info-wrap">
+          <div class="contest-stat-big-num">48</div>
+          <div class="contest-stat-label-text">Jami tanlovlar</div>
+          <div class="contest-stat-sub-text">Barcha 5 ta tashabbus yo'nalishlarida</div>
+        </div>
+      </div>
+
+      <!-- Faol tanlovlar -->
+      <div class="contest-stat-metric-card active">
+        <div class="contest-stat-icon-wrap">
+          <i class="fa-solid fa-fire"></i>
+        </div>
+        <div class="contest-stat-info-wrap">
+          <div class="contest-stat-big-num">12</div>
+          <div class="contest-stat-label-text">Faol tanlovlar</div>
+          <div class="contest-stat-sub-text">Hozirda arizalar qabul qilinmoqda</div>
+        </div>
+      </div>
+
+      <!-- Yakunlangan tanlovlar -->
+      <div class="contest-stat-metric-card completed">
+        <div class="contest-stat-icon-wrap">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="contest-stat-info-wrap">
+          <div class="contest-stat-big-num">36</div>
+          <div class="contest-stat-label-text">Yakunlangan tanlovlar</div>
+          <div class="contest-stat-sub-text">G'oliblar taqdirlangan va arxivlangan</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Toolbar -->
+  <section class="container">
+    <div class="filter-toolbar">
+      <div class="filter-pills-group" id="contests-filter-group">
+        <button type="button" class="filter-pill active" data-filter="all">
+          <i class="fa-solid fa-globe"></i> Barcha tanlovlar
+        </button>
+        <button type="button" class="filter-pill" data-filter="active">
+          🔥 Faol tanlovlar
+        </button>
+        <button type="button" class="filter-pill" data-filter="completed">
+          🏁 Yakunlangan
+        </button>
+        <button type="button" class="filter-pill" data-filter="3">
+          💻 IT & Startaplar
+        </button>
+        <button type="button" class="filter-pill" data-filter="2">
+          ⚽ Sport & Chempionat
+        </button>
+        <button type="button" class="filter-pill" data-filter="1">
+          🎭 San'at & Teatr
+        </button>
+        <button type="button" class="filter-pill" data-filter="4">
+          📚 Kitobxonlik
+        </button>
+        <button type="button" class="filter-pill" data-filter="5">
+          💼 Biznes & Hunar
+        </button>
+      </div>
+
+      <div style="font-size:0.9rem; font-weight:700; color:var(--text-secondary);">
+        <i class="fa-solid fa-award" style="color:#F59E0B;"></i> Sovrin jamg'armasi: <strong>100+ mln so'm</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contests Grid -->
+  <section class="section-padding" style="padding-top: 10px;">
+    <div class="container">
+      <div class="contests-v2-grid" id="full-contests-grid">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <div class="brand-group" style="margin-bottom: 16px;">
+            <div class="brand-emblem-box">
+              <img src="assets/images/urdu_5t_emblem_white.png" alt="UrDU Logotipi" class="brand-logo-img" style="width:56px; height:56px; object-fit:contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));">
+            </div>
+            <div class="brand-titles">
+              <span class="brand-title-main" style="color:#FFFFFF;">Urganch Davlat Universiteti</span>
+              <span class="brand-title-sub" style="color:#A3CEC0;">5 Ta Muhim Tashabbus</span>
+            </div>
+          </div>
+          <p class="footer-desc">
+            Yoshlarning bo'sh vaqtini mazmunli tashkil etish, iqtidorlarini qo'llab-quvvatlash va barkamol avlodni tarbiyalash portali.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Sahifalar</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Bosh sahifa</a></li>
+            <li><a href="markaz.html">Markaz haqida</a></li>
+            <li><a href="togaraklar.html">To'garaklar</a></li>
+            <li><a href="tanlovlar.html">Tanlovlar</a></li>
+            <li><a href="reyting.html">Fakultetlar Reytingi</a></li>
+            <li><a href="kutubxona.html">Kutubxona</a></li>
+            <li><a href="aloqa.html">Aloqa</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Foydali Havolalar</h4>
+          <ul class="footer-links">
+            <li><a href="https://hemis.urdu.uz" target="_blank">HEMIS Talaba</a></li>
+            <li><a href="https://urdu.uz" target="_blank">UrDU Rasmiy Sayti</a></li>
+            <li><a href="dashboard.html">Admin Dashboard</a></li>
+            <li><a href="aloqa.html#nizom">Universitet Nizomi</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Aloqa</h4>
+          <p style="font-size:0.85rem;color:#A3CEC0;line-height:1.7;margin-bottom:12px;">
+            <i class="fa-solid fa-location-dot"></i> Urganch sh., Hamid Olimjon ko'chasi, 14-uy<br>
+            <i class="fa-solid fa-phone"></i> +998 (62) 224-67-00<br>
+            <i class="fa-solid fa-envelope"></i> info@urdu.uz
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>&copy; 2026 Urganch Davlat Universiteti. Barcha huquqlar himoyalangan.</div>
+        <div>5 Muhim Tashabbus Yagona Axborot Tizimi</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modals -->
+  <!-- ONLINE REGISTRATION MODAL -->
+  <div class="modal-overlay" id="registration-modal">
+    <div class="modal-container">
+      <button type="button" class="modal-close-btn" onclick="window.registrationManager.closeModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-header-banner">
+        <h3><i class="fa-solid fa-file-pen"></i> Tanlovga Ro'yxatdan O'tish</h3>
+        <p>UrDU 5 muhim tashabbus tanlovlarida ishtirok etish uchun ma'lumotlaringizni kiriting</p>
+      </div>
+
+      <div class="modal-body">
+        <form id="registration-form">
+          <div class="form-grid">
+            <div class="form-group-full">
+              <label class="form-label" for="reg-fullname">Talabaning F.I.Sh. *</label>
+              <input type="text" id="reg-fullname" class="form-control" placeholder="Masalan: Azizbek Ergashev Shokirovich" required>
+            </div>
+
+            <div>
+              <label class="form-label" for="reg-faculty">Fakultet *</label>
+              <select id="reg-faculty" class="form-control" required>
+                <option value="Texnika va raqamli texnologiyalar">Texnika va raqamli texnologiyalar</option>
+                <option value="Fizika-matematika">Fizika-matematika</option>
+                <option value="Filologiya">Filologiya</option>
+                <option value="Pedagogika va san'at">Pedagogika va san'at</option>
+                <option value="Jismoniy madaniyat">Jismoniy madaniyat</option>
+                <option value="Tabiiy fanlar">Tabiiy fanlar</option>
+                <option value="Tarix">Tarix</option>
+                <option value="Xorijiy filologiya">Xorijiy filologiya</option>
+                <option value="Iqtisodiyot va turizm">Iqtisodiyot va turizm</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" for="reg-course">Kurs / Bosqich *</label>
+              <select id="reg-course" class="form-control" required>
+                <option value="1">1-kurs</option>
+                <option value="2">2-kurs</option>
+                <option value="3">3-kurs</option>
+                <option value="4">4-kurs</option>
+                <option value="Magistratura">Magistratura</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" for="reg-studentid">HEMIS ID yoki Talaba ID</label>
+              <input type="text" id="reg-studentid" class="form-control" placeholder="Masalan: 3820241005">
+            </div>
+
+            <div>
+              <label class="form-label" for="reg-phone">Telefon raqam *</label>
+              <input type="tel" id="reg-phone" class="form-control" placeholder="+998 (90) 123-45-67" required>
+            </div>
+
+            <div class="form-group-full">
+              <label class="form-label" for="reg-initiative">Qaysi Tashabbus Tanlovi? *</label>
+              <select id="reg-initiative" class="form-control" required></select>
+            </div>
+
+            <div class="form-group-full">
+              <label class="form-label" for="reg-club">Yo'nalish / To'garak *</label>
+              <select id="reg-club" class="form-control" required></select>
+            </div>
+          </div>
+
+          <button type="submit" class="form-submit-btn">
+            <i class="fa-solid fa-paper-plane"></i> Tanlovga Ariza Yuborish
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIGITAL STUDENT ID PASS MODAL -->
+  <div class="modal-overlay" id="idcard-modal">
+    <div class="modal-container" style="max-width: 560px;">
+      <button type="button" class="modal-close-btn" onclick="window.registrationManager.closeIdCardModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-header-banner" style="text-align: center;">
+        <h3><i class="fa-solid fa-id-card"></i> Ishtirokchi Guvohnomasi</h3>
+        <p>UrDU 5 Muhim Tashabbus tanlovi rasmiy ishtirokchi kartasi</p>
+      </div>
+      <div class="modal-body" id="pass-render-box"></div>
+    </div>
+  </div>
+
+  <!-- HEMIS MODAL -->
+  <div class="modal-overlay" id="hemis-login-modal">
+    <div class="modal-container" style="max-width: 460px;">
+      <button type="button" class="modal-close-btn" onclick="window.appUI.closeHemisModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-header-banner" style="background: linear-gradient(135deg, #0D4836 0%, #15803D 100%); text-align: center;">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3>HEMIS Talaba Tizimi</h3>
+        <p>Urganch Davlat Universiteti HEMIS axborot tizimi orqali kirish</p>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        <form id="hemis-login-form" onsubmit="event.preventDefault(); window.appUI.submitHemisLogin();">
+          <div style="margin-bottom: 16px;">
+            <label class="form-label" for="hemis-login-id">HEMIS ID yoki Login *</label>
+            <input type="text" id="hemis-login-id" class="form-control" placeholder="Masalan: 3820241005" required>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <label class="form-label" for="hemis-password">Parol *</label>
+            <input type="password" id="hemis-password" class="form-control" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="form-submit-btn" style="background: #0D4836; width: 100%; margin-bottom: 12px;">
+            <i class="fa-solid fa-right-to-bracket"></i> Tizimga Kirish
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- NIZOM MODAL -->
+  <div class="modal-overlay" id="nizom-modal">
+    <div class="modal-container nizom-modal-box">
+      <button type="button" class="modal-close-btn" onclick="window.appUI.closeNizomModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-header-banner" style="background: linear-gradient(135deg, #0D4836 0%, #15803D 100%);">
+        <h3><i class="fa-solid fa-file-shield"></i> Tanlov Rasmiy Nizomi</h3>
+        <p>Urganch Davlat Universiteti — 5 Muhim Tashabbus Markazi</p>
+      </div>
+      <div class="modal-body nizom-content-body" id="nizom-render-container">
+        <!-- Rendered dynamically by window.appUI.openNizomModal -->
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/translations.js"></script>
+  <script src="js/registration.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('full-contests-grid');
+      const filterPills = document.querySelectorAll('#contests-filter-group .filter-pill');
+      let activeFilter = 'all';
+
+      filterPills.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterPills.forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.getAttribute('data-filter');
+          renderContests();
+        });
+      });
+
+      function renderContests() {
+        if (!container) return;
+        const allEvents = URDUDATA.upcomingEvents || [];
+        const filtered = allEvents.filter(e => {
+          if (activeFilter === 'all') return true;
+          if (activeFilter === 'active') return e.status === 'active';
+          if (activeFilter === 'completed') return e.status === 'completed';
+          return e.initiativeId === parseInt(activeFilter, 10);
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:60px 20px; background:var(--surface); border-radius:18px; border:1px solid var(--border);">
+              <i class="fa-solid fa-folder-open" style="font-size:3rem; color:var(--text-muted); margin-bottom:14px;"></i>
+              <h3 style="font-size:1.2rem; font-weight:700;">Ushbu toifada tanlovlar topilmadi</h3>
+              <p style="color:var(--text-secondary); font-size:0.9rem;">Boshqa toifani tanlang yoki barcha tanlovlar ro'yxatini ko'ring.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = filtered.map(ev => {
+          const init = URDUDATA.initiatives.find(i => i.id === ev.initiativeId) || URDUDATA.initiatives[0];
+          const isCompleted = ev.status === 'completed';
+          return `
+            <div class="contest-v2-card">
+              <div class="contest-v2-thumb">
+                <img src="${ev.image || 'assets/images/hero_campus.jpg'}" alt="${ev.title}" class="contest-v2-img">
+                <span class="contest-status-badge ${isCompleted ? 'completed' : 'active'}">
+                  <i class="fa-solid ${isCompleted ? 'fa-flag-checkered' : 'fa-circle-dot'}"></i> ${isCompleted ? 'Yakunlangan' : 'Faol tanlov'}
+                </span>
+                <span class="contest-init-tag-v2">
+                  <i class="${init.icon}"></i> ${init.title}
+                </span>
+              </div>
+              <div class="contest-v2-body">
+                <h3 class="contest-v2-title">${ev.title}</h3>
+                <p class="contest-v2-desc">${ev.desc}</p>
+                <div class="contest-v2-deadline-box">
+                  <span><i class="fa-regular fa-calendar"></i> <strong>Muddati:</strong> ${ev.displayDate || ev.date}</span>
+                  <span style="color:${isCompleted ? '#6B7280' : '#059669'}; font-weight:700;">
+                    <i class="fa-regular fa-clock"></i> ${ev.daysLeft || 'Faol'}
+                  </span>
+                </div>
+                <div class="contest-v2-actions">
+                  <button type="button" class="btn-nizom-outline" onclick="window.appUI.openNizomModal('${ev.id}')">
+                    <i class="fa-solid fa-file-shield"></i> Nizomi
+                  </button>
+                  ${isCompleted ? `
+                    <a href="reyting.html" class="btn-participate-solid" style="background:#4B5563; border-color:#4B5563; text-decoration:none;">
+                      <i class="fa-solid fa-trophy"></i> G'oliblarni Ko'rish
+                    </a>
+                  ` : `
+                    <button type="button" class="btn-participate-solid" onclick="window.appUI.openHemisModal()" title="HEMIS orqali qatnashish">
+                      <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali qatnashish
+                    </button>
+                  `}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      renderContests();
+    });
+  </script>
+</body>
+</html>

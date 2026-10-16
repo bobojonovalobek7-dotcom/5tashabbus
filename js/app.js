@@ -79,9 +79,12 @@ class UrDU5TashabbusApp {
     }
 
     // Re-render dynamic sections with new language
-    this.renderInitiativeTabs();
-    this.renderInitiativeHero(this.activeInitiativeId);
-    this.renderClubsCatalog();
+    if (typeof this.renderInitiativeTabs === 'function') this.renderInitiativeTabs();
+    if (typeof this.renderInitiativeHero === 'function') this.renderInitiativeHero(this.activeInitiativeId);
+    if (typeof this.renderClubsCatalog === 'function') this.renderClubsCatalog();
+    if (window.quizInstance && typeof window.quizInstance.setLanguage === 'function') {
+      window.quizInstance.setLanguage(lang);
+    }
 
     if (showNotification) {
       this.showToast(t.toastLangChanged || "Til o'zgartirildi");
@@ -763,9 +766,31 @@ class UrDU5TashabbusApp {
     const btn = document.getElementById('markaz-dropdown-btn');
 
     if (btn && dropdown) {
+      let closeTimeout = null;
+
+      const openMenu = () => {
+        if (closeTimeout) {
+          clearTimeout(closeTimeout);
+          closeTimeout = null;
+        }
+        dropdown.classList.add('open');
+      };
+
+      const closeMenu = () => {
+        closeTimeout = setTimeout(() => {
+          dropdown.classList.remove('open');
+        }, 300);
+      };
+
+      dropdown.addEventListener('mouseenter', openMenu);
+      dropdown.addEventListener('mouseleave', closeMenu);
+
       btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdown.classList.toggle('open');
+        if (window.innerWidth <= 1024 || e.target.closest('.dropdown-arrow')) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropdown.classList.toggle('open');
+        }
       });
 
       document.addEventListener('click', (e) => {
@@ -912,8 +937,8 @@ class UrDU5TashabbusApp {
     const modal = document.getElementById('video-presentation-modal');
     const iframe = document.getElementById('video-iframe');
     if (modal && iframe) {
-      // YouTube embed for UrDU promo
-      iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
+      // UrDU 5 Tashabbus official video presentation
+      iframe.src = "https://www.youtube.com/embed/ScMzIvxBSi4?autoplay=1";
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -930,29 +955,168 @@ class UrDU5TashabbusApp {
   }
 
   /* -------------------------------------------------------------
-     CONTEST MODAL
+     CONTEST & NIZOM MODAL
      ------------------------------------------------------------- */
-  openContestModal(type) {
-    const contestNames = {
-      web: "Web dasturlash olimpiadasi",
-      teatr: "Talabalar teatr festivali",
-      tadbirkor: "\"Tadbirkor qiz\" biznes-g'oyalar tanlovi",
-      kitobxon: "\"Eng faol kitobxon\" oylik tanlovi",
-      futbol: "Fakultetlararo mini futbol chempionati"
-    };
-
-    const name = contestNames[type] || "Tanlov";
-    this.showToast(`"${name}" haqida batafsil ma'lumot yuklanmoqda`);
+  openContestModal(contestId) {
+    const contest = (URDUDATA.upcomingEvents || []).find(e => e.id === contestId || e.id === 'contest-1') || URDUDATA.upcomingEvents[0];
     if (window.registrationManager) {
-      setTimeout(() => {
-        window.registrationManager.openModal();
-      }, 500);
+      window.registrationManager.openWithContest(contest.id, contest.title, contest.initiativeId);
     }
   }
 
+  openNizomModal(contestId) {
+    const contest = (URDUDATA.upcomingEvents || []).find(e => e.id === contestId) || URDUDATA.upcomingEvents[0];
+    const modal = document.getElementById('nizom-modal');
+    const container = document.getElementById('nizom-render-container');
+    if (!modal || !container) return;
+
+    const nizom = contest.nizom || {
+      title: `${contest.title} Rasmiy Nizomi`,
+      purpose: "Iqtidorli yoshlarni aniqlash va rag'batlantirish.",
+      requirements: ["UrDU talabasi bo'lishi lozim.", "Belgilangan muddatda ro'yxatdan o'tgan bo'lishi shart."],
+      stages: ["1-bosqich: Onlayn saralash", "2-bosqich: Final bosqichi"],
+      criteria: ["Loyiha sifati — 50 ball", "Taqdimot mahorati — 50 ball"],
+      jury: "UrDU professor-o'qituvchilari",
+      awards: contest.prize || "Diplom va esdalik sovg'alari"
+    };
+
+    container.innerHTML = `
+      <div class="nizom-official-badge">
+        <i class="fa-solid fa-stamp"></i> O'zbekiston Respublikasi Oliy Ta'lim, Fan va Innovatsiyalar Vazirligi • UrDU Rektori buyrug'i bilan tasdiqlangan
+      </div>
+
+      <h3 style="font-family:var(--font-display); font-size:1.35rem; font-weight:800; color:var(--text-primary); margin-bottom:12px; line-height:1.35;">
+        ${nizom.title}
+      </h3>
+
+      <div style="background:var(--mid-bg); border-radius:12px; padding:14px 18px; margin-bottom:18px; border:1px solid var(--border-light); font-size:0.88rem; line-height:1.6;">
+        <strong><i class="fa-solid fa-bullseye" style="color:var(--accent);"></i> Tanlov maqsadi:</strong> ${nizom.purpose}
+      </div>
+
+      <div class="nizom-block-title">
+        <i class="fa-solid fa-circle-check" style="color:#10B981;"></i> 1. Ishtirokchilar va talablar:
+      </div>
+      <ul style="padding-left:22px; font-size:0.88rem; line-height:1.6; color:var(--text-secondary); margin-bottom:14px;">
+        ${nizom.requirements.map(r => `<li style="margin-bottom:6px;">${r}</li>`).join('')}
+      </ul>
+
+      <div class="nizom-block-title">
+        <i class="fa-solid fa-timeline" style="color:#2563EB;"></i> 2. O'tkazilish bosqichlari va muddatlari:
+      </div>
+      <ul style="padding-left:22px; font-size:0.88rem; line-height:1.6; color:var(--text-secondary); margin-bottom:14px;">
+        ${nizom.stages.map(s => `<li style="margin-bottom:6px;">${s}</li>`).join('')}
+      </ul>
+
+      <div class="nizom-block-title">
+        <i class="fa-solid fa-scale-balanced" style="color:#D97706;"></i> 3. Baholash mezonlari:
+      </div>
+      <ul style="padding-left:22px; font-size:0.88rem; line-height:1.6; color:var(--text-secondary); margin-bottom:14px;">
+        ${nizom.criteria.map(c => `<li style="margin-bottom:6px;">${c}</li>`).join('')}
+      </ul>
+
+      <div class="nizom-block-title">
+        <i class="fa-solid fa-trophy" style="color:#EA580C;"></i> 4. Sovrin jamg'armasi va rag'batlantirish:
+      </div>
+      <div style="background:rgba(234,88,12,0.08); border:1px solid rgba(234,88,12,0.2); border-radius:10px; padding:12px 16px; font-size:0.88rem; color:#C2410C; font-weight:700; margin-bottom:20px;">
+        ${nizom.awards}
+      </div>
+
+      <div class="nizom-footer-row">
+        <button type="button" class="btn-nizom-outline" style="padding:10px 18px;" onclick="window.appUI.downloadNizomPDF('${contest.title}')">
+          <i class="fa-solid fa-file-pdf" style="color:#EF4444; font-size:1.1rem;"></i> Nizomni Yuklab Olish (PDF)
+        </button>
+        <button type="button" class="btn-participate-solid" style="padding:10px 22px;" onclick="window.appUI.closeNizomModal(); window.appUI.openHemisModal();">
+          <i class="fa-solid fa-graduation-cap"></i> HEMIS Orqali Qatnashish
+        </button>
+      </div>
+    `;
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeNizomModal() {
+    const modal = document.getElementById('nizom-modal');
+    if (modal) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  openNewsModal(newsId) {
+    const news = (URDUDATA.latestNews || []).find(n => n.id === newsId) || URDUDATA.latestNews[0];
+    const modal = document.getElementById('news-modal');
+    const container = document.getElementById('news-render-container');
+    if (!modal || !container) return;
+
+    container.innerHTML = `
+      <div style="margin-bottom:16px;">
+        <span style="display:inline-block; padding:4px 12px; background:rgba(13,72,54,0.1); color:#0D4836; border-radius:9999px; font-size:0.78rem; font-weight:700; margin-bottom:8px;">
+          ${news.category}
+        </span>
+        <span style="font-size:0.82rem; color:var(--text-muted); margin-left:10px;">
+          <i class="fa-regular fa-calendar"></i> ${news.date}
+        </span>
+      </div>
+
+      <h3 style="font-family:var(--font-display); font-size:1.35rem; font-weight:800; color:var(--text-primary); line-height:1.35; margin-bottom:16px;">
+        ${news.title}
+      </h3>
+
+      <div style="border-radius:14px; overflow:hidden; margin-bottom:20px; max-height:340px;">
+        <img src="${news.image}" alt="${news.title}" style="width:100%; height:100%; object-fit:cover;">
+      </div>
+
+      <p style="font-size:0.95rem; line-height:1.7; color:var(--text-primary); margin-bottom:16px;">
+        ${news.content || news.excerpt}
+      </p>
+
+      <div style="background:var(--mid-bg); border-left:4px solid var(--accent); padding:12px 18px; border-radius:8px; font-size:0.88rem; color:var(--text-secondary); margin-bottom:20px;">
+        Urganch Davlat Universiteti Yoshlar bilan ishlash, ma'naviyat va ma'rifat bo'limi matbuot xizmati.
+      </div>
+
+      <div style="text-align:right;">
+        <button type="button" class="btn-primary-action" style="padding:8px 22px;" onclick="window.appUI.closeNewsModal()">
+          Yopish
+        </button>
+      </div>
+    `;
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeNewsModal() {
+    const modal = document.getElementById('news-modal');
+    if (modal) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  downloadNizomPDF(contestTitle) {
+    this.showToast(`"${contestTitle}" rasmiy nizomi (PDF) yuklab olinmoqda...`);
+    const blob = new Blob([
+      `URGANCH DAVLAT UNIVERSITETI\n5 MUHIM TASHABBUS MARKAZI\n\nRASMIY NIZOM\n\nTanlov: ${contestTitle}\n\n1. UMUMIY QOIDALAR\nMazkur Nizom UrDU talabalari o'rtasida o'tkaziladigan tanlovning tartib va qoidalarini belgilaydi.\n\nTasdiqladi: UrDU Rektori`
+    ], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `UrDU_Nizom_${contestTitle.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
+    let container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      container.className = 'toast-container';
+      document.body.appendChild(container);
+    }
 
     const toast = document.createElement('div');
     toast.className = `toast-msg toast-${type}`;

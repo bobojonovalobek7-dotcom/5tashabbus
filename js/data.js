@@ -357,66 +357,348 @@ const URDUDATA = {
     }
   ],
 
-  upcomingEvents: [
+  contestsStats: {
+    total: 48,
+    active: 12,
+    completed: 36
+  },
+
+  vocationalClubs: [
     {
-      id: "e1",
-      title: "\"UrDU Yulduzlari\" 1-Tashabbus Iqtidorlar Ko'rik-Tanlovi",
-      initiativeId: 1,
-      date: "2026-10-24",
-      time: "14:00",
-      displayDate: "24-Oktyabr, 2026",
-      location: "UrDU Bosh Madaniyat Saroyi",
-      organizer: "Yoshlar bilan ishlash bo'limi",
-      type: "Tanlov",
-      desc: "Vokal, cholg'u ijrochiligi, badiiy o'qish va tasviriy san'at yo'nalishlarida yilning eng yorqin talabasi aniqlanadi."
+      id: "voc-1",
+      name: "Tikuvchilik va Liboslar Dizayni",
+      initiativeId: 5,
+      icon: "fa-solid fa-vest-patches",
+      mentor: "Mahbuba Rajabova (Dizayner-usta)",
+      location: "Xotin-qizlar markazi, 102-ustaxona",
+      duration: "3 oylik amaliy kurs",
+      schedule: "Dush, Chor, Juma 14:00 - 17:00",
+      enrolled: 24,
+      capacity: 30,
+      skills: ["Bichish-tikish", "Milliy atlas", "Zamonaviy fason"],
+      desc: "Milliy va zamonaviy liboslar bichish-tikish, modelyerlik asoslari hamda o'z brendini yaratish bo'yicha bepul amaliy mahorat darslari."
     },
     {
-      id: "e2",
-      title: "Rektor Kubogi — Universitet Mini-Futbol Chempionati",
+      id: "voc-2",
+      name: "Zamonaviy Pazandachilik & Qandolatchilik",
+      initiativeId: 5,
+      icon: "fa-solid fa-cake-candles",
+      mentor: "Shahlo Yoqubova (Bosh master-shef)",
+      location: "Talabalar turar joyi kulinariya laboratoriyasi",
+      duration: "2 oylik intensiv",
+      schedule: "Sesh, Pay, Shanba 15:00 - 18:00",
+      enrolled: 26,
+      capacity: 30,
+      skills: ["Qandolat san'ati", "Yevropa shirinliklari", "Tort bezash"],
+      desc: "Klassik va zamonaviy desertlar, milliy pishiriqlar, shokolad bilan ishlash va fudsanoatda kichik biznes boshlash sirlari."
+    },
+    {
+      id: "voc-3",
+      name: "Grafik Dizayn & SMM Marketing",
+      initiativeId: 5,
+      icon: "fa-solid fa-wand-magic-sparkles",
+      mentor: "Jasur Matyoqubov (Senior Art Director)",
+      location: "IT-Park UrDU Lab, 302-xona",
+      duration: "3 oylik amaliyot",
+      schedule: "Dush, Payshanba 16:00 - 18:30",
+      enrolled: 28,
+      capacity: 30,
+      skills: ["Photoshop", "Illustrator", "Figma", "SMM"],
+      desc: "Brending, ijtimoiy tarmoqlar uchun vizual kontent tayyorlash, reklama bannerlari va frilansda xalqaro buyurtmalar olish."
+    },
+    {
+      id: "voc-4",
+      name: "Milliy Hunarmandchilik & Kulolchilik",
+      initiativeId: 5,
+      icon: "fa-solid fa-gem",
+      mentor: "Anvar Omonov (Hunarmandlar uyushmasi a'zosi)",
+      location: "San'atshunoslik fakulteti, Milliy ustaxona",
+      duration: "4 oylik ustaxona",
+      schedule: "Chor, Shanba 14:00 - 16:30",
+      enrolled: 18,
+      capacity: 25,
+      skills: ["Xorazm kashtachiligi", "Kulolchilik", "Suvenirlar"],
+      desc: "Xorazm an'anaviy kashtachiligi, zardo'zlik, suvenirlar tayyorlash va hunarmandchilik mahsulotlarini sayyohlarga sotish."
+    },
+    {
+      id: "voc-5",
+      name: "Sartaroshlik va Stilistika San'ati",
+      initiativeId: 5,
+      icon: "fa-solid fa-scissors",
+      mentor: "Gulchehra Xudayberganova (Professional stilist)",
+      location: "UrDU Go'zallik va stilistika studiyasi",
+      duration: "2 oylik amaliy kurs",
+      schedule: "Sesh, Juma 14:30 - 17:30",
+      enrolled: 20,
+      capacity: 25,
+      skills: ["Soch turmaklash", "Vizaj", "Estetika"],
+      desc: "Zamonaviy soch turmaklash, to'y va bayram vizaji, kosmetologiya asoslari va go'zallik salonini ochish ko'nikmalari."
+    },
+    {
+      id: "voc-6",
+      name: "Elektron Tijorat & Frilans Kursi",
+      initiativeId: 5,
+      icon: "fa-solid fa-cart-shopping",
+      mentor: "Bekzod Rahimov (E-commerce ekspert)",
+      location: "Coworking markazi, 201-xona",
+      duration: "2 oylik trening",
+      schedule: "Har Shanba 10:00 - 13:00",
+      enrolled: 35,
+      capacity: 40,
+      skills: ["Uzum Market", "Upwork", "Onlayn do'kon", "Logistika"],
+      desc: "Uzum Market va xalqaro platformalarda onlayn savdo yo'lga qo'yish, tovarlarni suratga olish, sotuv va moliya boshqaruvi."
+    }
+  ],
+
+  latestNews: [
+    {
+      id: "news-1",
+      title: "UrDU talabasi Respublika \"Talabalar IT-Hackathon 2026\" g'olibi bo'ldi",
+      category: "3-Tashabbus (IT)",
+      date: "14-Oktyabr, 2026",
+      image: "assets/images/news_it_hackathon.jpg",
+      excerpt: "UrDU Texnika fakulteti talabalaridan iborat jamoa 48 soatlik Respublika hakatonida sun'iy intellektga asoslangan ekologik monitoring loyihasi bilan 1-o'rinni va 30 mln so'm grantni qo'lga kiritdi.",
+      content: "Abu Rayhon Beruniy nomidagi Urganch davlat universiteti Texnika va raqamli texnologiyalar fakulteti talabalari Toshkent shahrida o'tkazilgan Respublika 'Talabalar IT-Hackathon 2026' musobaqasida yuksak natija ko'rsatdilar. 48 soat davom etgan intensiv marafon davomida talabalarimiz sun'iy intellekt va IoT datchiklariga tayangan holda suv resurslaridan oqilona foydalanish bo'yicha startap prototipini himoya qildilar va mutlaq g'olib deb topildilar."
+    },
+    {
+      id: "news-2",
+      title: "\"Talabalar Teatr Studiyalari\" Respublika Festivali g'oliblari tantanali taqdirlandi",
+      category: "1-Tashabbus (San'at)",
+      date: "11-Oktyabr, 2026",
+      image: "assets/images/news_theater_festival.jpg",
+      excerpt: "Universitet Madaniyat saroyida bo'lib o'tgan festivalda \"Nihol\" talabalar teatr studiyasi \"Jaloliddin Manguberdi\" tarixiy dramasi bilan Gran-pri sohibi bo'ldi.",
+      content: "5 ta muhim tashabbusning 1-yo'nalishi doirasida yoshlarning san'at, teatr va madaniyatga bo'lgan qiziqishini oshirish maqsadida o'tkazilgan festivalda viloyatdagi oliy ta'lim muassasalarining iqtidorli jamoalari bellashdilar. UrDU qoshidagi 'Nihol' teatr studiyasi o'zining yuksak mahorati va sahna nutqi bilan hakamlar hay'atining e'tirofiga sazovor bo'ldi."
+    },
+    {
+      id: "news-3",
+      title: "Xotin-qizlar uchun yangi zamonaviy kasb-hunar markazi tantanali ochildi",
+      category: "5-Tashabbus (Kasb-hunar)",
+      date: "08-Oktyabr, 2026",
+      image: "assets/images/news_vocational_sewing.jpg",
+      excerpt: "Universitetda talaba-qizlar va mahalla yoshlari uchun 12 ta zamonaviy tikuv mashinalari va kompyuterlar bilan jihozlangan bepul kasbga o'qitish markazi ish boshladi.",
+      content: "5-muhim tashabbus doirasida xotin-qizlar bandligini ta'minlash, ularni zamonaviy kasb-hunarlarga o'rgatish maqsadida Urganch davlat universitetida yangi kasb-hunar o'quv ustaxonasi foydalanishga topshirildi. Bu yerda tikuvchilik, liboslar dizayni, qandolatchilik hamda grafik dizayn kurslari bepul tashkil etilmoqda."
+    }
+  ],
+
+  upcomingEvents: [
+    {
+      id: "contest-1",
+      title: "Web Dasturlash va AI Loyihalar Olimpiadasi — 2026",
+      initiativeId: 3,
+      date: "2026-10-25",
+      time: "10:00",
+      displayDate: "01.10.2026 — 25.10.2026",
+      deadline: "25-Oktyabr, 2026",
+      daysLeft: "9 kun qoldi",
+      status: "active",
+      statusText: "Qabul ochiq",
+      location: "IT-Park UrDU Binosi, 401-xona",
+      organizer: "Raqamli ta'lim markazi va IT-Park",
+      type: "IT & Startap",
+      image: "assets/images/news_it_hackathon.jpg",
+      prize: "1-o'rin: 15 000 000 so'm, Diplom va planshet",
+      desc: "Talabalar o'rtasida zamonaviy veb texnologiyalar, sun'iy intellekt va startap loyihalar bo'yicha eng yaxshi innovatsion g'oyalarni saralash tanlovi.",
+      nizom: {
+        title: "\"Web Dasturlash va AI Loyihalar Olimpiadasi — 2026\" Rasmiy Nizomi",
+        purpose: "Urganch davlat universiteti iqtidorli talabalarini dasturiy injiniring va sun'iy intellekt sohalariga jalb qilish, ularning amaliy loyihalarini qo'llab-quvvatlash.",
+        requirements: [
+          "UrDUning barcha bakalavr va magistratura talabalari ishtirok etishi mumkin.",
+          "Loyihalar yakka tartibda yoki 3 kishigacha bo'lgan jamoalarda taqdim etiladi.",
+          "Loyiha kodi ochiq repozitoriyda (GitHub/GitLab) joylashgan va ishchi veb-havolaga (live demo) ega bo'lishi shart.",
+          "Plagiat va tayyor shablonlardan ruxsatsiz foydalanish taqiqlanadi."
+        ],
+        stages: [
+          "1-bosqich: Onlayn ariza topshirish va texnik hujjatlarni qabul qilish (20-oktyabrgacha).",
+          "2-bosqich: Ekspertlar komissiyasi tomonidan kod sifati va g'oya tekshiruvi (22-oktyabr).",
+          "3-bosqich: Final — UrDU Bosh binosida jonli loyiha taqdimoti (Demo Day, 25-oktyabr)."
+        ],
+        criteria: [
+          "G'oyaning yangiligi va amaliy ahamiyati — 25 ball",
+          "Arxitektura, toza kod va ma'lumotlar bazasi loyihasi — 30 ball",
+          "Foydalanuvchi interfeysi (UI/UX) va moslashuvchanlik — 25 ball",
+          "Loyiha taqdimoti va savol-javoblar — 20 ball"
+        ],
+        jury: "UrDU professor-o'qituvchilari hamda IT-Park rezidentlari bo'lgan Senior dasturchilar.",
+        awards: "1-o'rin: 15 000 000 so'm + Diplom; 2-o'rin: 10 000 000 so'm; 3-o'rin: 5 000 000 so'm."
+      }
+    },
+    {
+      id: "contest-2",
+      title: "\"Talabalar Teatr Studiyalari\" Festival-Ko'rik Tanlovi",
+      initiativeId: 1,
+      date: "2026-10-30",
+      time: "14:00",
+      displayDate: "10.10.2026 — 30.10.2026",
+      deadline: "30-Oktyabr, 2026",
+      daysLeft: "14 kun qoldi",
+      status: "active",
+      statusText: "Qabul ochiq",
+      location: "UrDU Bosh Madaniyat Saroyi",
+      organizer: "Yoshlar bilan ishlash bo'limi va Teatr kafedrasi",
+      type: "Madaniyat & San'at",
+      image: "assets/images/news_theater_festival.jpg",
+      prize: "Gran-pri: 12 000 000 so'm va Respublika bosqichiga yo'llanma",
+      desc: "Talaba yoshlarning aktyorlik, sahna mahorati, badiiy nutq va rejissura qobiliyatlarini namoyon etuvchi an'anaviy teatr festivali.",
+      nizom: {
+        title: "\"Talabalar Teatr Studiyalari Festivali\" Nizomi",
+        purpose: "Yoshlar ma'naviyatini yuksaltirish, milliy va jahon mumtoz dramaturgiyasini talabalar teatr jamoalari orqali targ'ib qilish.",
+        requirements: [
+          "Har bir fakultetdan bitta spektakl yoki 20 daqiqalik kompozitsiya qabul qilinadi.",
+          "Aktyorlar tarkibi faqat UrDU talabalaridan iborat bo'lishi lozim.",
+          "Mavzular: milliy qadriyatlar, tarixiy siymolar yoki zamonaviy yoshlar muammolari."
+        ],
+        stages: [
+          "Saralash bosqichi: Fakultetlar ichki ko'rigi (20-oktyabrgacha).",
+          "Universitet final bosqichi: UrDU Madaniyat saroyi sahnasida jonli spektakllar (30-oktyabr)."
+        ],
+        criteria: [
+          "Rejissura yechimi va g'oyaviy pishiqlik — 30 ball",
+          "Aktyorlik mahorati va sahna nutqi — 30 ball",
+          "Musiqiy va vizual bezak, liboslar — 20 ball",
+          "Tomoshabin bilan aloqa — 20 ball"
+        ],
+        jury: "O'zbekistonda xizmat ko'rsatgan artistlar va teatr san'atshunoslari.",
+        awards: "Gran-pri, 'Eng yaxshi erkak roli', 'Eng yaxshi ayol roli' va maxsus diplomlar."
+      }
+    },
+    {
+      id: "contest-3",
+      title: "Rektor Kubogi — Fakultetlararo Voleybol va Mini-Futbol Chempionati",
       initiativeId: 2,
       date: "2026-10-28",
       time: "15:30",
-      displayDate: "28-Oktyabr, 2026",
-      location: "UrDU Markaziy Stadioni",
-      organizer: "Jismoniy madaniyat kafedrasi",
-      type: "Sport musobaqasi",
-      desc: "12 ta fakultet jamoalari o'rtasida shiddatli chempionat. G'olib jamoaga Rektor Kubogi va qimmatbaho sovg'alar."
+      displayDate: "05.10.2026 — 28.10.2026",
+      deadline: "28-Oktyabr, 2026",
+      daysLeft: "12 kun qoldi",
+      status: "active",
+      statusText: "Qabul ochiq",
+      location: "UrDU Markaziy Yopiq Sport Majmuasi",
+      organizer: "Jismoniy madaniyat kafedrasi va Sport klubi",
+      type: "Sport",
+      image: "assets/images/contest_sport_cup.jpg",
+      prize: "Rektor Kubogi, oltin medallar va 20 000 000 so'mlik sport inventarlari",
+      desc: "Universitetning 12 ta fakulteti talaba-yoshlari o'rtasida sog'lom turmush tarzini targ'ib qilish va universitet terma jamoasini shakllantirish chempionati.",
+      nizom: {
+        title: "\"Rektor Kubogi Sport Chempionati\" Nizomi",
+        purpose: "Talabalar o'rtasida ommaviy sportni rivojlantirish va terma jamoaga iqtidorlarni saralash.",
+        requirements: [
+          "Jamoa a'zolari UrDU talabasi ekanligini tasdiqlovchi talabalik guvohnomasiga ega bo'lishi kerak.",
+          "Har bir jamoada 8 nafardan 12 nafargacha ishtirokchi ro'yxatga olinadi.",
+          "Tibbiy ko'rikdan o'tganlik to'g'risida ma'lumotnoma talab etiladi."
+        ],
+        stages: [
+          "Guruh bosqichi o'yinlari: 15-22 oktyabr kunlari.",
+          "Yarim final va Final: 28-oktyabr kuni Markaziy sport zalida."
+        ],
+        criteria: [
+          "FIVB va FIFA xalqaro rasmiy o'yin qoidalari asosida hakamlik qilinadi.",
+          "O'yinlarda fair-play (halol o'yin) tamoyillari qat'iy nazoratga olinadi."
+        ],
+        jury: "Milliy va xalqaro toifadagi professional hakamlar hay'ati.",
+        awards: "1, 2 va 3-o'rin sohiblariga medallar, diplomlar va esdalik sovg'alari."
+      }
     },
     {
-      id: "e3",
-      title: "\"Khorezm CyberCode 2026\" — 36 Soatlik Hackathon",
-      initiativeId: 3,
-      date: "2026-11-05",
-      time: "09:00",
-      displayDate: "5-Noyabr, 2026",
-      location: "IT-Park UrDU Binosi",
-      organizer: "Raqamli ta'lim markazi",
-      type: "IT & Startap",
-      desc: "AI, FinTech va EduTech yo'nalishlarida innovatsion prototiplar yaratish. Mukofot jamg'armasi: 40,000,000 so'm."
-    },
-    {
-      id: "e4",
-      title: "\"Kitob — Ma'naviyat Quyoshi\" Katta Kitobxonlik Marafon",
+      id: "contest-4",
+      title: "\"Eng Yaxshi Kitobxon Talaba\" Oylik Universitet Tanlovi",
       initiativeId: 4,
-      date: "2026-11-12",
+      date: "2026-10-20",
       time: "11:00",
-      displayDate: "12-Noyabr, 2026",
+      displayDate: "01.10.2026 — 20.10.2026",
+      deadline: "20-Oktyabr, 2026",
+      daysLeft: "4 kun qoldi",
+      status: "active",
+      statusText: "Qabul ochiq",
       location: "UrDU Axborot-Resurs Markazi",
       organizer: "ARM va Filologiya fakulteti",
-      type: "Ma'naviyat",
-      desc: "Kitob yarmarkasi, eng ko'p kitob o'qigan 100 talabani taqdirlash va taniqli yozuvchilar bilan jonli muloqot."
+      type: "Kitobxonlik",
+      image: "assets/images/tashabbus_4_books.jpg",
+      prize: "1-o'rin: 5 000 000 so'm vaucher va elektron kitoblar jamlanmasi",
+      desc: "Belgilangan 10 ta o'zbek va jahon adabiyoti durdonalarini o'qib, tahliliy test va insholar orqali eng zukko kitobxon talabani aniqlash.",
+      nizom: {
+        title: "\"Eng Yaxshi Kitobxon Talaba\" Tanlovi Nizomi",
+        purpose: "Yoshlar o'rtasida mutolaa madaniyatini yuksaltirish, badiiy tafakkur va so'zlashuv savodxonligini rivojlantirish.",
+        requirements: [
+          "Barcha bosqich talabalari shaxsiy arizasi bilan ishtirok etishi mumkin.",
+          "Tanlov uchun tavsiya etilgan adabiyotlar ro'yxatidagi asarlarni o'qigan bo'lish lozim."
+        ],
+        stages: [
+          "1-bosqich: Onlayn test sinovi (50 ta savol) — 15-oktyabr.",
+          "2-bosqich: Insho yozish va asar tahlili bo'yicha jonli suhbat — 20-oktyabr."
+        ],
+        criteria: [
+          "Asar mazmunini to'liq o'zlashtirganlik — 40 ball",
+          "Tahliliy fikrlash va shaxsiy munosabat — 30 ball",
+          "Notiqlik va adabiy til me'yorlariga rioya etish — 30 ball"
+        ],
+        jury: "O'zbek adabiyoti kafedrasi professorlari va taniqli yozuvchilar.",
+        awards: "G'olibga noutbuk, diplom hamda maxsus kitoblar jamlanmasi."
+      }
     },
     {
-      id: "e5",
-      title: "\"Mohir Qo'llar va Ijod\" Talaba-Qizlar Ko'rgazma-Yarmarkasi",
+      id: "contest-5",
+      title: "\"Tadbirkor Qiz\" Biznes-G'oyalar va Hunarmandchilik Tanlovi",
       initiativeId: 5,
-      date: "2026-11-18",
-      time: "10:00",
-      displayDate: "18-Noyabr, 2026",
-      location: "UrDU Bosh Binosi Foyesi",
+      date: "2026-11-10",
+      time: "11:00",
+      displayDate: "15.10.2026 — 10.11.2026",
+      deadline: "10-Noyabr, 2026",
+      daysLeft: "25 kun qoldi",
+      status: "active",
+      statusText: "Qabul ochiq",
+      location: "UrDU Startap va Kovorking Markazi",
       organizer: "Xotin-qizlar maslahat kengashi",
-      type: "Ko'rgazma",
-      desc: "Milliy kiyimlar defilesi, hunarmandchilik mahsulotlari auksioni, yosh tadbirkor qizlar loyihalari taqdimoti."
+      type: "Biznes & Hunar",
+      image: "assets/images/news_vocational_sewing.jpg",
+      prize: "1-o'rin: 10 000 000 so'm startap granti va tikuv uskunasi",
+      desc: "Talaba-qizlarning tadbirkorlik tashabbuslari, milliy hunarmandchilik va zamonaviy xizmatlar sohasidagi eng istiqbolli biznes-rejalarini qo'llab-quvvatlash.",
+      nizom: {
+        title: "\"Tadbirkor Qiz\" Tanlovi Nizomi",
+        purpose: "Xotin-qizlarning iqtisodiy faolligini oshirish, talaba-qizlarni o'z biznesini boshlashiga grantlar orqali ko'maklashish.",
+        requirements: [
+          "UrDU talaba-qizlari shaxsiy biznes loyihalari bilan qatnashishi mumkin.",
+          "Loyiha ijtimoiy yo'naltirilgan va yangi ish o'rinlari yaratishga qaratilgan bo'lishi maqsadga muvofiq."
+        ],
+        stages: [
+          "1-bosqich: Biznes-reja va mahsulot namunalari qabul qilinadi (01-noyabrgacha).",
+          "2-bosqich: Mentorlar ko'magida loyihalarni takomillashtirish treningi (05-noyabr).",
+          "3-bosqich: Hakamlar oldida himoya qilish va ko'rgazma (10-noyabr)."
+        ],
+        criteria: [
+          "Loyihaning iqtisodiy rentabelligi va amalga oshishi — 35 ball",
+          "Ijodiy yondashuv va milliy uslub — 35 ball",
+          "Moliyaviy hisob-kitoblarning to'g'riligi — 30 ball"
+        ],
+        jury: "Tadbirkor ayollar assotsiatsiyasi vakillari va bank ekspertlari.",
+        awards: "1-o'rin: 10 mln so'mlik startap granti, zamonaviy uskunalar."
+      }
+    },
+    {
+      id: "contest-6",
+      title: "Respublika Yoshlar Innovatsion Loyihalari — 2026 (Bahorgi Mavsum)",
+      initiativeId: 3,
+      date: "2026-05-20",
+      time: "10:00",
+      displayDate: "15.04.2026 — 20.05.2026",
+      deadline: "20-May, 2026",
+      daysLeft: "Yakunlangan",
+      status: "completed",
+      statusText: "Yakunlangan",
+      location: "Toshkent shahri, Yoshlar Akademiyasi",
+      organizer: "Innovatsion rivojlanish agentligi va UrDU",
+      type: "IT & Startap",
+      image: "assets/images/dostonbek_winner.jpg",
+      prize: "Faxrli 2-o'rin: Dostonbek Olloquliyev (UrDU talabasi)",
+      desc: "Respublika miqyosida o'tkazilgan nufuzli ko'rik-tanlovda UrDU talabasi Dostonbek Olloquliyev o'z startap loyihasi bilan faxrli 2-o'rinni egalladi.",
+      nizom: {
+        title: "\"Yoshlar Innovatsion Loyihalari — 2026\" Rasmiy Nizomi",
+        purpose: "Mamlakatimiz yosh olim va innovatorlarining eng ilg'or ilmiy ishlanmalarini qo'llab-quvvatlash.",
+        requirements: ["Respublika OTM talabalari va yosh tadqiqotchilari."],
+        stages: ["Universitet bosqichi", "Viloyat bosqichi", "Respublika final bosqichi"],
+        criteria: ["Ilmiy asoslanganlik", "Tijoratlashtirish imkoniyati", "Ijtimoiy samara"],
+        jury: "Fanlar akademiyasi olimlari va xorijiy ekspertlar.",
+        awards: "G'oliblarga maxsus mukofotlar va davlat granti ajratilgan."
+      }
     }
   ],
 
@@ -530,3 +812,92 @@ const URDUDATA = {
     }
   ]
 };
+
+// -------------------------------------------------------------------
+// Dynamic LocalStorage Sync & Dashboard CRUD Operations
+// -------------------------------------------------------------------
+(function syncUrDUStorage() {
+  try {
+    const savedClubs = localStorage.getItem('urdu_custom_clubs');
+    if (savedClubs) {
+      URDUDATA.clubs = JSON.parse(savedClubs);
+    }
+    const savedEvents = localStorage.getItem('urdu_custom_events');
+    if (savedEvents) {
+      URDUDATA.upcomingEvents = JSON.parse(savedEvents);
+    }
+    const savedStats = localStorage.getItem('urdu_custom_stats');
+    if (savedStats) {
+      URDUDATA.stats = Object.assign(URDUDATA.stats, JSON.parse(savedStats));
+    }
+  } catch (e) {
+    console.warn("Storage sync error:", e);
+  }
+})();
+
+URDUDATA.saveClubsState = function() {
+  try {
+    localStorage.setItem('urdu_custom_clubs', JSON.stringify(URDUDATA.clubs));
+  } catch(e) {
+    console.warn("Failed to persist clubs", e);
+  }
+};
+
+URDUDATA.saveEventsState = function() {
+  try {
+    localStorage.setItem('urdu_custom_events', JSON.stringify(URDUDATA.upcomingEvents));
+  } catch(e) {
+    console.warn("Failed to persist events", e);
+  }
+};
+
+URDUDATA.addClub = function(club) {
+  URDUDATA.clubs.unshift(club);
+  URDUDATA.saveClubsState();
+};
+
+URDUDATA.deleteClub = function(id) {
+  URDUDATA.clubs = URDUDATA.clubs.filter(c => c.id !== id);
+  URDUDATA.saveClubsState();
+};
+
+URDUDATA.addEvent = function(event) {
+  URDUDATA.upcomingEvents.unshift(event);
+  URDUDATA.saveEventsState();
+};
+
+URDUDATA.deleteEvent = function(id) {
+  URDUDATA.upcomingEvents = URDUDATA.upcomingEvents.filter(e => e.id !== id);
+  URDUDATA.saveEventsState();
+};
+
+URDUDATA.getRegistrations = function() {
+  try {
+    return JSON.parse(localStorage.getItem('urdu_5t_passes') || '[]');
+  } catch(e) {
+    return [];
+  }
+};
+
+URDUDATA.updateRegistrationStatus = function(regId, status) {
+  try {
+    const list = URDUDATA.getRegistrations();
+    const item = list.find(r => r.id === regId);
+    if (item) {
+      item.status = status;
+      localStorage.setItem('urdu_5t_passes', JSON.stringify(list));
+    }
+  } catch(e) {
+    console.warn(e);
+  }
+};
+
+URDUDATA.deleteRegistration = function(regId) {
+  try {
+    const list = URDUDATA.getRegistrations().filter(r => r.id !== regId);
+    localStorage.setItem('urdu_5t_passes', JSON.stringify(list));
+  } catch(e) {
+    console.warn(e);
+  }
+};
+

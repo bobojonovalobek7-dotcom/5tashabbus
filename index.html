@@ -75,45 +75,42 @@
        MAIN HEADER & NAVIGATION (Screenshot 1 & 2 Style)
        =================================================================== -->
   <header class="main-header" id="navbar">
-    <div class="container nav-container">
-      <a href="#asosiy" class="brand-wrapper" title="Urganch Davlat Universiteti — 5 Tashabbus">
-        <div class="brand-emblem-box">
-          <img src="assets/images/urdu_logo.png" alt="UrDU Logotipi" class="brand-logo-img">
-        </div>
-        <div class="brand-titles">
-          <span class="brand-title-main">Urganch Davlat Universiteti</span>
-          <span class="brand-title-sub">5 Ta Muhim Tashabbus</span>
-        </div>
+    <div class="container header-inner nav-container">
+      <a href="index.html" class="brand-group" title="Urganch Davlat Universiteti — 5 Muhim Tashabbus Markazi">
+        <img src="assets/images/urdu_5t_logo.png" alt="UrDU Besh Muhim Tashabbus Markazi" class="brand-official-logo">
       </a>
 
       <!-- Primary Desktop Menu -->
       <nav class="nav-menu" id="primary-nav-menu">
-        <li><a href="#asosiy" class="nav-link active">Bosh sahifa</a></li>
+        <li><a href="index.html" class="nav-link active">Bosh sahifa</a></li>
         
         <!-- Markaz haqida Dropdown -->
         <li class="nav-dropdown" id="markaz-dropdown">
-          <button type="button" class="nav-link nav-dropdown-btn active-pill" id="markaz-dropdown-btn">
+          <a href="markaz.html" class="nav-link nav-dropdown-btn" id="markaz-dropdown-btn">
             <span>Markaz haqida</span>
             <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
-          </button>
+          </a>
           <div class="nav-dropdown-content" id="markaz-dropdown-menu">
-            <a href="#rahbariyat" class="dropdown-item" onclick="window.appUI.openInfoModal('rahbariyat')">
+            <a href="markaz.html#haqida" class="dropdown-item">
+              <i class="fa-solid fa-landmark"></i> Markaz haqida
+            </a>
+            <a href="markaz.html#rahbariyat" class="dropdown-item">
               <i class="fa-solid fa-users-line"></i> Rahbariyat
             </a>
-            <a href="#nizom" class="dropdown-item" onclick="window.appUI.openInfoModal('nizom')">
+            <a href="markaz.html#nizom" class="dropdown-item">
               <i class="fa-solid fa-file-shield"></i> Nizom
             </a>
-            <a href="#yoriqnoma" class="dropdown-item" onclick="window.appUI.openInfoModal('yoriqnoma')">
+            <a href="markaz.html#yoriqnoma" class="dropdown-item">
               <i class="fa-solid fa-book-bookmark"></i> Yo'riqnoma
             </a>
           </div>
         </li>
 
-        <li><a href="#togaraklar" class="nav-link">To'garaklar</a></li>
-        <li><a href="#tanlovlar" class="nav-link">Tanlovlar</a></li>
-        <li><a href="#reyting" class="nav-link">Reyting</a></li>
-        <li><a href="#kitoblar" class="nav-link">Kutubxona</a></li>
-        <li><a href="#aloqa" class="nav-link">Aloqa</a></li>
+        <li><a href="togaraklar.html" class="nav-link">To'garaklar</a></li>
+        <li><a href="tanlovlar.html" class="nav-link">Tanlovlar</a></li>
+        <li><a href="reyting.html" class="nav-link">Reyting</a></li>
+        <li><a href="kutubxona.html" class="nav-link">Kutubxona</a></li>
+        <li><a href="aloqa.html" class="nav-link">Aloqa</a></li>
       </nav>
 
       <!-- Nav Actions -->
@@ -124,15 +121,9 @@
         </button>
 
         <!-- Hemis orqali Kirish -->
-        <button type="button" class="btn-hemis-login" onclick="window.appUI.openHemisModal()" title="HEMIS tizimi orqali kirish">
-          <i class="fa-solid fa-arrow-right-to-bracket"></i>
-          <span>Kirish</span>
-        </button>
-
-        <!-- Ro'yxatdan o'tish -->
-        <button type="button" class="btn-register-green" onclick="window.registrationManager.openModal()">
-          <i class="fa-solid fa-user-plus"></i>
-          <span>Ro'yxatdan o'tish</span>
+        <button type="button" class="btn-hemis-login" onclick="window.appUI.openHemisModal()" title="HEMIS yagona axborot tizimi orqali kirish">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>HEMIS Kirish</span>
         </button>
 
         <button type="button" class="mobile-nav-toggle" id="mobile-menu-btn" aria-label="Menyu">
@@ -163,11 +154,11 @@
         </p>
 
         <div class="hero-actions-row">
-          <a href="#tashabbuslar" class="btn-hero-solid">
-            <i class="fa-solid fa-layer-group"></i> 5 tashabbus haqida
+          <a href="markaz.html" class="btn-hero-solid" id="hero-btn-markaz">
+            <i class="fa-solid fa-circle-info"></i> Markaz haqida
           </a>
 
-          <button type="button" class="btn-hero-outline" onclick="window.appUI.openVideoModal()">
+          <button type="button" class="btn-hero-outline" id="hero-btn-video" onclick="window.appUI.openVideoModal()">
             <i class="fa-regular fa-circle-play"></i> Video taqdimot
           </button>
         </div>
@@ -197,15 +188,15 @@
                 <div class="slide-contest-tag">TANLOVDA</div>
                 <div class="slide-winner-title">DOSTONBEK OLLOQULIYEV</div>
                 <div class="slide-desc-text">
-                  O'ZINING ISTIQBOLLI LOYIHASI BILAN MUVAFFAQIYATLI ISHTIROK ETIB,
+                  O'zining istiqbolli startap loyihasi bilan Respublika bosqichida faxrli 2-o'rinni egalladi.
                 </div>
                 <div class="slide-trophy-box">
-                  <div class="laurel-wreath">
+                  <div class="achievement-icon" style="font-size:1.5rem;color:#D97706;">
                     <i class="fa-solid fa-medal"></i>
                   </div>
-                  <div class="rank-badge">
-                    <span class="rank-roman">II</span>
-                    <span class="rank-sub">O'RINNI EGALLADI!</span>
+                  <div class="rank-badge-clean">
+                    <span class="rank-badge-title">🥈 2-O'RIN SOVRINDORI</span>
+                    <span class="rank-badge-sub">Respublika "Innovatsion Loyihalar" Tanlovida</span>
                   </div>
                 </div>
               </div>
@@ -222,15 +213,15 @@
                 <div class="slide-contest-tag">HAKATONIDA</div>
                 <div class="slide-winner-title">ALISHER AXMEDOV</div>
                 <div class="slide-desc-text">
-                  SUN'IY INTELLEKT VA RAQAMLI STARTAP LOYIHASI BILAN,
+                  Sun'iy intellekt va raqamli startap loyihasi bilan talabalar musobaqasida mutlaq g'oliblikni qo'lga kiritdi.
                 </div>
                 <div class="slide-trophy-box">
-                  <div class="laurel-wreath">
+                  <div class="achievement-icon" style="font-size:1.5rem;color:#D97706;">
                     <i class="fa-solid fa-trophy"></i>
                   </div>
-                  <div class="rank-badge">
-                    <span class="rank-roman">I</span>
-                    <span class="rank-sub">O'RINNI EGALLADI!</span>
+                  <div class="rank-badge-clean">
+                    <span class="rank-badge-title">🥇 1-O'RIN G'OLIBI</span>
+                    <span class="rank-badge-sub">Talabalar IT-Challenge Hakatonida</span>
                   </div>
                 </div>
               </div>
@@ -247,15 +238,15 @@
                 <div class="slide-contest-tag">VA TALABALAR FESTIVALIDA</div>
                 <div class="slide-winner-title">DILNOZA KARIMOVA</div>
                 <div class="slide-desc-text">
-                  MILLIY SAN'AT VA IJODIYOT YO'NALISHIDA YUKSAK MAHORAT KO'RSATIB,
+                  Milliy san'at va liboslar dizayni yo'nalishida yuksak mahorat ko'rsatib, davlat mukofotiga sazovor bo'ldi.
                 </div>
                 <div class="slide-trophy-box">
-                  <div class="laurel-wreath">
-                    <i class="fa-solid fa-star"></i>
+                  <div class="achievement-icon" style="font-size:1.5rem;color:#D97706;">
+                    <i class="fa-solid fa-crown"></i>
                   </div>
-                  <div class="rank-badge">
-                    <span class="rank-roman"><i class="fa-solid fa-crown"></i></span>
-                    <span class="rank-sub">G'OLIBLIKNI QO'LGA KIRITDI!</span>
+                  <div class="rank-badge-clean">
+                    <span class="rank-badge-title">🏆 DAVLAT MUKOFOTI SOHIBASI</span>
+                    <span class="rank-badge-sub">"Zulfiya" Nomidagi Davlat Mukofoti</span>
                   </div>
                 </div>
               </div>
@@ -303,7 +294,7 @@
     <div class="container">
       <div class="five-initiatives-grid">
         <!-- 01 San'at va madaniyat -->
-        <div class="initiative-modern-card card-purple" onclick="window.appUI.switchInitiative(1)">
+        <div class="initiative-modern-card card-purple" onclick="location.href='togaraklar.html?initiative=1'">
           <div class="card-top-row">
             <span class="card-number num-purple">01</span>
             <span class="card-emoji-icons">🎨 🎵</span>
@@ -312,14 +303,14 @@
           <p class="card-excerpt">
             Yoshlarning musiqa, rassomlik, adabiyot, teatr va san'atga qiziqishini oshirish
           </p>
-          <a href="#tashabbuslar-batafsil" class="card-detail-link link-purple" onclick="window.appUI.switchInitiative(1)">
-            <span>Batafsil</span>
+          <a href="togaraklar.html?initiative=1" class="card-detail-link link-purple">
+            <span>Barcha to'garaklar</span>
             <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
 
         <!-- 02 Sport -->
-        <div class="initiative-modern-card card-green" onclick="window.appUI.switchInitiative(2)">
+        <div class="initiative-modern-card card-green" onclick="location.href='togaraklar.html?initiative=2'">
           <div class="card-top-row">
             <span class="card-number num-green">02</span>
             <span class="card-emoji-icons">⚽ 🏀</span>
@@ -328,14 +319,14 @@
           <p class="card-excerpt">
             Yoshlarni jismoniy chiniqtirish va sportga keng jalb etish
           </p>
-          <a href="#tashabbuslar-batafsil" class="card-detail-link link-green" onclick="window.appUI.switchInitiative(2)">
-            <span>Batafsil</span>
+          <a href="togaraklar.html?initiative=2" class="card-detail-link link-green">
+            <span>Barcha to'garaklar</span>
             <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
 
         <!-- 03 Axborot texnologiyalari -->
-        <div class="initiative-modern-card card-blue" onclick="window.appUI.switchInitiative(3)">
+        <div class="initiative-modern-card card-blue" onclick="location.href='togaraklar.html?initiative=3'">
           <div class="card-top-row">
             <span class="card-number num-blue">03</span>
             <span class="card-emoji-icons">💻</span>
@@ -344,14 +335,14 @@
           <p class="card-excerpt">
             Kompyuter texnologiyalari va internetdan samarali foydalanishni tashkil etish
           </p>
-          <a href="#tashabbuslar-batafsil" class="card-detail-link link-blue" onclick="window.appUI.switchInitiative(3)">
-            <span>Batafsil</span>
+          <a href="togaraklar.html?initiative=3" class="card-detail-link link-blue">
+            <span>Barcha to'garaklar</span>
             <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
 
         <!-- 04 Kitobxonlik -->
-        <div class="initiative-modern-card card-amber" onclick="window.appUI.switchInitiative(4)">
+        <div class="initiative-modern-card card-amber" onclick="location.href='togaraklar.html?initiative=4'">
           <div class="card-top-row">
             <span class="card-number num-amber">04</span>
             <span class="card-emoji-icons">📚</span>
@@ -360,14 +351,14 @@
           <p class="card-excerpt">
             Kitobxonlikni keng targ'ib qilish va mutolaaga bo'lgan qiziqishni oshirish
           </p>
-          <a href="#tashabbuslar-batafsil" class="card-detail-link link-amber" onclick="window.appUI.switchInitiative(4)">
-            <span>Batafsil</span>
+          <a href="togaraklar.html?initiative=4" class="card-detail-link link-amber">
+            <span>Barcha to'garaklar</span>
             <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
 
         <!-- 05 Xotin-qizlar bandligi -->
-        <div class="initiative-modern-card card-pink" onclick="window.appUI.switchInitiative(5)">
+        <div class="initiative-modern-card card-pink" onclick="location.href='togaraklar.html?initiative=5'">
           <div class="card-top-row">
             <span class="card-number num-pink">05</span>
             <span class="card-emoji-icons">👩‍🎓</span>
@@ -376,8 +367,8 @@
           <p class="card-excerpt">
             Xotin-qizlarni bandligini ta'minlash va ularning tashabbuskorligini qo'llab-quvvatlash
           </p>
-          <a href="#tashabbuslar-batafsil" class="card-detail-link link-pink" onclick="window.appUI.switchInitiative(5)">
-            <span>Batafsil</span>
+          <a href="togaraklar.html?initiative=5" class="card-detail-link link-pink">
+            <span>Barcha to'garaklar</span>
             <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
@@ -386,131 +377,189 @@
   </section>
 
   <!-- ===================================================================
-       STATISTIKA VA TANLOVLAR (Screenshot 4 Style — Side by Side)
+       KASBGA O'QITISH TO'GARAKLARI (Screenshot 3 & 4 oralig'ida)
        =================================================================== -->
-  <section class="section-padding stats-contests-section" id="tanlovlar">
+  <section class="section-padding vocational-section" id="kasb-hunar">
     <div class="container">
-      <div class="stats-contests-grid">
-        <!-- Chap tomonda: Platforma statistikasi -->
-        <div class="modern-stat-card">
-          <div class="card-header-bar">
-            <h3 class="card-title-text"><i class="fa-solid fa-chart-line title-icon"></i> Platforma statistikasi</h3>
-            <a href="#statistika-to'liq" class="card-link-more" onclick="window.appUI.showToast('To\'liq statistika yangilanmoqda')">Barchasi <i class="fa-solid fa-chevron-right"></i></a>
+      <div class="vocational-header-bar">
+        <div class="vocational-header-left">
+          <div class="vocational-badge">
+            <i class="fa-solid fa-sparkles"></i> 5-Tashabbus: Zamonaviy Kasblar va Hunarmandchilik
           </div>
+          <h2 class="section-title" style="margin-bottom: 8px;">Kasbga O'qitish To'garaklari</h2>
+          <p class="section-lead" style="margin-bottom: 0;">
+            Talaba-yoshlar va xotin-qizlar uchun mehnat bozorida yuqori talabga ega bo'lgan zamonaviy kasblar, amaliy hunar hamda daromad keltiruvchi raqamli ko'nikmalar to'garaklariga onlayn a'zo bo'ling!
+          </p>
+        </div>
+        <div>
+          <a href="togaraklar.html?initiative=5" class="btn-vocational-top">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Kasbga o'qitish to'garaklari</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
 
-          <div class="stat-boxes-grid">
-            <div class="stat-mini-box">
-              <div class="stat-icon-wrap"><i class="fa-solid fa-users"></i></div>
-              <div class="stat-big-num">12 458</div>
-              <div class="stat-sub-label">Jami talabalar</div>
+      <div class="vocational-grid">
+        <!-- 1. Tikuvchilik va Liboslar Dizayni -->
+        <div class="vocational-card">
+          <div class="vocational-top">
+            <div class="vocational-icon-box" style="background:rgba(219,39,119,0.12); color:#DB2777;">
+              <i class="fa-solid fa-vest-patches"></i>
             </div>
-
-            <div class="stat-mini-box">
-              <div class="stat-icon-wrap"><i class="fa-solid fa-user-check"></i></div>
-              <div class="stat-big-num">8 732</div>
-              <div class="stat-sub-label">Faol talabalar</div>
-            </div>
-
-            <div class="stat-mini-box">
-              <div class="stat-icon-wrap"><i class="fa-solid fa-trophy"></i></div>
-              <div class="stat-big-num">48</div>
-              <div class="stat-sub-label">Tanlovlar</div>
-            </div>
-
-            <div class="stat-mini-box stat-highlight-box">
-              <div class="stat-icon-wrap"><i class="fa-solid fa-layer-group"></i></div>
-              <div class="stat-big-num">13</div>
-              <div class="stat-sub-label">Kasb-hunar to'garaklar</div>
-            </div>
-
-            <div class="stat-mini-box">
-              <div class="stat-icon-wrap"><i class="fa-solid fa-graduation-cap"></i></div>
-              <div class="stat-big-num">23</div>
-              <div class="stat-sub-label">Ilmiy to'garaklar</div>
-            </div>
-
-            <div class="stat-mini-box">
-              <div class="stat-icon-wrap"><i class="fa-solid fa-award"></i></div>
-              <div class="stat-big-num">2 180</div>
-              <div class="stat-sub-label">Yutuqlar</div>
-            </div>
+            <span class="club-badge-status" style="background:#FCE7F3; color:#BE185D;">Bepul • Amaliy</span>
           </div>
+          <h3 class="vocational-card-title">Tikuvchilik va Liboslar Dizayni</h3>
+          <p class="vocational-card-desc">
+            Milliy va zamonaviy liboslar bichish-tikish, modelyerlik asoslari hamda shaxsiy atelye yoki brend yaratish bo'yicha amaliy mahorat darslari.
+          </p>
+          <div class="vocational-meta-box">
+            <div class="vocational-meta-row"><i class="fa-solid fa-user-tie"></i> <span><strong>Murabbiy:</strong> Mahbuba Rajabova (Dizayner-usta)</span></div>
+            <div class="vocational-meta-row"><i class="fa-solid fa-calendar-check"></i> <span><strong>Muddati:</strong> 3 oylik amaliy kurs</span></div>
+            <div class="vocational-meta-row"><i class="fa-solid fa-clock"></i> <span>Dush, Chor, Juma 14:00 - 17:00</span></div>
+          </div>
+          <div class="vocational-card-footer">
+            <span style="font-size:0.82rem; color:var(--text-muted); font-weight:600;"><i class="fa-solid fa-users"></i> 24 / 30 talaba</span>
+            <button type="button" class="btn-primary-action" style="padding:7px 16px; font-size:0.85rem;" onclick="window.appUI.openHemisModal()" title="HEMIS orqali a'zo bo'lish">
+              <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali a'zo bo'lish
+            </button>
+          </div>
+        </div>
 
-          <!-- Mini Callout Banner inside Stat Card -->
-          <div class="stat-callout-banner">
-            <div class="callout-content">
-              <span class="callout-star">⭐</span>
-              <p class="callout-text">Faol ishtirok eting, bilim va ijodingizni namoyon eting, kelajagingizni yarating!</p>
+        <!-- 2. Zamonaviy Pazandachilik & Qandolatchilik -->
+        <div class="vocational-card">
+          <div class="vocational-top">
+            <div class="vocational-icon-box" style="background:rgba(234,88,12,0.12); color:#EA580C;">
+              <i class="fa-solid fa-cake-candles"></i>
             </div>
-            <button type="button" class="btn-callout-action" onclick="window.registrationManager.openModal()">
-              <span>Ishtirok etish</span>
+            <span class="club-badge-status" style="background:#FFEDD5; color:#C2410C;">Talabgir</span>
+          </div>
+          <h3 class="vocational-card-title">Zamonaviy Pazandachilik & Qandolatchilik</h3>
+          <p class="vocational-card-desc">
+            Yevropa va sharqona desertlar, tort bezash, fudsanoat texnologiyalari va katering xizmatlarini tashkil etish sirlari.
+          </p>
+          <div class="vocational-meta-box">
+            <div class="vocational-meta-row"><i class="fa-solid fa-user-tie"></i> <span><strong>Murabbiy:</strong> Shahlo Yoqubova (Master-shef)</span></div>
+            <div class="vocational-meta-row"><i class="fa-solid fa-calendar-check"></i> <span><strong>Muddati:</strong> 2 oylik intensiv</span></div>
+            <div class="vocational-meta-row"><i class="fa-solid fa-clock"></i> <span>Sesh, Pay, Shanba 15:00 - 18:00</span></div>
+          </div>
+          <div class="vocational-card-footer">
+            <span style="font-size:0.82rem; color:var(--text-muted); font-weight:600;"><i class="fa-solid fa-users"></i> 26 / 30 talaba</span>
+            <button type="button" class="btn-primary-action" style="padding:7px 16px; font-size:0.85rem;" onclick="window.appUI.openHemisModal()" title="HEMIS orqali a'zo bo'lish">
+              <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali a'zo bo'lish
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Grafik Dizayn & SMM Marketing -->
+        <div class="vocational-card">
+          <div class="vocational-top">
+            <div class="vocational-icon-box" style="background:rgba(2,132,199,0.12); color:#0284C7;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <span class="club-badge-status" style="background:#E0F2FE; color:#0369A1;">Yuqori daromad</span>
+          </div>
+          <h3 class="vocational-card-title">Grafik Dizayn & SMM Marketing</h3>
+          <p class="vocational-card-desc">
+            Adobe Photoshop, Illustrator, Figma orqali brending, ijtimoiy tarmoqlar uchun reklama vizuallari va xalqaro frilans daromadlari.
+          </p>
+          <div class="vocational-meta-box">
+            <div class="vocational-meta-row"><i class="fa-solid fa-user-tie"></i> <span><strong>Murabbiy:</strong> Jasur Matyoqubov (Art Director)</span></div>
+            <div class="vocational-meta-row"><i class="fa-solid fa-calendar-check"></i> <span><strong>Muddati:</strong> 3 oylik amaliyot</span></div>
+            <div class="vocational-meta-row"><i class="fa-solid fa-clock"></i> <span>Dush, Payshanba 16:00 - 18:30</span></div>
+          </div>
+          <div class="vocational-card-footer">
+            <span style="font-size:0.82rem; color:var(--text-muted); font-weight:600;"><i class="fa-solid fa-users"></i> 28 / 30 talaba</span>
+            <button type="button" class="btn-primary-action" style="padding:7px 16px; font-size:0.85rem;" onclick="window.appUI.openHemisModal()" title="HEMIS orqali a'zo bo'lish">
+              <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali a'zo bo'lish
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:28px;">
+        <a href="togaraklar.html?initiative=5" class="btn-hero-solid" style="background:#DB2777; display:inline-flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-graduation-cap"></i> Barcha Kasbga O'qitish To'garaklari (Batafsil) <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       YANGILIKLAR (News & Updates Section)
+       =================================================================== -->
+  <section class="section-padding news-section" id="yangiliklar">
+    <div class="container">
+      <div class="news-header-bar">
+        <div>
+          <span class="section-subtitle"><i class="fa-solid fa-newspaper"></i> <span>So'nggi Yangiliklar</span></span>
+          <h2 class="section-title">Universitetimizning Muhim Yangiliklari</h2>
+          <p class="section-lead" style="margin-bottom:0;">
+            5 ta muhim tashabbus doirasida amalga oshirilayotgan eng so'nggi tadbirlar, g'oliblar va yangi loyihalar bilan tanishing.
+          </p>
+        </div>
+        <div>
+          <a href="#tanlovlar" class="btn-hero-outline" style="font-size:0.88rem; padding:10px 20px;">
+            <i class="fa-solid fa-bullhorn"></i> Barcha E'lonlar
+          </a>
+        </div>
+      </div>
+
+      <div class="news-grid">
+        <!-- News 1 -->
+        <div class="news-card">
+          <div class="news-thumb-box">
+            <img src="assets/images/news_it_hackathon.jpg" alt="Talabalar IT-Hackathon 2026" class="news-thumb-img">
+            <span class="news-cat-tag">3-Tashabbus (IT)</span>
+            <span class="news-date-tag"><i class="fa-regular fa-calendar"></i> 14-Oktyabr, 2026</span>
+          </div>
+          <div class="news-body">
+            <h3 class="news-title">UrDU talabasi Respublika "Talabalar IT-Hackathon 2026" g'olibi bo'ldi</h3>
+            <p class="news-excerpt">
+              UrDU Texnika fakulteti talabalaridan iborat jamoa 48 soatlik Respublika hakatonida sun'iy intellektga asoslangan ekologik monitoring loyihasi bilan 1-o'rinni va 30 mln so'm grantni qo'lga kiritdi.
+            </p>
+            <button type="button" class="news-footer-link" onclick="window.appUI.openNewsModal('news-1')">
+              <span>Batafsil o'qish</span>
               <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>
 
-        <!-- O'ng tomonda: Tanlovlar (Aynan 5 ta element) -->
-        <div class="modern-contest-card">
-          <div class="card-header-bar">
-            <h3 class="card-title-text"><i class="fa-solid fa-trophy title-icon"></i> Tanlovlar</h3>
-            <a href="#tadbirlar" class="card-link-more">Barchasi <i class="fa-solid fa-chevron-right"></i></a>
+        <!-- News 2 -->
+        <div class="news-card">
+          <div class="news-thumb-box">
+            <img src="assets/images/news_theater_festival.jpg" alt="Talabalar Teatr Studiyalari" class="news-thumb-img">
+            <span class="news-cat-tag">1-Tashabbus (San'at)</span>
+            <span class="news-date-tag"><i class="fa-regular fa-calendar"></i> 11-Oktyabr, 2026</span>
           </div>
+          <div class="news-body">
+            <h3 class="news-title">"Talabalar Teatr Studiyalari" Respublika Festivali g'oliblari taqdirlandi</h3>
+            <p class="news-excerpt">
+              Universitet Madaniyat saroyida bo'lib o'tgan festivalda "Nihol" talabalar teatr studiyasi "Jaloliddin Manguberdi" tarixiy dramasi bilan Gran-pri sohibi bo'ldi.
+            </p>
+            <button type="button" class="news-footer-link" onclick="window.appUI.openNewsModal('news-2')">
+              <span>Batafsil o'qish</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
 
-          <div class="contests-list-five">
-            <!-- 1. Web dasturlash olimpiadasi -->
-            <div class="contest-row-item" onclick="window.appUI.openContestModal('web')">
-              <div class="contest-thumb thumb-blue">
-                <i class="fa-solid fa-code"></i>
-              </div>
-              <div class="contest-info">
-                <h4 class="contest-name">Web dasturlash olimpiadasi</h4>
-                <div class="contest-deadline"><i class="fa-regular fa-clock"></i> 02.10.2026 gacha</div>
-              </div>
-            </div>
-
-            <!-- 2. Talabalar teatr festivali -->
-            <div class="contest-row-item" onclick="window.appUI.openContestModal('teatr')">
-              <div class="contest-thumb thumb-purple">
-                <i class="fa-solid fa-masks-theater"></i>
-              </div>
-              <div class="contest-info">
-                <h4 class="contest-name">Talabalar teatr festivali</h4>
-                <div class="contest-deadline"><i class="fa-regular fa-clock"></i> 12.05.2026 gacha</div>
-              </div>
-            </div>
-
-            <!-- 3. Tadbirkor qiz biznes-g'oyalar tanlovi -->
-            <div class="contest-row-item" onclick="window.appUI.openContestModal('tadbirkor')">
-              <div class="contest-thumb thumb-pink">
-                <i class="fa-solid fa-briefcase"></i>
-              </div>
-              <div class="contest-info">
-                <h4 class="contest-name">"Tadbirkor qiz" biznes-g'oyalar tanlovi</h4>
-                <div class="contest-deadline"><i class="fa-regular fa-clock"></i> 18.10.2026 gacha</div>
-              </div>
-            </div>
-
-            <!-- 4. Eng faol kitobxon oylik tanlovi -->
-            <div class="contest-row-item" onclick="window.appUI.openContestModal('kitobxon')">
-              <div class="contest-thumb thumb-amber">
-                <i class="fa-solid fa-book"></i>
-              </div>
-              <div class="contest-info">
-                <h4 class="contest-name">"Eng faol kitobxon" oylik tanlovi</h4>
-                <div class="contest-deadline"><i class="fa-regular fa-clock"></i> 30.09.2026 gacha</div>
-              </div>
-            </div>
-
-            <!-- 5. Fakultetlararo mini futbol chempionati -->
-            <div class="contest-row-item" onclick="window.appUI.openContestModal('futbol')">
-              <div class="contest-thumb thumb-green">
-                <i class="fa-solid fa-futbol"></i>
-              </div>
-              <div class="contest-info">
-                <h4 class="contest-name">Fakultetlararo mini futbol chempionati</h4>
-                <div class="contest-deadline"><i class="fa-regular fa-clock"></i> 05.09.2026 gacha</div>
-              </div>
-            </div>
+        <!-- News 3 -->
+        <div class="news-card">
+          <div class="news-thumb-box">
+            <img src="assets/images/news_vocational_sewing.jpg" alt="Kasb-hunar markazi" class="news-thumb-img">
+            <span class="news-cat-tag">5-Tashabbus (Kasb-hunar)</span>
+            <span class="news-date-tag"><i class="fa-regular fa-calendar"></i> 08-Oktyabr, 2026</span>
+          </div>
+          <div class="news-body">
+            <h3 class="news-title">Xotin-qizlar uchun yangi zamonaviy kasb-hunar markazi ish boshladi</h3>
+            <p class="news-excerpt">
+              Universitetda talaba-qizlar va mahalla yoshlari uchun 12 ta zamonaviy tikuv mashinalari va kompyuterlar bilan jihozlangan bepul kasbga o'qitish markazi tantanali ochildi.
+            </p>
+            <button type="button" class="news-footer-link" onclick="window.appUI.openNewsModal('news-3')">
+              <span>Batafsil o'qish</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -518,283 +567,311 @@
   </section>
 
   <!-- ===================================================================
-       5 TASHABBUS BATAFSIL MA'LUMOT (Dinamik interaktiv qism)
+       TANLOVLAR VA STATISTIKA (Statistika: Jami, Faol, Yakunlangan; Kartalar)
        =================================================================== -->
-  <section class="section-padding initiatives-showcase" id="tashabbuslar-batafsil">
+  <section class="section-padding" id="tanlovlar" style="background:var(--mid-bg);">
     <div class="container">
       <div class="section-header">
-        <span class="section-subtitle"><i class="fa-solid fa-shapes"></i> <span>Tashabbuslar Tavsifi</span></span>
-        <h2 class="section-title">5 Ta Muhim Tashabbus — Amalda</h2>
+        <span class="section-subtitle"><i class="fa-solid fa-trophy"></i> <span>Universitet Tanlovlari</span></span>
+        <h2 class="section-title">Tanlovlar, Musobaqalar va Grantlar</h2>
         <p class="section-lead">
-          Har bir tashabbus bo'yicha to'garaklar, murabbiylar, laboratoriyalar va talabalarimiz yutuqlari bilan batafsil tanishing.
+          Iqtidoringizni namoyon eting, nufuzli tanlovlarda ishtirok etib pul mukofotlari, diplom va Respublika bosqichiga yo'llanmalarni qo'lga kiriting!
         </p>
       </div>
 
-      <!-- In-Depth Dynamic Hero Target -->
-      <div id="initiative-hero-target">
-        <!-- Rendered by window.appUI.renderInitiativeHero() -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================================================================
-       INTERACTIVE QUIZ: "QAYSI TASHABBUS SIZGA MOS?"
-       =================================================================== -->
-  <section class="section-padding quiz-section" id="viktorina">
-    <div class="quiz-decor-shape"></div>
-    <div class="container">
-      <div class="section-header" style="color: #FFFFFF;">
-        <span class="section-subtitle" style="background: rgba(255,255,255,0.15); color: #B9F5E2;">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="quizSubtitle">Interaktiv Sinov</span>
-        </span>
-        <h2 class="section-title" style="color: #FFFFFF;" data-i18n="quizTitle">Qaysi Tashabbus Sizga Eng Mos?</h2>
-        <p class="section-lead" style="color: #B9E5D7;" data-i18n="quizLead">
-          4 ta tezkor savolga samimiy javob bering va sun'iy algoritm sizning qobiliyatingizga 100% mos to'garakni aniqlab beradi!
-        </p>
-      </div>
-
-      <div class="quiz-container-box">
-        <div class="quiz-progress-header">
-          <span id="quiz-step-counter">1 / 4 - Savol</span>
-          <span>Aniqlik darajasi: Yuqori</span>
-        </div>
-        <div class="quiz-progress-bar">
-          <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
-        </div>
-
-        <div id="quiz-dynamic-box">
-          <!-- Quiz steps injected by js/quiz.js -->
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================================================================
-       TO'GARAKLAR & KLUBLAR KATALOGI
-       =================================================================== -->
-  <section class="section-padding clubs-section" id="togaraklar">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-subtitle"><i class="fa-solid fa-graduation-cap"></i> <span data-i18n="clubsSubtitle">To'garaklar Bazasi</span></span>
-        <h2 class="section-title" data-i18n="clubsTitle">UrDU Bepul To'garaklari va Klublari</h2>
-        <p class="section-lead" data-i18n="clubsLead">
-          O'zingiz qiziqqan yo'nalishni tanlang, dars jadvali bilan tanishing va universitetimizning iqtidorli jamoasiga qo'shiling.
-        </p>
-      </div>
-
-      <!-- Catalog Filter Controls -->
-      <div class="catalog-controls">
-        <div class="search-input-box">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="clubs-search-input" class="search-input-field" placeholder="To'garak nomi, murabbiy yoki kalit so'z bo'yicha qidiring...">
-        </div>
-
-        <div class="filter-chips-wrapper" id="clubs-filter-chips">
-          <!-- Injected via JavaScript -->
-        </div>
-      </div>
-
-      <!-- Clubs Grid -->
-      <div class="clubs-grid" id="clubs-catalog-grid">
-        <!-- Injected via JavaScript -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================================================================
-       TADBIRLAR TAQVIMI
-       =================================================================== -->
-  <section class="section-padding events-section" id="tadbirlar">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-subtitle"><i class="fa-solid fa-calendar-check"></i> <span data-i18n="eventsSubtitle">Tadbirlar Taqvimi</span></span>
-        <h2 class="section-title" data-i18n="eventsTitle">Kutilayotgan Musobaqa va Festivallar</h2>
-        <p class="section-lead" data-i18n="eventsLead">
-          Universitetimizda 5 tashabbus doirasida o'tkaziladigan qiziqarli hakatolar, chempionatlar, konsertlar va tanlovlarni o'tkazib yubormang!
-        </p>
-      </div>
-
-      <!-- Events Filter Bar -->
-      <div class="events-filter-bar" id="events-filter-bar">
-        <!-- Injected via JS -->
-      </div>
-
-      <!-- Events Grid -->
-      <div class="events-grid" id="events-grid-target">
-        <!-- Injected via JS -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================================================================
-       FAKULTETLAR REYTINGI & SHON-SHARAF DOSKASI
-       =================================================================== -->
-  <section class="section-padding leaderboard-section" id="reyting">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-subtitle"><i class="fa-solid fa-trophy"></i> <span data-i18n="ratingSubtitle">Raqobat va Natijalar</span></span>
-        <h2 class="section-title" data-i18n="ratingTitle">Fakultetlar Reytingi & Shon-sharaf Doskasi</h2>
-        <p class="section-lead" data-i18n="ratingLead">
-          Urganch davlat universiteti fakultetlarining 5 tashabbus doirasidagi faollik ballari va xalqaro arenada faxr keltirgan yoshlarimiz.
-        </p>
-      </div>
-
-      <div class="leaderboard-grid">
-        <!-- Faculty Leaderboard Table -->
-        <div class="leaderboard-table-card">
-          <h3 class="card-inner-title"><i class="fa-solid fa-chart-line" style="color:var(--primary);"></i> <span data-i18n="ratingCardTitle">Fakultetlararo 5 Tashabbus Reytingi</span></h3>
-          <p class="card-inner-subtitle" data-i18n="ratingCardSubtitle">2026-o'quv yili hisoboti: To'garaklar qamrovi, musobaqalar va yutuqlar asosida</p>
-
-          <div class="leaderboard-list" id="faculty-leaderboard-list">
-            <!-- Injected via JS -->
+      <!-- 1) STATISTIKA: Jami tanlovlar, Faol tanlovlar, Yakunlangan tanlovlar -->
+      <div class="contests-stats-row">
+        <!-- Jami tanlovlar -->
+        <div class="contest-stat-metric-card total">
+          <div class="contest-stat-icon-wrap">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div class="contest-stat-info-wrap">
+            <div class="contest-stat-big-num">48</div>
+            <div class="contest-stat-label-text">Jami tanlovlar</div>
+            <div class="contest-stat-sub-text">Barcha 5 ta tashabbus yo'nalishlarida</div>
           </div>
         </div>
 
-        <!-- Hall of Fame Winners Showcase -->
-        <div class="hall-fame-col">
-          <h3 class="card-inner-title" style="margin-bottom: 18px;"><i class="fa-solid fa-star" style="color:var(--accent-gold);"></i> Shon-Sharaf Doskasi</h3>
+        <!-- Faol tanlovlar -->
+        <div class="contest-stat-metric-card active">
+          <div class="contest-stat-icon-wrap">
+            <i class="fa-solid fa-fire"></i>
+          </div>
+          <div class="contest-stat-info-wrap">
+            <div class="contest-stat-big-num">12</div>
+            <div class="contest-stat-label-text">Faol tanlovlar</div>
+            <div class="contest-stat-sub-text">Hozirda arizalar qabul qilinmoqda</div>
+          </div>
+        </div>
 
-          <div class="winner-card">
-            <img src="assets/images/winner_1.jpg" alt="Alisher Axmedov" class="winner-photo">
-            <div class="winner-info">
-              <span class="winner-badge"><i class="fa-solid fa-medal"></i> 3-Tashabbus (IT)</span>
-              <h4 class="winner-name">Alisher Axmedov</h4>
-              <div class="winner-faculty">Texnika va raqamli texnologiyalar fakulteti</div>
-              <div class="winner-award">Respublika Dasturchilar Hakatoni 1-o'rin sohibi</div>
-              <p class="winner-quote">"UrDU IT-klubida olgan bilimlarim orqali jamoamiz bilan ilk startapimizni yo'lga qo'ydik."</p>
+        <!-- Yakunlangan tanlovlar -->
+        <div class="contest-stat-metric-card completed">
+          <div class="contest-stat-icon-wrap">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="contest-stat-info-wrap">
+            <div class="contest-stat-big-num">36</div>
+            <div class="contest-stat-label-text">Yakunlangan tanlovlar</div>
+            <div class="contest-stat-sub-text">G'oliblar taqdirlangan va sertifikat berilgan</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2) TANLOVLAR KARTALARI (3 ta asosiy namuna, Nizomi, HEMIS orqali qatnashish va Batafsil) -->
+      <div class="contests-v2-grid">
+        <!-- Tanlov 1: Web dasturlash va AI -->
+        <div class="contest-v2-card">
+          <div class="contest-v2-thumb">
+            <img src="assets/images/news_it_hackathon.jpg" alt="Web Dasturlash va AI Loyihalar Olimpiadasi" class="contest-v2-img">
+            <span class="contest-status-badge active"><i class="fa-solid fa-circle-dot"></i> Faol tanlov</span>
+            <span class="contest-init-tag-v2"><i class="fa-solid fa-laptop-code"></i> 3-tashabbus</span>
+          </div>
+          <div class="contest-v2-body">
+            <h3 class="contest-v2-title">Web Dasturlash va AI Loyihalar Olimpiadasi — 2026</h3>
+            <p class="contest-v2-desc">
+              Talabalar o'rtasida zamonaviy veb texnologiyalar, sun'iy intellekt va startap loyihalar bo'yicha eng yaxshi innovatsion g'oyalarni saralash tanlovi.
+            </p>
+            <div class="contest-v2-deadline-box">
+              <span><i class="fa-regular fa-calendar"></i> <strong>Muddati:</strong> 01.10.2026 — 25.10.2026</span>
+              <span style="color:#059669; font-weight:700;"><i class="fa-regular fa-clock"></i> 9 kun qoldi</span>
+            </div>
+            <div class="contest-v2-actions">
+              <button type="button" class="btn-nizom-outline" onclick="window.appUI.openNizomModal('contest-1')">
+                <i class="fa-solid fa-file-shield"></i> Nizomi
+              </button>
+              <button type="button" class="btn-participate-solid" onclick="window.appUI.openHemisModal()" title="HEMIS orqali qatnashish">
+                <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali qatnashish
+              </button>
             </div>
           </div>
+        </div>
 
-          <div class="winner-card">
-            <img src="assets/images/winner_2.jpg" alt="Dilnoza Karimova" class="winner-photo">
-            <div class="winner-info">
-              <span class="winner-badge"><i class="fa-solid fa-medal"></i> 1 & 5-Tashabbuslar</span>
-              <h4 class="winner-name">Dilnoza Karimova</h4>
-              <div class="winner-faculty">Pedagogika va san'at fakulteti</div>
-              <div class="winner-award">Zulfiya nomidagi Davlat mukofoti sohibasi</div>
-              <p class="winner-quote">"Milliy qadriyatlar va zamonaviy ijodiy san'at uyg'unligi — yangi O'zbekiston yoshlarining faxri!"</p>
+        <!-- Tanlov 2: Talabalar teatr festivali -->
+        <div class="contest-v2-card">
+          <div class="contest-v2-thumb">
+            <img src="assets/images/news_theater_festival.jpg" alt="Talabalar Teatr Studiyalari Festivali" class="contest-v2-img">
+            <span class="contest-status-badge active"><i class="fa-solid fa-circle-dot"></i> Faol tanlov</span>
+            <span class="contest-init-tag-v2"><i class="fa-solid fa-masks-theater"></i> 1-tashabbus</span>
+          </div>
+          <div class="contest-v2-body">
+            <h3 class="contest-v2-title">"Talabalar Teatr Studiyalari" Festival-Ko'rik Tanlovi</h3>
+            <p class="contest-v2-desc">
+              Talaba yoshlarning aktyorlik, sahna mahorati, badiiy nutq va rejissura qobiliyatlarini namoyon etuvchi an'anaviy teatr festivali.
+            </p>
+            <div class="contest-v2-deadline-box">
+              <span><i class="fa-regular fa-calendar"></i> <strong>Muddati:</strong> 10.10.2026 — 30.10.2026</span>
+              <span style="color:#059669; font-weight:700;"><i class="fa-regular fa-clock"></i> 14 kun qoldi</span>
+            </div>
+            <div class="contest-v2-actions">
+              <button type="button" class="btn-nizom-outline" onclick="window.appUI.openNizomModal('contest-2')">
+                <i class="fa-solid fa-file-shield"></i> Nizomi
+              </button>
+              <button type="button" class="btn-participate-solid" onclick="window.appUI.openHemisModal()" title="HEMIS orqali qatnashish">
+                <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali qatnashish
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tanlov 3: Voleybol va Mini-Futbol chempionati -->
+        <div class="contest-v2-card">
+          <div class="contest-v2-thumb">
+            <img src="assets/images/contest_sport_cup.jpg" alt="Rektor Kubogi Voleybol Chempionati" class="contest-v2-img">
+            <span class="contest-status-badge active"><i class="fa-solid fa-circle-dot"></i> Faol tanlov</span>
+            <span class="contest-init-tag-v2"><i class="fa-solid fa-volleyball"></i> 2-tashabbus</span>
+          </div>
+          <div class="contest-v2-body">
+            <h3 class="contest-v2-title">Rektor Kubogi — Voleybol va Mini-Futbol Chempionati</h3>
+            <p class="contest-v2-desc">
+              Universitetning 12 ta fakulteti talaba-yoshlari o'rtasida sog'lom turmush tarzini targ'ib qilish va terma jamoani shakllantirish chempionati.
+            </p>
+            <div class="contest-v2-deadline-box">
+              <span><i class="fa-regular fa-calendar"></i> <strong>Muddati:</strong> 05.10.2026 — 28.10.2026</span>
+              <span style="color:#059669; font-weight:700;"><i class="fa-regular fa-clock"></i> 12 kun qoldi</span>
+            </div>
+            <div class="contest-v2-actions">
+              <button type="button" class="btn-nizom-outline" onclick="window.appUI.openNizomModal('contest-3')">
+                <i class="fa-solid fa-file-shield"></i> Nizomi
+              </button>
+              <button type="button" class="btn-participate-solid" onclick="window.appUI.openHemisModal()" title="HEMIS orqali qatnashish">
+                <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali qatnashish
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      <div style="text-align:center; margin-top:36px;">
+        <a href="tanlovlar.html" class="btn-hero-solid" style="background:#0D4836; display:inline-flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-trophy"></i> Barcha 48 ta Tanlovlar (Batafsil) <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- ===================================================================
-       TAVSIYA ETILAYOTGAN KITOBXONLIK RESURSLARI (E-LIBRARY SECTION)
+       OMMABOP TO'GARAKLAR (Qisqacha Namunalar & Batafsil Tugmasi)
        =================================================================== -->
-  <section class="section-padding books-shelf-section" id="kitoblar">
+  <section class="section-padding clubs-section" id="togaraklar-teaser">
     <div class="container">
       <div class="section-header">
-        <span class="section-subtitle"><i class="fa-solid fa-book-open"></i> <span data-i18n="booksSubtitle">4-Tashabbus Burchagi</span></span>
-        <h2 class="section-title" data-i18n="booksTitle">Hafta Tavsiyasi: E-Kutubxona Durdonalari</h2>
-        <p class="section-lead" data-i18n="booksLead">
-          UrDU Axborot-resurs markazi (ARM) tomonidan talabalar uchun saralangan eng sara milliy va jahon adabiyoti namunalari.
+        <span class="section-subtitle"><i class="fa-solid fa-shapes"></i> <span>Universitet To'garaklari</span></span>
+        <h2 class="section-title">Ommabop Bepul To'garaklar</h2>
+        <p class="section-lead">
+          Universitetimizda 85 dan ortiq to'garaklar faoliyat yuritmoqda. Quyida ayrim eng faol to'garak namunalari bilan tanishing.
         </p>
       </div>
 
-      <div class="books-shelf-grid">
-        <div class="book-card-item">
-          <div class="book-spine-decor"></div>
-          <div>
-            <h4 class="book-title">Boburnoma</h4>
-            <div class="book-author">Zahiriddin Muhammad Bobur</div>
-            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Tarixiy, adabiy va geografik tengsiz qomusiy asar.</p>
+      <!-- 3 Featured Clubs Teaser -->
+      <div class="clubs-grid" style="margin-bottom:32px;">
+        <!-- Club 1: IT -->
+        <div class="club-card-item">
+          <div class="club-card-header">
+            <span class="club-init-tag" style="background:rgba(6,182,212,0.12);color:#06B6D4;">
+              <i class="fa-solid fa-laptop-code"></i> 3-tashabbus
+            </span>
+            <span class="club-badge-status">Top Yo'nalish</span>
           </div>
-          <div class="book-meta-footer">
-            <span>480 bet</span>
-            <span class="book-rating"><i class="fa-solid fa-star"></i> 5.0</span>
+          <h4 class="club-card-title">Full-Stack Web Dasturlash Akademiyasi</h4>
+          <p class="club-card-desc">HTML, CSS, JavaScript, React va Node.js orqali real veb-sayt va dasturlar yaratish.</p>
+          <div class="club-meta-box">
+            <div class="club-meta-row"><i class="fa-solid fa-clock"></i> <span>Dush, Chor, Juma 15:00 - 17:30</span></div>
+            <div class="club-meta-row"><i class="fa-solid fa-location-dot"></i> <span>IT Park binosi, 204-auditoriya</span></div>
           </div>
-        </div>
-
-        <div class="book-card-item">
-          <div class="book-spine-decor"></div>
-          <div>
-            <h4 class="book-title">O'tkan Kunlar</h4>
-            <div class="book-author">Abdulla Qodiriy</div>
-            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">O'zbek romanchiligining gultoji va milliy faxri.</p>
-          </div>
-          <div class="book-meta-footer">
-            <span>360 bet</span>
-            <span class="book-rating"><i class="fa-solid fa-star"></i> 5.0</span>
+          <div class="club-footer-actions">
+            <span style="font-size:0.8rem;color:var(--text-muted);font-weight:600;"><i class="fa-solid fa-users"></i> 85 / 90 talaba</span>
+            <button type="button" class="btn-primary-action" style="padding:6px 14px;font-size:0.85rem;" onclick="window.appUI.openHemisModal()" title="HEMIS orqali a'zo bo'lish">
+              <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali a'zo bo'lish
+            </button>
           </div>
         </div>
 
-        <div class="book-card-item">
-          <div class="book-spine-decor"></div>
-          <div>
-            <h4 class="book-title">Yulduzli Tunlar</h4>
-            <div class="book-author">Pirimqul Qodirov</div>
-            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Boburiylar saltanati va insoniy matonat madhiyasi.</p>
+        <!-- Club 2: Sport -->
+        <div class="club-card-item">
+          <div class="club-card-header">
+            <span class="club-init-tag" style="background:rgba(249,115,22,0.12);color:#F97316;">
+              <i class="fa-solid fa-volleyball"></i> 2-tashabbus
+            </span>
+            <span class="club-badge-status">Chempionlar</span>
           </div>
-          <div class="book-meta-footer">
-            <span>520 bet</span>
-            <span class="book-rating"><i class="fa-solid fa-star"></i> 4.9</span>
+          <h4 class="club-card-title">Shaxmat va Mantiqiy O'yinlar Maktabi</h4>
+          <p class="club-card-desc">FIDE qoidalari bo'yicha grossmeysterlar tayyorlash, taktik kombinatsiyalar va turnirlar.</p>
+          <div class="club-meta-box">
+            <div class="club-meta-row"><i class="fa-solid fa-clock"></i> <span>Sesh, Pay, Shanba 16:00 - 18:00</span></div>
+            <div class="club-meta-row"><i class="fa-solid fa-location-dot"></i> <span>Sport majmuasi Shaxmat zali</span></div>
           </div>
-        </div>
-
-        <div class="book-card-item">
-          <div class="book-spine-decor"></div>
-          <div>
-            <h4 class="book-title">Atom Odatlar</h4>
-            <div class="book-author">Jeyms Klir</div>
-            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Kichik odatlar orqali ulkan natijalarga erishish sirlari.</p>
-          </div>
-          <div class="book-meta-footer">
-            <span>320 bet</span>
-            <span class="book-rating"><i class="fa-solid fa-star"></i> 4.9</span>
+          <div class="club-footer-actions">
+            <span style="font-size:0.8rem;color:var(--text-muted);font-weight:600;"><i class="fa-solid fa-users"></i> 42 / 45 talaba</span>
+            <button type="button" class="btn-primary-action" style="padding:6px 14px;font-size:0.85rem;" onclick="window.appUI.openHemisModal()" title="HEMIS orqali a'zo bo'lish">
+              <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali a'zo bo'lish
+            </button>
           </div>
         </div>
 
-        <div class="book-card-item">
-          <div class="book-spine-decor"></div>
-          <div>
-            <h4 class="book-title">Raqamli Qal'a</h4>
-            <div class="book-author">Den Braun</div>
-            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Kriptografiya, kiberxavfsizlik va intellektual deduktiv triller.</p>
+        <!-- Club 3: San'at -->
+        <div class="club-card-item">
+          <div class="club-card-header">
+            <span class="club-init-tag" style="background:rgba(139,92,246,0.12);color:#8B5CF6;">
+              <i class="fa-solid fa-palette"></i> 1-tashabbus
+            </span>
+            <span class="club-badge-status">Ijodiy</span>
           </div>
-          <div class="book-meta-footer">
-            <span>440 bet</span>
-            <span class="book-rating"><i class="fa-solid fa-star"></i> 4.8</span>
+          <h4 class="club-card-title">"Dutorchi qizlar" Milliy Ansambli</h4>
+          <p class="club-card-desc">Xorazm dostonlari, maqom san'ati va milliy sozlar ijrochiligi bo'yicha mahorat darslari.</p>
+          <div class="club-meta-box">
+            <div class="club-meta-row"><i class="fa-solid fa-clock"></i> <span>Dush, Chor, Juma 14:30 - 16:30</span></div>
+            <div class="club-meta-row"><i class="fa-solid fa-location-dot"></i> <span>Madaniyat saroyi, 12-musiqa zali</span></div>
+          </div>
+          <div class="club-footer-actions">
+            <span style="font-size:0.8rem;color:var(--text-muted);font-weight:600;"><i class="fa-solid fa-users"></i> 38 / 40 talaba</span>
+            <button type="button" class="btn-primary-action" style="padding:6px 14px;font-size:0.85rem;" onclick="window.appUI.openHemisModal()" title="HEMIS orqali a'zo bo'lish">
+              <i class="fa-solid fa-graduation-cap"></i> HEMIS orqali a'zo bo'lish
+            </button>
           </div>
         </div>
+      </div>
+
+      <!-- Big Button to Dedicated To'garaklar Page -->
+      <div style="text-align:center;">
+        <a href="togaraklar.html" class="btn-hero-solid" style="background:#0D4836; display:inline-flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-graduation-cap"></i> Barcha 85+ To'garaklar Ro'yxati (Batafsil) <i class="fa-solid fa-arrow-right"></i>
+        </a>
       </div>
     </div>
   </section>
 
   <!-- ===================================================================
-       FAQ ACCORDION
+       MARKAZIY RESURSLAR VA BO'LIMLAR (Reyting & Kutubxona Showcase)
        =================================================================== -->
-  <section class="section-padding faq-section" id="faq">
+  <section class="section-padding" style="background:var(--mid-bg);">
     <div class="container">
       <div class="section-header">
-        <span class="section-subtitle"><i class="fa-solid fa-circle-question"></i> <span data-i18n="faqSubtitle">Savollarga Javoblar</span></span>
-        <h2 class="section-title" data-i18n="faqTitle">Tez-tez So'raladigan Savollar</h2>
-        <p class="section-lead" data-i18n="faqLead">
-          5 tashabbus to'garaklariga a'zolik, dars jadvali, sharoitlar va imtiyozlar haqida barcha kerakli ma'lumotlar.
+        <span class="section-subtitle"><i class="fa-solid fa-layer-group"></i> <span>Markaziy Xizmatlar</span></span>
+        <h2 class="section-title">Natijalar va Ilmiy-Ma'rifiy Resurslar</h2>
+        <p class="section-lead">
+          Fakultetlararo sog'lom raqobat reytingi hamda boy elektron kutubxona fondidan to'liq foydalaning.
         </p>
       </div>
 
-      <div class="faq-wrapper" id="faq-accordion-target">
-        <!-- Injected via JS -->
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:24px;">
+        <!-- Reyting Highlight Card -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm); transition: transform 0.3s ease;">
+          <div>
+            <div style="width:56px; height:56px; border-radius:14px; background:rgba(217,155,38,0.12); color:var(--accent-gold); display:flex; align-items:center; justify-content:center; font-size:1.6rem; margin-bottom:18px;">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h3 style="font-family:var(--font-display); font-size:1.3rem; font-weight:800; color:var(--text-primary); margin-bottom:10px;">
+              Fakultetlar Reytingi & Shon-sharaf Doskasi
+            </h3>
+            <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin-bottom:24px;">
+              Universitetning 12 ta fakulteti 5 tashabbus faollik ballari, reyting jadvali hamda Respublika va xalqaro miqyosda g'olib bo'lgan talabalarimiz shon-sharaf doskasi bilan tanishing.
+            </p>
+          </div>
+          <div>
+            <a href="reyting.html" class="btn-hero-solid" style="background:#0D4836; width:100%; display:inline-flex; justify-content:center; align-items:center; gap:8px;">
+              <i class="fa-solid fa-chart-line"></i> Reyting Jadvali (Batafsil) <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Kutubxona Highlight Card -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm); transition: transform 0.3s ease;">
+          <div>
+            <div style="width:56px; height:56px; border-radius:14px; background:rgba(5,150,105,0.12); color:#059669; display:flex; align-items:center; justify-content:center; font-size:1.6rem; margin-bottom:18px;">
+              <i class="fa-solid fa-book-open"></i>
+            </div>
+            <h3 style="font-family:var(--font-display); font-size:1.3rem; font-weight:800; color:var(--text-primary); margin-bottom:10px;">
+              Elektron Kutubxona (ARM)
+            </h3>
+            <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin-bottom:24px;">
+              4-tashabbus doirasida UrDU Axborot-resurs markazining 5,000+ dan ziyod darsliklari, o'zbek va jahon adabiyoti durdonalari hamda audio-kitoblaridan bepul foydalaning.
+            </p>
+          </div>
+          <div>
+            <a href="kutubxona.html" class="btn-hero-solid" style="background:#059669; width:100%; display:inline-flex; justify-content:center; align-items:center; gap:8px;">
+              <i class="fa-solid fa-book"></i> E-Kutubxona Sahifasi (Batafsil) <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ===================================================================
-       REGISTRATION CTA BANNER
+       REGISTRATION CTA BANNER (HEMIS orqali kirish)
        =================================================================== -->
   <section class="cta-banner-section">
     <div class="container cta-banner-box">
       <div class="cta-banner-text">
         <h2 class="cta-banner-title" data-i18n="ctaTitle">O'z Iqtidor va Salohiyatingizni Kashf Etish Vaqti Keldi!</h2>
         <p class="cta-banner-lead" data-i18n="ctaLead">
-          UrDU 5 muhim tashabbus to'garaklariga onlayn ariza yuboring, raqamli talabalik guvohnomasiga ega bo'ling va universitetimiz yulduziga aylaning!
+          UrDU 5 muhim tashabbus to'garaklariga HEMIS talaba ID orqali kiring, bepul a'zo bo'ling va universitetimiz yulduziga aylaning!
         </p>
       </div>
 
-      <button type="button" class="cta-banner-btn" onclick="window.registrationManager.openModal()">
-        <i class="fa-solid fa-user-plus"></i> <span data-i18n="ctaBtn">Hoziroq A'zo Bo'lish</span>
+      <button type="button" class="cta-banner-btn" onclick="window.appUI.openHemisModal()">
+        <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="ctaBtn">HEMIS Orqali Kirish va A'zo Bo'lish</span>
       </button>
     </div>
   </section>
@@ -806,7 +883,7 @@
     <div class="container">
       <div class="footer-top-grid">
         <div class="footer-col-brand">
-          <img src="assets/images/urdu_logo.png" alt="Urganch Davlat Universiteti" class="brand-logo-img">
+          <img src="assets/images/urdu_5t_emblem_white.png" alt="Urganch Davlat Universiteti 5 Tashabbus" class="brand-logo-img" style="width:56px; height:56px; margin-bottom:12px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); object-fit:contain;">
           <h4 style="color:#FFFFFF;font-family:var(--font-display);font-size:1.1rem;margin-bottom:8px;">Urganch Davlat Universiteti</h4>
           <p class="footer-about-text">
             Abu Rayhon Beruniy nomidagi Urganch davlat universiteti yoshlari uchun 5 ta muhim tashabbus rasmiy axborot va ro'yxatga olish portali.
@@ -833,11 +910,11 @@
         <div>
           <h4 class="footer-col-title">Tezkor Havolalar</h4>
           <ul class="footer-nav-list">
+            <li><a href="markaz.html"><i class="fa-solid fa-circle-info"></i> Markaz haqida (Nizom, Rahbariyat)</a></li>
             <li><a href="https://urdu.uz" target="_blank"><i class="fa-solid fa-globe"></i> UrDU Rasmiy Sayti (urdu.uz)</a></li>
             <li><a href="https://hemis.urdu.uz" target="_blank"><i class="fa-solid fa-id-badge"></i> HEMIS Talaba Tizimi</a></li>
             <li><a href="https://arm.urdu.uz" target="_blank"><i class="fa-solid fa-book"></i> Axborot-resurs markazi</a></li>
             <li><a href="https://gov.uz" target="_blank"><i class="fa-solid fa-building-columns"></i> Oliy ta'lim vazirligi</a></li>
-            <li><a href="#viktorina"><i class="fa-solid fa-wand-magic-sparkles"></i> Qaysi to'garak mos testi</a></li>
           </ul>
         </div>
 
@@ -868,6 +945,7 @@
           <a href="#" style="color:#A3CEC0;">Maxfiylik siyosati</a>
           <a href="#" style="color:#A3CEC0;">Foydalanish qoidalari</a>
           <a href="#" style="color:#A3CEC0;">Sayt xaritasi</a>
+          <a href="dashboard.html" style="color:#A3CEC0;"><i class="fa-solid fa-gauge-high"></i> Admin</a>
         </div>
       </div>
     </div>
@@ -995,6 +1073,9 @@
           <p style="text-align:center;color:var(--text-muted);padding:20px;">Qidiruv uchun kalit so'zni kiriting...</p>
         </div>
       </div>
+    </div>
+  </div>
+
   <!-- ===================================================================
        HEMIS TALABA TIZIMI MODAL
        =================================================================== -->
@@ -1102,6 +1183,42 @@
     <div class="a11y-setting-row">
       <span class="a11y-setting-label"><i class="fa-solid fa-droplet-slash"></i> Monoxrom (Oq-qora):</span>
       <button class="a11y-action-btn" id="a11y-grayscale-toggle">Yoqish/O'chirish</button>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       NIZOM RASMIY HUJJAT MODAL (Contest Regulations Reader)
+       =================================================================== -->
+  <div class="modal-overlay" id="nizom-modal">
+    <div class="modal-container nizom-modal-box">
+      <button type="button" class="modal-close-btn" onclick="window.appUI.closeNizomModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-header-banner" style="background: linear-gradient(135deg, #0D4836 0%, #15803D 100%);">
+        <h3><i class="fa-solid fa-file-shield"></i> Tanlov Rasmiy Nizomi</h3>
+        <p>Urganch Davlat Universiteti — 5 Muhim Tashabbus Markazi</p>
+      </div>
+      <div class="modal-body nizom-content-body" id="nizom-render-container">
+        <!-- Rendered dynamically by window.appUI.openNizomModal -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       YANGILIKLAR BARCHA MA'LUMOTI MODAL
+       =================================================================== -->
+  <div class="modal-overlay" id="news-modal">
+    <div class="modal-container" style="max-width: 680px;">
+      <button type="button" class="modal-close-btn" onclick="window.appUI.closeNewsModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-header-banner" style="background: linear-gradient(135deg, #0D4836 0%, #15803D 100%);">
+        <h3><i class="fa-solid fa-newspaper"></i> Universitet Yangiligi</h3>
+        <p>5 Muhim Tashabbus — UrDU Rasmiy Axboroti</p>
+      </div>
+      <div class="modal-body" id="news-render-container" style="padding: 24px; max-height: 75vh; overflow-y: auto;">
+        <!-- Rendered dynamically by window.appUI.openNewsModal -->
+      </div>
     </div>
   </div>
 
