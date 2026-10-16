@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5 Muhim Tashabbus — Urganch Davlat Universiteti (UrDU) Rasmiy Portali</title>
+  
+  <meta name="description" content="Abu Rayhon Beruniy nomidagi Urganch davlat universiteti (UrDU) yoshlari uchun 5 ta muhim tashabbus portali. To'garaklar, sport seksiyalari, IT klublar, kitobxonlik va kasb-hunar to'garaklariga onlayn a'zo bo'ling.">
+  <meta name="keywords" content="UrDU, 5 tashabbus, Urganch davlat universiteti, to'garaklar, yoshlar ittifoqi, sport, IT to'garaklar, kitobxonlik, teatr, musiqa">
+  <meta name="author" content="Urganch Davlat Universiteti">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://urdu.uz/">
+  <meta property="og:title" content="UrDU — 5 Ta Muhim Tashabbus Markazi">
+  <meta property="og:description" content="Urganch davlat universitetining 5 ta muhim tashabbus bo'yicha yagona interaktiv portali. 85+ bepul to'garaklar va musobaqalar.">
+  <meta property="og:image" content="assets/images/urdu_logo.png">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="assets/images/urdu_logo.png" type="image/png">
+
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.5.1 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/accessibility.css">
+</head>
+<body>
+
+  <!-- ===================================================================
+       TOP ANNOUNCEMENT BAR (Official UrDU Style)
+       =================================================================== -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="top-bar-badge"><i class="fa-solid fa-flag"></i> <span data-i18n="topBadge">UrDU 5 Tashabbus</span></span>
+        <span><i class="fa-solid fa-location-dot"></i> <span data-i18n="address">Urganch sh., Hamid Olimjon ko'chasi, 14-uy</span></span>
+        <span><i class="fa-solid fa-phone"></i> +998 (62) 224-67-00</span>
+        <span><i class="fa-solid fa-envelope"></i> info@urdu.uz</span>
+      </div>
+
+      <div class="top-bar-right">
+        <!-- Language Switcher -->
+        <div class="lang-selector">
+          <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
+          <button type="button" class="lang-btn" data-lang="oz">ЎЗ</button>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <!-- Top Actions -->
+        <div class="top-actions">
+          <button type="button" class="icon-btn-sm" id="theme-toggle-btn" title="Mavzuni almashtirish (Dark/Light)">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <button type="button" class="icon-btn-sm" id="a11y-trigger" title="Maxsus imkoniyatlar (Shrift va Kontrast)">
+            <i class="fa-solid fa-universal-access"></i>
+            <span data-i18n="a11yText">Maxsus imkoniyatlar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       MAIN HEADER & NAVIGATION (Optimized Flex & Never Overlapping)
+       =================================================================== -->
+  <header class="main-header" id="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand-wrapper" title="Abu Rayhon Beruniy nomidagi Urganch davlat universiteti">
+        <img src="assets/images/urdu_logo.png" alt="UrDU Rasmiy Logotipi" class="brand-logo-img">
+        <div class="brand-titles">
+          <span class="brand-title-main" data-i18n="brandTitleMain">Urganch Davlat Universiteti</span>
+          <span class="brand-title-sub" data-i18n="brandTitleSub">5 Ta Muhim Tashabbus Markazi</span>
+        </div>
+      </a>
+
+      <!-- Primary Desktop Menu -->
+      <nav class="nav-menu" id="primary-nav-menu">
+        <li><a href="#asosiy" class="nav-link active"><i class="fa-solid fa-house"></i> <span data-i18n="navAsosiy">Asosiy</span></a></li>
+        <li><a href="#tashabbuslar" class="nav-link"><i class="fa-solid fa-shapes"></i> <span data-i18n="navTashabbuslar">Tashabbuslar</span></a></li>
+        <li><a href="#togaraklar" class="nav-link"><i class="fa-solid fa-people-group"></i> <span data-i18n="navTogaraklar">To'garaklar</span></a></li>
+        <li><a href="#viktorina" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="navTest">Test</span></a></li>
+        <li><a href="#tadbirlar" class="nav-link"><i class="fa-solid fa-calendar-days"></i> <span data-i18n="navTadbirlar">Tadbirlar</span></a></li>
+        <li><a href="#reyting" class="nav-link"><i class="fa-solid fa-ranking-star"></i> <span data-i18n="navReyting">Reyting</span></a></li>
+        <li><a href="#kitoblar" class="nav-link"><i class="fa-solid fa-book"></i> <span data-i18n="navKutubxona">Kutubxona</span></a></li>
+        <li><a href="#faq" class="nav-link"><i class="fa-solid fa-circle-question"></i> <span data-i18n="navFAQ">FAQ</span></a></li>
+      </nav>
+
+      <!-- Nav Actions -->
+      <div class="nav-right-actions">
+        <button type="button" class="search-trigger-btn js-open-search" title="Tezkor qidiruv (Ctrl+K)">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span data-i18n="searchBtn">Qidirish</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+
+        <button type="button" class="btn-primary-action" onclick="window.registrationManager.openModal()">
+          <i class="fa-solid fa-user-plus"></i>
+          <span data-i18n="registerBtn">A'zo Bo'lish</span>
+        </button>
+
+        <button type="button" class="mobile-nav-toggle" id="mobile-menu-btn" aria-label="Menyu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       HERO SHOWCASE SECTION
+       =================================================================== -->
+  <section class="hero-section" id="asosiy">
+    <div class="hero-overlay-decor"></div>
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <i class="fa-solid fa-award"></i>
+        <span data-i18n="heroBadge">Yangi O'zbekiston Talabalari — 5 Ta Muhim Tashabbus Harakati</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span data-i18n="heroTitlePrefix">Iqtidoringizni Keng Namoyon Eting, Kelajagingizni </span><span class="text-gradient" data-i18n="heroTitleGradient">UrDU Bilan Quring!</span>
+      </h1>
+
+      <p class="hero-description" data-i18n="heroDesc">
+        Abu Rayhon Beruniy nomidagi Urganch davlat universitetida yoshlar ma'naviyatini yuksaltirish, madaniyat, sport, IT texnologiyalar, kitobxonlik va xotin-qizlar bandligini qo'llab-quvvatlash bo'yicha yagona raqamli platforma.
+      </p>
+
+      <div class="hero-cta-group">
+        <button type="button" class="btn-hero-primary" onclick="window.registrationManager.openModal()">
+          <i class="fa-solid fa-clipboard-check"></i> <span data-i18n="heroCta1">To'garakka Onlayn A'zo Bo'lish</span>
+        </button>
+
+        <a href="#viktorina" class="btn-hero-secondary">
+          <i class="fa-solid fa-compass"></i> <span data-i18n="heroCta2">Sizga Qaysi Tashabbus Mos?</span>
+        </a>
+      </div>
+
+      <!-- Live Counter Grid (Cleanly Separated) -->
+      <div class="hero-stats-grid">
+        <div class="hero-stat-card">
+          <div class="stat-number">18,500+</div>
+          <div class="stat-label" data-i18n="statStudents">Talaba Yoshlar</div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-number">85+</div>
+          <div class="stat-label" data-i18n="statClubs">Bepul To'garak va Klublar</div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-number">450+</div>
+          <div class="stat-label" data-i18n="statEvents">Yillik Tadbir va Tanlovlar</div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-number">142</div>
+          <div class="stat-label" data-i18n="statMedals">Respublika va Xalqaro Medallar</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       5 TASHABBUS QUICK PILL NAVIGATOR (Positive Margin, Never Overlapping)
+       =================================================================== -->
+  <section class="tashabbus-quick-nav">
+    <div class="container">
+      <div class="quick-nav-wrapper" id="tashabbus-quick-pills">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       5 TASHABBUS INTERACTIVE SHOWCASE
+       =================================================================== -->
+  <section class="section-padding initiatives-showcase" id="tashabbuslar">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle"><i class="fa-solid fa-shapes"></i> <span data-i18n="initSubtitle">5 Yo'nalish</span></span>
+        <h2 class="section-title" data-i18n="initTitle">5 Ta Muhim Tashabbus — Amalda</h2>
+        <p class="section-lead" data-i18n="initLead">
+          Har bir tashabbus doirasida tashkil etilgan professional laboratoriyalar, jamoalar, murabbiylar va erishilgan natijalar bilan tanishing.
+        </p>
+      </div>
+
+      <!-- In-Depth Dynamic Hero Target -->
+      <div id="initiative-hero-target">
+        <!-- Rendered by window.appUI.renderInitiativeHero() -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       INTERACTIVE QUIZ: "QAYSI TASHABBUS SIZGA MOS?"
+       =================================================================== -->
+  <section class="section-padding quiz-section" id="viktorina">
+    <div class="quiz-decor-shape"></div>
+    <div class="container">
+      <div class="section-header" style="color: #FFFFFF;">
+        <span class="section-subtitle" style="background: rgba(255,255,255,0.15); color: #B9F5E2;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="quizSubtitle">Interaktiv Sinov</span>
+        </span>
+        <h2 class="section-title" style="color: #FFFFFF;" data-i18n="quizTitle">Qaysi Tashabbus Sizga Eng Mos?</h2>
+        <p class="section-lead" style="color: #B9E5D7;" data-i18n="quizLead">
+          4 ta tezkor savolga samimiy javob bering va sun'iy algoritm sizning qobiliyatingizga 100% mos to'garakni aniqlab beradi!
+        </p>
+      </div>
+
+      <div class="quiz-container-box">
+        <div class="quiz-progress-header">
+          <span id="quiz-step-counter">1 / 4 - Savol</span>
+          <span>Aniqlik darajasi: Yuqori</span>
+        </div>
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+        </div>
+
+        <div id="quiz-dynamic-box">
+          <!-- Quiz steps injected by js/quiz.js -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       TO'GARAKLAR & KLUBLAR KATALOGI
+       =================================================================== -->
+  <section class="section-padding clubs-section" id="togaraklar">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle"><i class="fa-solid fa-graduation-cap"></i> <span data-i18n="clubsSubtitle">To'garaklar Bazasi</span></span>
+        <h2 class="section-title" data-i18n="clubsTitle">UrDU Bepul To'garaklari va Klublari</h2>
+        <p class="section-lead" data-i18n="clubsLead">
+          O'zingiz qiziqqan yo'nalishni tanlang, dars jadvali bilan tanishing va universitetimizning iqtidorli jamoasiga qo'shiling.
+        </p>
+      </div>
+
+      <!-- Catalog Filter Controls -->
+      <div class="catalog-controls">
+        <div class="search-input-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="clubs-search-input" class="search-input-field" placeholder="To'garak nomi, murabbiy yoki kalit so'z bo'yicha qidiring...">
+        </div>
+
+        <div class="filter-chips-wrapper" id="clubs-filter-chips">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Clubs Grid -->
+      <div class="clubs-grid" id="clubs-catalog-grid">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       TADBIRLAR TAQVIMI
+       =================================================================== -->
+  <section class="section-padding events-section" id="tadbirlar">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle"><i class="fa-solid fa-calendar-check"></i> <span data-i18n="eventsSubtitle">Tadbirlar Taqvimi</span></span>
+        <h2 class="section-title" data-i18n="eventsTitle">Kutilayotgan Musobaqa va Festivallar</h2>
+        <p class="section-lead" data-i18n="eventsLead">
+          Universitetimizda 5 tashabbus doirasida o'tkaziladigan qiziqarli hakatolar, chempionatlar, konsertlar va tanlovlarni o'tkazib yubormang!
+        </p>
+      </div>
+
+      <!-- Events Filter Bar -->
+      <div class="events-filter-bar" id="events-filter-bar">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Events Grid -->
+      <div class="events-grid" id="events-grid-target">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       FAKULTETLAR REYTINGI & SHON-SHARAF DOSKASI
+       =================================================================== -->
+  <section class="section-padding leaderboard-section" id="reyting">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle"><i class="fa-solid fa-trophy"></i> <span data-i18n="ratingSubtitle">Raqobat va Natijalar</span></span>
+        <h2 class="section-title" data-i18n="ratingTitle">Fakultetlar Reytingi & Shon-sharaf Doskasi</h2>
+        <p class="section-lead" data-i18n="ratingLead">
+          Urganch davlat universiteti fakultetlarining 5 tashabbus doirasidagi faollik ballari va xalqaro arenada faxr keltirgan yoshlarimiz.
+        </p>
+      </div>
+
+      <div class="leaderboard-grid">
+        <!-- Faculty Leaderboard Table -->
+        <div class="leaderboard-table-card">
+          <h3 class="card-inner-title"><i class="fa-solid fa-chart-line" style="color:var(--primary);"></i> <span data-i18n="ratingCardTitle">Fakultetlararo 5 Tashabbus Reytingi</span></h3>
+          <p class="card-inner-subtitle" data-i18n="ratingCardSubtitle">2026-o'quv yili hisoboti: To'garaklar qamrovi, musobaqalar va yutuqlar asosida</p>
+
+          <div class="leaderboard-list" id="faculty-leaderboard-list">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Hall of Fame Winners Showcase -->
+        <div class="hall-fame-col">
+          <h3 class="card-inner-title" style="margin-bottom: 18px;"><i class="fa-solid fa-star" style="color:var(--accent-gold);"></i> Shon-Sharaf Doskasi</h3>
+
+          <div class="winner-card">
+            <img src="assets/images/winner_1.jpg" alt="Alisher Axmedov" class="winner-photo">
+            <div class="winner-info">
+              <span class="winner-badge"><i class="fa-solid fa-medal"></i> 3-Tashabbus (IT)</span>
+              <h4 class="winner-name">Alisher Axmedov</h4>
+              <div class="winner-faculty">Texnika va raqamli texnologiyalar fakulteti</div>
+              <div class="winner-award">Respublika Dasturchilar Hakatoni 1-o'rin sohibi</div>
+              <p class="winner-quote">"UrDU IT-klubida olgan bilimlarim orqali jamoamiz bilan ilk startapimizni yo'lga qo'ydik."</p>
+            </div>
+          </div>
+
+          <div class="winner-card">
+            <img src="assets/images/winner_2.jpg" alt="Dilnoza Karimova" class="winner-photo">
+            <div class="winner-info">
+              <span class="winner-badge"><i class="fa-solid fa-medal"></i> 1 & 5-Tashabbuslar</span>
+              <h4 class="winner-name">Dilnoza Karimova</h4>
+              <div class="winner-faculty">Pedagogika va san'at fakulteti</div>
+              <div class="winner-award">Zulfiya nomidagi Davlat mukofoti sohibasi</div>
+              <p class="winner-quote">"Milliy qadriyatlar va zamonaviy ijodiy san'at uyg'unligi — yangi O'zbekiston yoshlarining faxri!"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       TAVSIYA ETILAYOTGAN KITOBXONLIK RESURSLARI (E-LIBRARY SECTION)
+       =================================================================== -->
+  <section class="section-padding books-shelf-section" id="kitoblar">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle"><i class="fa-solid fa-book-open"></i> <span data-i18n="booksSubtitle">4-Tashabbus Burchagi</span></span>
+        <h2 class="section-title" data-i18n="booksTitle">Hafta Tavsiyasi: E-Kutubxona Durdonalari</h2>
+        <p class="section-lead" data-i18n="booksLead">
+          UrDU Axborot-resurs markazi (ARM) tomonidan talabalar uchun saralangan eng sara milliy va jahon adabiyoti namunalari.
+        </p>
+      </div>
+
+      <div class="books-shelf-grid">
+        <div class="book-card-item">
+          <div class="book-spine-decor"></div>
+          <div>
+            <h4 class="book-title">Boburnoma</h4>
+            <div class="book-author">Zahiriddin Muhammad Bobur</div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Tarixiy, adabiy va geografik tengsiz qomusiy asar.</p>
+          </div>
+          <div class="book-meta-footer">
+            <span>480 bet</span>
+            <span class="book-rating"><i class="fa-solid fa-star"></i> 5.0</span>
+          </div>
+        </div>
+
+        <div class="book-card-item">
+          <div class="book-spine-decor"></div>
+          <div>
+            <h4 class="book-title">O'tkan Kunlar</h4>
+            <div class="book-author">Abdulla Qodiriy</div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">O'zbek romanchiligining gultoji va milliy faxri.</p>
+          </div>
+          <div class="book-meta-footer">
+            <span>360 bet</span>
+            <span class="book-rating"><i class="fa-solid fa-star"></i> 5.0</span>
+          </div>
+        </div>
+
+        <div class="book-card-item">
+          <div class="book-spine-decor"></div>
+          <div>
+            <h4 class="book-title">Yulduzli Tunlar</h4>
+            <div class="book-author">Pirimqul Qodirov</div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Boburiylar saltanati va insoniy matonat madhiyasi.</p>
+          </div>
+          <div class="book-meta-footer">
+            <span>520 bet</span>
+            <span class="book-rating"><i class="fa-solid fa-star"></i> 4.9</span>
+          </div>
+        </div>
+
+        <div class="book-card-item">
+          <div class="book-spine-decor"></div>
+          <div>
+            <h4 class="book-title">Atom Odatlar</h4>
+            <div class="book-author">Jeyms Klir</div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Kichik odatlar orqali ulkan natijalarga erishish sirlari.</p>
+          </div>
+          <div class="book-meta-footer">
+            <span>320 bet</span>
+            <span class="book-rating"><i class="fa-solid fa-star"></i> 4.9</span>
+          </div>
+        </div>
+
+        <div class="book-card-item">
+          <div class="book-spine-decor"></div>
+          <div>
+            <h4 class="book-title">Raqamli Qal'a</h4>
+            <div class="book-author">Den Braun</div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Kriptografiya, kiberxavfsizlik va intellektual deduktiv triller.</p>
+          </div>
+          <div class="book-meta-footer">
+            <span>440 bet</span>
+            <span class="book-rating"><i class="fa-solid fa-star"></i> 4.8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       FAQ ACCORDION
+       =================================================================== -->
+  <section class="section-padding faq-section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle"><i class="fa-solid fa-circle-question"></i> <span data-i18n="faqSubtitle">Savollarga Javoblar</span></span>
+        <h2 class="section-title" data-i18n="faqTitle">Tez-tez So'raladigan Savollar</h2>
+        <p class="section-lead" data-i18n="faqLead">
+          5 tashabbus to'garaklariga a'zolik, dars jadvali, sharoitlar va imtiyozlar haqida barcha kerakli ma'lumotlar.
+        </p>
+      </div>
+
+      <div class="faq-wrapper" id="faq-accordion-target">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       REGISTRATION CTA BANNER
+       =================================================================== -->
+  <section class="cta-banner-section">
+    <div class="container cta-banner-box">
+      <div class="cta-banner-text">
+        <h2 class="cta-banner-title" data-i18n="ctaTitle">O'z Iqtidor va Salohiyatingizni Kashf Etish Vaqti Keldi!</h2>
+        <p class="cta-banner-lead" data-i18n="ctaLead">
+          UrDU 5 muhim tashabbus to'garaklariga onlayn ariza yuboring, raqamli talabalik guvohnomasiga ega bo'ling va universitetimiz yulduziga aylaning!
+        </p>
+      </div>
+
+      <button type="button" class="cta-banner-btn" onclick="window.registrationManager.openModal()">
+        <i class="fa-solid fa-user-plus"></i> <span data-i18n="ctaBtn">Hoziroq A'zo Bo'lish</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       FOOTER (Official UrDU Style)
+       =================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-col-brand">
+          <img src="assets/images/urdu_logo.png" alt="Urganch Davlat Universiteti" class="brand-logo-img">
+          <h4 style="color:#FFFFFF;font-family:var(--font-display);font-size:1.1rem;margin-bottom:8px;">Urganch Davlat Universiteti</h4>
+          <p class="footer-about-text">
+            Abu Rayhon Beruniy nomidagi Urganch davlat universiteti yoshlari uchun 5 ta muhim tashabbus rasmiy axborot va ro'yxatga olish portali.
+          </p>
+          <div class="footer-social-links">
+            <a href="https://t.me/urdu_uz" target="_blank" class="social-icon-btn" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+            <a href="https://instagram.com/urdu_uz" target="_blank" class="social-icon-btn" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://facebook.com/urdu.uz" target="_blank" class="social-icon-btn" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://youtube.com" target="_blank" class="social-icon-btn" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">5 Tashabbus Yo'nalishlari</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#tashabbuslar" onclick="window.appUI.switchInitiative(1)"><i class="fa-solid fa-palette"></i> 1-Tashabbus: Madaniyat & San'at</a></li>
+            <li><a href="#tashabbuslar" onclick="window.appUI.switchInitiative(2)"><i class="fa-solid fa-volleyball"></i> 2-Tashabbus: Sport & Salomatlik</a></li>
+            <li><a href="#tashabbuslar" onclick="window.appUI.switchInitiative(3)"><i class="fa-solid fa-laptop-code"></i> 3-Tashabbus: Raqamli IT</a></li>
+            <li><a href="#tashabbuslar" onclick="window.appUI.switchInitiative(4)"><i class="fa-solid fa-book-open"></i> 4-Tashabbus: Kitobxonlik</a></li>
+            <li><a href="#tashabbuslar" onclick="window.appUI.switchInitiative(5)"><i class="fa-solid fa-scissors"></i> 5-Tashabbus: Xotin-qizlar</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Tezkor Havolalar</h4>
+          <ul class="footer-nav-list">
+            <li><a href="https://urdu.uz" target="_blank"><i class="fa-solid fa-globe"></i> UrDU Rasmiy Sayti (urdu.uz)</a></li>
+            <li><a href="https://hemis.urdu.uz" target="_blank"><i class="fa-solid fa-id-badge"></i> HEMIS Talaba Tizimi</a></li>
+            <li><a href="https://arm.urdu.uz" target="_blank"><i class="fa-solid fa-book"></i> Axborot-resurs markazi</a></li>
+            <li><a href="https://gov.uz" target="_blank"><i class="fa-solid fa-building-columns"></i> Oliy ta'lim vazirligi</a></li>
+            <li><a href="#viktorina"><i class="fa-solid fa-wand-magic-sparkles"></i> Qaysi to'garak mos testi</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Bog'lanish Markazi</h4>
+          <ul class="footer-contact-items">
+            <li>
+              <i class="fa-solid fa-map-location-dot"></i>
+              <span>O'zbekiston, Xorazm viloyati, Urganch shahri, Hamid Olimjon ko'chasi, 14-uy</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-phone-volume"></i>
+              <span>+998 (62) 224-67-00 (Devonxona)<br>+998 (62) 224-67-15 (Yoshlar bo'limi)</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-envelope-open-text"></i>
+              <span>info@urdu.uz | yoshlar@urdu.uz</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>
+          © 2026 Abu Rayhon Beruniy nomidagi Urganch davlat universiteti. Barcha huquqlar himoyalangan.
+        </div>
+        <div style="display:flex;gap:16px;">
+          <a href="#" style="color:#A3CEC0;">Maxfiylik siyosati</a>
+          <a href="#" style="color:#A3CEC0;">Foydalanish qoidalari</a>
+          <a href="#" style="color:#A3CEC0;">Sayt xaritasi</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================
+       ONLINE REGISTRATION MODAL
+       =================================================================== -->
+  <div class="modal-overlay" id="registration-modal">
+    <div class="modal-container">
+      <button type="button" class="modal-close-btn" onclick="window.registrationManager.closeModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-header-banner">
+        <h3><i class="fa-solid fa-file-pen"></i> To'garakka A'zo Bo'lish</h3>
+        <p>UrDU 5 muhim tashabbus to'garaklariga onlayn ro'yxatdan o'ting va elektron guvohnomaga ega bo'ling.</p>
+      </div>
+
+      <div class="modal-body">
+        <form id="registration-form">
+          <div class="form-grid">
+            <div class="form-group-full">
+              <label class="form-label" for="reg-fullname">Talabaning F.I.Sh. *</label>
+              <input type="text" id="reg-fullname" class="form-control" placeholder="Masalan: Azizbek Ergashev Shokirovich" required>
+            </div>
+
+            <div>
+              <label class="form-label" for="reg-faculty">Fakultet *</label>
+              <select id="reg-faculty" class="form-control" required>
+                <option value="Texnika va raqamli texnologiyalar">Texnika va raqamli texnologiyalar</option>
+                <option value="Fizika-matematika">Fizika-matematika</option>
+                <option value="Filologiya">Filologiya</option>
+                <option value="Pedagogika va san'at">Pedagogika va san'at</option>
+                <option value="Jismoniy madaniyat">Jismoniy madaniyat</option>
+                <option value="Tabiiy fanlar">Tabiiy fanlar</option>
+                <option value="Tarix">Tarix</option>
+                <option value="Xorijiy filologiya">Xorijiy filologiya</option>
+                <option value="Iqtisodiyot va turizm">Iqtisodiyot va turizm</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" for="reg-course">Kurs / Bosqich *</label>
+              <select id="reg-course" class="form-control" required>
+                <option value="1">1-kurs</option>
+                <option value="2">2-kurs</option>
+                <option value="3">3-kurs</option>
+                <option value="4">4-kurs</option>
+                <option value="Magistratura">Magistratura</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label" for="reg-studentid">HEMIS ID yoki Talaba ID</label>
+              <input type="text" id="reg-studentid" class="form-control" placeholder="Masalan: 3820241005">
+            </div>
+
+            <div>
+              <label class="form-label" for="reg-phone">Telefon raqam *</label>
+              <input type="tel" id="reg-phone" class="form-control" placeholder="+998 (90) 123-45-67" required>
+            </div>
+
+            <div class="form-group-full">
+              <label class="form-label" for="reg-initiative">Qaysi Tashabbus? *</label>
+              <select id="reg-initiative" class="form-control" required>
+                <!-- Injected via registration.js -->
+              </select>
+            </div>
+
+            <div class="form-group-full">
+              <label class="form-label" for="reg-club">To'garak / Jamoani Tanlang *</label>
+              <select id="reg-club" class="form-control" required>
+                <option value="">-- Avval tashabbusni tanlang --</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="form-submit-btn">
+            <i class="fa-solid fa-paper-plane"></i> Arizani Yuborish & Guvohnoma Olish
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       DIGITAL STUDENT ID PASS MODAL
+       =================================================================== -->
+  <div class="modal-overlay" id="idcard-modal">
+    <div class="modal-container" style="max-width: 540px;">
+      <button type="button" class="modal-close-btn" onclick="window.registrationManager.closeIdCardModal()" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-header-banner" style="text-align: center;">
+        <h3><i class="fa-solid fa-id-card"></i> Talabalik Elektron Passi</h3>
+        <p>UrDU 5 Muhim Tashabbus to'garagi rasmiy a'zolik kartasi</p>
+      </div>
+
+      <div class="modal-body" id="pass-render-box">
+        <!-- Rendered by window.registrationManager.renderDigitalIdPass() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       SEARCH OVERLAY MODAL
+       =================================================================== -->
+  <div class="modal-overlay" id="search-overlay-modal">
+    <div class="modal-container" style="max-width: 600px;">
+      <button type="button" class="modal-close-btn" id="search-modal-close" title="Yopish">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-body" style="padding: 24px;">
+        <h4 style="font-family:var(--font-display);font-size:1.15rem;margin-bottom:14px;color:var(--primary);">
+          <i class="fa-solid fa-magnifying-glass"></i> Tezkor Qidiruv
+        </h4>
+        <div style="position:relative;margin-bottom:16px;">
+          <input type="text" id="global-search-input" class="search-input-field" placeholder="To'garak, murabbiy, tashabbus yoki fakultet nomini kiriting..." style="padding-left:14px;">
+        </div>
+
+        <div id="search-results-list" style="max-height: 340px; overflow-y: auto;">
+          <p style="text-align:center;color:var(--text-muted);padding:20px;">Qidiruv uchun kalit so'zni kiriting...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       ACCESSIBILITY FLOATING CONTROLS & DRAWER (UrDU Style)
+       =================================================================== -->
+  <button type="button" class="a11y-floating-trigger" id="a11y-floating-btn" title="Maxsus Imkoniyatlar">
+    <i class="fa-solid fa-universal-access"></i>
+  </button>
+
+  <div class="a11y-panel-card" id="a11y-panel">
+    <div class="a11y-header">
+      <h4><i class="fa-solid fa-eye"></i> Maxsus Imkoniyatlar</h4>
+      <span class="a11y-close-btn" id="a11y-close">&times;</span>
+    </div>
+
+    <!-- Font Sizing -->
+    <div class="a11y-setting-row">
+      <span class="a11y-setting-label"><i class="fa-solid fa-font"></i> Shrift o'lchami:</span>
+      <div class="a11y-btn-group">
+        <button class="a11y-action-btn" data-font-size="sm">A-</button>
+        <button class="a11y-action-btn active" data-font-size="md">A</button>
+        <button class="a11y-action-btn" data-font-size="lg">A+</button>
+        <button class="a11y-action-btn" data-font-size="xl">A++</button>
+      </div>
+    </div>
+
+    <!-- High Contrast Mode -->
+    <div class="a11y-setting-row">
+      <span class="a11y-setting-label"><i class="fa-solid fa-circle-half-stroke"></i> Yuqori Kontrast:</span>
+      <button class="a11y-action-btn" id="a11y-contrast-toggle">O'zgartirish</button>
+    </div>
+
+    <!-- Grayscale Mode -->
+    <div class="a11y-setting-row">
+      <span class="a11y-setting-label"><i class="fa-solid fa-droplet-slash"></i> Monoxrom (Oq-qora):</span>
+      <button class="a11y-action-btn" id="a11y-grayscale-toggle">Yoqish/O'chirish</button>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       TOAST NOTIFICATIONS CONTAINER
+       =================================================================== -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/translations.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/registration.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

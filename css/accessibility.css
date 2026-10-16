@@ -1,0 +1,190 @@
+/* ===================================================================
+   URGANCH DAVLAT UNIVERSITETI (UrDU) — ACCESSIBILITY SYSTEM
+   Maxsus Imkoniyatlar (Accessibility Panel & Styles)
+   =================================================================== */
+
+/* Floating Accessibility Launcher Button */
+.a11y-floating-trigger {
+  position: fixed;
+  bottom: 28px;
+  left: 24px;
+  z-index: 99998;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  box-shadow: 0 6px 20px rgba(8, 80, 65, 0.4);
+  border: 2px solid #FFFFFF;
+  transition: all var(--transition-fast);
+}
+
+.a11y-floating-trigger:hover {
+  background: var(--accent);
+  transform: scale(1.1) rotate(15deg);
+}
+
+.a11y-floating-trigger:focus {
+  outline: 3px solid var(--accent-gold);
+  outline-offset: 3px;
+}
+
+/* Accessibility Modal / Panel */
+.a11y-panel-card {
+  position: fixed;
+  bottom: 90px;
+  left: 24px;
+  z-index: 99997;
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-lg);
+  width: 320px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+  padding: 22px;
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeInDown 0.25s ease-out;
+}
+
+.a11y-panel-card.open {
+  display: flex;
+}
+
+.a11y-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.a11y-header h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.a11y-close-btn {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.a11y-close-btn:hover {
+  color: var(--text-primary);
+}
+
+.a11y-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.a11y-setting-label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.a11y-setting-label i {
+  color: var(--primary);
+  width: 16px;
+  text-align: center;
+}
+
+.a11y-btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.a11y-action-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all var(--transition-fast);
+}
+
+.a11y-action-btn:hover {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+  color: var(--primary);
+}
+
+.a11y-action-btn.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+/* Accessibility Modes Applied to Body */
+
+/* Font Sizing */
+body.font-sm {
+  font-size: 14px;
+}
+
+body.font-md {
+  font-size: 16px;
+}
+
+body.font-lg {
+  font-size: 18px;
+}
+
+body.font-xl {
+  font-size: 20px;
+}
+
+/* High Contrast Mode */
+body.mode-contrast {
+  --bg-page: #000000 !important;
+  --surface: #000000 !important;
+  --surface-card: #000000 !important;
+  --mid-bg: #111111 !important;
+  --text-primary: #FFFF00 !important; /* Yellow text */
+  --text-secondary: #00FFCC !important;
+  --text-muted: #FFFFFF !important;
+  --border: #FFFF00 !important;
+  --primary: #00FFCC !important;
+  --accent: #FFFF00 !important;
+}
+
+body.mode-contrast * {
+  border-color: #FFFF00 !important;
+  box-shadow: none !important;
+}
+
+body.mode-contrast button,
+body.mode-contrast a {
+  text-decoration: underline !important;
+}
+
+/* Grayscale Mode */
+body.mode-grayscale {
+  filter: grayscale(100%) !important;
+}
+
+/* Dyslexia / Clean Read Mode */
+body.mode-readable {
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.15em !important;
+  line-height: 2 !important;
+}
