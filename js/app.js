@@ -26,6 +26,8 @@ class UrDU5TashabbusApp {
     this.renderFAQ();
     this.bindGlobalEvents();
     this.initSearchOverlay();
+    this.initHeroSlideshow();
+    this.initDropdowns();
   }
 
   /* -------------------------------------------------------------
@@ -674,6 +676,278 @@ class UrDU5TashabbusApp {
         }
       });
     });
+  }
+
+  /* -------------------------------------------------------------
+     HERO SLIDESHOW (Screenshot 2 Style with Auto-Slide)
+     ------------------------------------------------------------- */
+  initHeroSlideshow() {
+    this.currentSlideIndex = 0;
+    const slides = document.querySelectorAll('#slides-track .slide-item');
+    const dots = document.querySelectorAll('#slide-dots .slide-dot');
+    const prevBtn = document.getElementById('slide-prev');
+    const nextBtn = document.getElementById('slide-next');
+    const slideshowBox = document.getElementById('hero-slideshow');
+
+    if (!slides.length) return;
+
+    const showSlide = (index) => {
+      if (index >= slides.length) index = 0;
+      if (index < 0) index = slides.length - 1;
+      this.currentSlideIndex = index;
+
+      slides.forEach((s, i) => s.classList.toggle('active', i === index));
+      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    };
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        showSlide(this.currentSlideIndex - 1);
+        this.resetSlideTimer();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        showSlide(this.currentSlideIndex + 1);
+        this.resetSlideTimer();
+      });
+    }
+
+    dots.forEach((dot, idx) => {
+      dot.addEventListener('click', () => {
+        showSlide(idx);
+        this.resetSlideTimer();
+      });
+    });
+
+    this.startSlideTimer();
+
+    if (slideshowBox) {
+      slideshowBox.addEventListener('mouseenter', () => this.pauseSlideTimer());
+      slideshowBox.addEventListener('mouseleave', () => this.startSlideTimer());
+    }
+  }
+
+  startSlideTimer() {
+    this.pauseSlideTimer();
+    this.slideTimer = setInterval(() => {
+      const slides = document.querySelectorAll('#slides-track .slide-item');
+      if (slides.length) {
+        let next = this.currentSlideIndex + 1;
+        if (next >= slides.length) next = 0;
+        this.currentSlideIndex = next;
+        slides.forEach((s, i) => s.classList.toggle('active', i === next));
+        document.querySelectorAll('#slide-dots .slide-dot').forEach((d, i) => d.classList.toggle('active', i === next));
+      }
+    }, 5000);
+  }
+
+  pauseSlideTimer() {
+    if (this.slideTimer) {
+      clearInterval(this.slideTimer);
+      this.slideTimer = null;
+    }
+  }
+
+  resetSlideTimer() {
+    this.pauseSlideTimer();
+    this.startSlideTimer();
+  }
+
+  /* -------------------------------------------------------------
+     DROPDOWNS ("Markaz haqida" Menu)
+     ------------------------------------------------------------- */
+  initDropdowns() {
+    const dropdown = document.getElementById('markaz-dropdown');
+    const btn = document.getElementById('markaz-dropdown-btn');
+
+    if (btn && dropdown) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('open');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('open');
+        }
+      });
+    }
+  }
+
+  /* -------------------------------------------------------------
+     HEMIS MODAL
+     ------------------------------------------------------------- */
+  openHemisModal() {
+    const modal = document.getElementById('hemis-login-modal');
+    if (modal) {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      const input = document.getElementById('hemis-login-id');
+      if (input) input.focus();
+    }
+  }
+
+  closeHemisModal() {
+    const modal = document.getElementById('hemis-login-modal');
+    if (modal) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  submitHemisLogin() {
+    const loginId = document.getElementById('hemis-login-id')?.value.trim();
+    if (!loginId) return;
+
+    this.showToast(`HEMIS talabasi (${loginId}) muvaffaqiyatli aniqlandi! Tizimga xush kelibsiz.`);
+    this.closeHemisModal();
+  }
+
+  /* -------------------------------------------------------------
+     MARKAZ HAQIDA INFO MODAL (Rahbariyat, Nizom, Yo'riqnoma)
+     ------------------------------------------------------------- */
+  openInfoModal(type) {
+    const modal = document.getElementById('info-details-modal');
+    const title = document.getElementById('info-modal-title');
+    const subtitle = document.getElementById('info-modal-subtitle');
+    const content = document.getElementById('info-modal-content');
+    if (!modal || !content) return;
+
+    if (type === 'rahbariyat') {
+      title.innerHTML = '<i class="fa-solid fa-users-line"></i> UrDU 5 Tashabbus Markazi Rahbariyati';
+      subtitle.textContent = "Universitet Yoshlar masalalari va 5 ta tashabbus boshqaruvi";
+      content.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;gap:14px;align-items:center;padding:12px;background:rgba(13,72,54,0.04);border-radius:10px;border:1px solid #E5E7EB;">
+            <div style="width:50px;height:50px;border-radius:50%;background:#0D4836;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <div>
+              <h4 style="margin:0 0 3px;font-size:1rem;color:#111827;">Dr. Baxrom Abdullayev</h4>
+              <p style="margin:0;font-size:0.82rem;color:#0D4836;font-weight:600;">Urganch Davlat Universiteti Rektori, Fizika-matematika fanlari doktori, Professor</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:14px;align-items:center;padding:12px;background:rgba(13,72,54,0.04);border-radius:10px;border:1px solid #E5E7EB;">
+            <div style="width:50px;height:50px;border-radius:50%;background:#10B981;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">
+              <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <div>
+              <h4 style="margin:0 0 3px;font-size:1rem;color:#111827;">Sardorbek Xo'janiyazov</h4>
+              <p style="margin:0;font-size:0.82rem;color:#0D4836;font-weight:600;">Yoshlar masalalari va ma'naviy-ma'rifiy ishlar bo'yicha birinchi prorektor</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:14px;align-items:center;padding:12px;background:rgba(13,72,54,0.04);border-radius:10px;border:1px solid #E5E7EB;">
+            <div style="width:50px;height:50px;border-radius:50%;background:#0284C7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">
+              <i class="fa-solid fa-hands-holding-circle"></i>
+            </div>
+            <div>
+              <h4 style="margin:0 0 3px;font-size:1rem;color:#111827;">Sanjarbek Matchonov</h4>
+              <p style="margin:0;font-size:0.82rem;color:#0D4836;font-weight:600;">5 Ta Muhim Tashabbus Markazi Bosh Koordinatori</p>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (type === 'nizom') {
+      title.innerHTML = '<i class="fa-solid fa-file-shield"></i> 5 Tashabbus Markazi Nizomi';
+      subtitle.textContent = "Urganch davlat universiteti Kengashi tomonidan tasdiqlangan nizom";
+      content.innerHTML = `
+        <div style="line-height:1.6;font-size:0.88rem;color:#374151;">
+          <h4 style="color:#0D4836;margin-bottom:8px;">1. Umumiy Qoidalar</h4>
+          <p style="margin-bottom:12px;">Ushbu Nizom O'zbekiston Respublikasi Prezidentining 5 ta muhim tashabbusi ijrosini ta'minlash, talabalarning darsdan bo'sh vaqtlarini mazmunli tashkil etish tartibini belgilaydi.</p>
+          
+          <h4 style="color:#0D4836;margin-bottom:8px;">2. Asosiy Vazifalar</h4>
+          <ul style="padding-left:20px;margin-bottom:12px;">
+            <li>Talaba-yoshlarni madaniyat, san'at va milliy qadriyatlarga jalb etish;</li>
+            <li>Jismoniy tarbiya va ommaviy sportni rivojlantirish;</li>
+            <li>Raqamli texnologiyalar va IT sohasida malakali yoshlarni tayyorlash;</li>
+            <li>Kitobxonlik madaniyatini keng targ'ib etish;</li>
+            <li>Xotin-qizlar bandligi va tadbirkorlik ko'nikmalarini oshirish.</li>
+          </ul>
+
+          <h4 style="color:#0D4836;margin-bottom:8px;">3. To'garaklar faoliyati</h4>
+          <p>Universitetning barcha 85+ to'garaklari va sport seksiyalari UrDU talabalari uchun 100% BEPUL asosda tashkil etiladi.</p>
+        </div>
+      `;
+    } else if (type === 'yoriqnoma') {
+      title.innerHTML = '<i class="fa-solid fa-book-bookmark"></i> Talabalar Uchun Yo\'riqnoma';
+      subtitle.textContent = "To'garaklar, tanlovlar va raqamli pasportdan foydalanish";
+      content.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:0.88rem;color:#374151;">
+          <div style="padding:10px 14px;border-left:3px solid #0D4836;background:#F9FAFB;">
+            <strong>1-qadam:</strong> Saytdagi "To'garaklar" bo'limidan yoki "Test" orqali qiziqqan yo'nalishingizni tanlang.
+          </div>
+          <div style="padding:10px 14px;border-left:3px solid #10B981;background:#F9FAFB;">
+            <strong>2-qadam:</strong> "Ro'yxatdan o'tish" tugmasini bosing va o'z ma'lumotlaringizni to'ldiring.
+          </div>
+          <div style="padding:10px 14px;border-left:3px solid #2563EB;background:#F9FAFB;">
+            <strong>3-qadam:</strong> Ro'yxatdan o'tganingizdan so'ng darhol QR-kodli elektron talabalik guvohnomangiz shakllanadi.
+          </div>
+          <div style="padding:10px 14px;border-left:3px solid #F59E0B;background:#F9FAFB;">
+            <strong>4-qadam:</strong> Mashg'ulot jadvali bo'yicha ko'rsatilgan xona yoki sport zaliga tashrif buyuring.
+          </div>
+        </div>
+      `;
+    }
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeInfoModal() {
+    const modal = document.getElementById('info-details-modal');
+    if (modal) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  /* -------------------------------------------------------------
+     VIDEO MODAL
+     ------------------------------------------------------------- */
+  openVideoModal() {
+    const modal = document.getElementById('video-presentation-modal');
+    const iframe = document.getElementById('video-iframe');
+    if (modal && iframe) {
+      // YouTube embed for UrDU promo
+      iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  closeVideoModal() {
+    const modal = document.getElementById('video-presentation-modal');
+    const iframe = document.getElementById('video-iframe');
+    if (modal && iframe) {
+      iframe.src = "";
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  /* -------------------------------------------------------------
+     CONTEST MODAL
+     ------------------------------------------------------------- */
+  openContestModal(type) {
+    const contestNames = {
+      web: "Web dasturlash olimpiadasi",
+      teatr: "Talabalar teatr festivali",
+      tadbirkor: "\"Tadbirkor qiz\" biznes-g'oyalar tanlovi",
+      kitobxon: "\"Eng faol kitobxon\" oylik tanlovi",
+      futbol: "Fakultetlararo mini futbol chempionati"
+    };
+
+    const name = contestNames[type] || "Tanlov";
+    this.showToast(`"${name}" haqida batafsil ma'lumot yuklanmoqda`);
+    if (window.registrationManager) {
+      setTimeout(() => {
+        window.registrationManager.openModal();
+      }, 500);
+    }
   }
 
   showToast(message, type = 'success') {
