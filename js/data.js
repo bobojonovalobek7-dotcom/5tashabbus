@@ -1,903 +1,656 @@
 /**
- * Urganch Davlat Universiteti — 5 Muhim Tashabbus
- * Central Data Store
+ * UrDU — 5 Muhim Tashabbus Markazi
+ * Saytdagi barcha ma'lumotlar shu yerda saqlanadi.
+ * Matn yoki raqamni o'zgartirish uchun faqat shu faylni tahrirlang.
  */
 
-const URDUDATA = {
+const SITE = {
   university: {
     name: "Abu Rayhon Beruniy nomidagi Urganch davlat universiteti",
-    shortName: "UrDU",
-    initiativesTitle: "5 Ta Muhim Tashabbus Markazi",
+    short: "UrDU",
+    center: "5 Muhim Tashabbus Markazi",
     address: "Urganch shahri, Hamid Olimjon ko'chasi, 14-uy",
+    office: "UrDU Bosh binosi, 2-qavat, 215-xona",
     phone: "+998 (62) 224-67-00",
+    youthPhone: "+998 (62) 224-67-15",
     email: "info@urdu.uz",
-    youthUnionPhone: "+998 (62) 224-67-15",
-    telegram: "@urdu_uz",
-    website: "https://urdu.uz"
+    centerEmail: "tashabbus@urdu.uz",
+    website: "https://urdu.uz",
+    hemis: "https://hemis.urdu.uz",
+    library: "https://arm.urdu.uz",
+    socials: [
+      { name: "Telegram", icon: "fa-brands fa-telegram", url: "https://t.me/urdu_uz" },
+      { name: "Instagram", icon: "fa-brands fa-instagram", url: "https://instagram.com/urdu_uz" },
+      { name: "Facebook", icon: "fa-brands fa-facebook", url: "https://facebook.com/urdu.uz" }
+    ]
   },
 
-  stats: {
-    students: "18,500+",
-    clubs: "85+",
-    eventsYearly: "450+",
-    medalsWon: "142",
-    initiativesCount: "5"
-  },
-
+  /* ---------------------------------------------------------------
+     5 TASHABBUS
+     --------------------------------------------------------------- */
   initiatives: [
     {
       id: 1,
-      slug: "madaniyat-sanat",
-      number: "1-tashabbus",
-      title: "Madaniyat, San'at va Teatr",
-      shortDesc: "Musiqa, rassomlik, teatr va adabiyotga yoshlar qiziqishini oshirish, iste'dodlarni kashf etish",
-      fullDesc: "Yoshlarning musiqa, rassomlik, adabiyot, teatr va san'atning boshqa turlariga qiziqishlarini oshirishga, iste'dodini yuzaga chiqarishga qaratilgan tizimli to'garaklar va festivallar markazi.",
-      color: "#8B5CF6",
-      gradient: "linear-gradient(135deg, #7C3AED 0%, #A855F7 100%)",
-      accentBg: "rgba(139, 92, 246, 0.12)",
+      title: "Madaniyat va san'at",
+      lead: "Musiqa, rassomlik, adabiyot va teatrga qiziqishni oshirish, iste'dodlarni yuzaga chiqarish.",
+      about: "Talabalarning musiqa, tasviriy san'at, teatr va adabiyot sohalaridagi qobiliyatlarini rivojlantirish. Milliy cholg'u ansambllari, teatr-studiya va san'at ustaxonalari faoliyat yuritadi.",
+      color: "#7C3AED",
       icon: "fa-solid fa-palette",
       image: "assets/images/tashabbus_1_art.jpg",
-      coordinator: {
-        name: "Matluba Rahimova",
-        role: "Madaniyat ishlari bo'yicha koordinator, Dotsent",
-        phone: "+998 (91) 420-11-22"
-      },
-      stats: {
-        clubsCount: 18,
-        activeStudents: 2450,
-        awards: 38
-      },
+      clubsCount: 18,
+      students: 2450,
+      awards: 38,
       highlights: [
         "\"Dutorchi qizlar\" milliy ansambli",
-        "\"Yoshlik\" talabalar teatr-studiyasi",
+        "\"Nihol\" talabalar teatr-studiyasi",
         "Xorazm maqom va dostonchilik maktabi",
-        "Miniatura va zamonaviy tasviriy san'at ustaxonasi"
+        "Miniatyura va tasviriy san'at ustaxonasi"
       ]
     },
     {
       id: 2,
-      slug: "sport-salomatlik",
-      number: "2-tashabbus",
-      title: "Sport va Jismoniy Chiniqish",
-      shortDesc: "Yoshlarni jismoniy chiniqtirish, sport sohasida qobiliyatini yuksaltirish va sog'lom turmush tarzi",
-      fullDesc: "Talaba-yoshlar o'rtasida ommaviy sportni rivojlantirish, sog'lom turmush tarzini qaror toptirish, universiada va jahon chempionatlariga chempionlarni tayyorlash.",
-      color: "#F97316",
-      gradient: "linear-gradient(135deg, #EA580C 0%, #FB923C 100%)",
-      accentBg: "rgba(249, 115, 22, 0.12)",
+      title: "Sport",
+      lead: "Yoshlarni jismoniy chiniqtirish, sportga keng jalb etish va sog'lom turmush tarzini targ'ib qilish.",
+      about: "Talabalar o'rtasida ommaviy sportni rivojlantirish, fakultetlararo chempionatlar va \"Rektor kubogi\" musobaqalarini o'tkazish, terma jamoalarni Universiadaga tayyorlash.",
+      color: "#16A34A",
       icon: "fa-solid fa-volleyball",
       image: "assets/images/tashabbus_2_sport.jpg",
-      coordinator: {
-        name: "Jasur Bobojonov",
-        role: "Sport klubi raisi, O'zbekiston sport ustasi",
-        phone: "+998 (90) 555-88-44"
-      },
-      stats: {
-        clubsCount: 22,
-        activeStudents: 4120,
-        awards: 56
-      },
+      clubsCount: 22,
+      students: 4120,
+      awards: 56,
       highlights: [
-        "Voleybol va Mini-futbol talabalar ligasi",
-        "Shaxmat & Shashka grossmeyster akademiyasi",
-        "Kurash, belbog'li kurash va dzyudo maktabi",
-        "UrDU zamonaviy sport majmuasi va trenajyor zallari"
+        "Voleybol va mini-futbol talabalar ligasi",
+        "Shaxmat va shashka klubi",
+        "Milliy kurash va dzyudo maktabi",
+        "Zamonaviy sport majmuasi va trenajyor zallari"
       ]
     },
     {
       id: 3,
-      slug: "it-texnologiyalar",
-      number: "3-tashabbus",
-      title: "Raqamli Texnologiyalar va IT",
-      shortDesc: "Kompyuter texnologiyalari, dasturlash, kiberxavfsizlik va internetdan unumli foydalanish",
-      fullDesc: "Aholi va talabalar o'rtasida kompyuter savodxonligini oshirish, dasturlash tillari, sun'iy intellekt, robototexnika va startap loyihalarni hayotga tatbiq etish.",
-      color: "#06B6D4",
-      gradient: "linear-gradient(135deg, #0284C7 0%, #06B6D4 100%)",
-      accentBg: "rgba(6, 182, 212, 0.12)",
+      title: "Axborot texnologiyalari",
+      lead: "Kompyuter texnologiyalari va internetdan samarali foydalanishni tashkil etish.",
+      about: "Dasturlash, sun'iy intellekt, robototexnika va kiberxavfsizlik bo'yicha amaliy laboratoriyalar. Hakatonlar, startap inkubatori va IT Park bilan hamkorlik.",
+      color: "#0284C7",
       icon: "fa-solid fa-laptop-code",
       image: "assets/images/tashabbus_3_it.jpg",
-      coordinator: {
-        name: "Sanjarbek O'rinov",
-        role: "IT Park UrDU rezidentura rahbari, PhD",
-        phone: "+998 (93) 777-20-40"
-      },
-      stats: {
-        clubsCount: 16,
-        activeStudents: 3890,
-        awards: 29
-      },
+      clubsCount: 16,
+      students: 3890,
+      awards: 29,
       highlights: [
-        "Full-Stack Web & Mobile dasturlash laboratoriyasi",
-        "Sun'iy Intellekt (AI) va Data Science klubi",
-        "Robototexnika, IoT va 3D modellash markazi",
-        "\"UrDU Hackathon\" va startap inkubator"
+        "Web va mobil dasturlash laboratoriyasi",
+        "Sun'iy intellekt va robototexnika klubi",
+        "Kiberxavfsizlik va tarmoqlar",
+        "\"UrDU Hackathon\" va startap inkubatori"
       ]
     },
     {
       id: 4,
-      slug: "kitobxonlik-manaviyat",
-      number: "4-tashabbus",
-      title: "Kitobxonlik va Ma'naviyat",
-      shortDesc: "Kitobxonlik madaniyatini yuksaltirish, mutolaa muhitini kengaytirish va notiqlik san'ati",
-      fullDesc: "Yoshlar ma'naviyatini yuksaltirish, ular o'rtasida kitobxonlikni targ'ib qilish, milliy va jahon adabiyoti durdonalarini chuqur o'rganish bo'yicha tizimli maydoncha.",
-      color: "#10B981",
-      gradient: "linear-gradient(135deg, #059669 0%, #34D399 100%)",
-      accentBg: "rgba(16, 185, 129, 0.12)",
+      title: "Kitobxonlik",
+      lead: "Kitobxonlikni keng targ'ib qilish va mutolaaga bo'lgan qiziqishni oshirish.",
+      about: "Yoshlar o'rtasida mutolaa madaniyatini yuksaltirish: kitobxonlar klubi, munozara va notiqlik maktabi, \"Zakovat\" turnirlari va adiblar bilan uchrashuvlar.",
+      color: "#D97706",
       icon: "fa-solid fa-book-open-reader",
       image: "assets/images/tashabbus_4_books.jpg",
-      coordinator: {
-        name: "Gulbahor Xudayberganova",
-        role: "Axborot-resurs markazi direktori, Filologiya fanlari nomzodi",
-        phone: "+998 (97) 512-33-88"
-      },
-      stats: {
-        clubsCount: 15,
-        activeStudents: 4980,
-        awards: 44
-      },
+      clubsCount: 15,
+      students: 4980,
+      awards: 44,
       highlights: [
-        "\"Yosh kitobxon talaba\" ligasi va gran-pri tanlovlari",
-        "UrDU E-Kutubxona: 50,000+ raqamli kitoblar bazasi",
-        "Munozara va xalqaro debat klubi",
-        "Adiblar xiyoboni ma'naviy-ma'rifiy uchrashuvlari"
+        "\"Zukko kitobxon\" munozara klubi",
+        "Notiqlik va debat akademiyasi",
+        "\"Eng yaxshi kitobxon talaba\" tanlovi",
+        "Adiblar bilan ma'naviy-ma'rifiy uchrashuvlar"
       ]
     },
     {
       id: 5,
-      slug: "xotin-qizlar-hunar",
-      number: "5-tashabbus",
-      title: "Xotin-qizlar Bandligi & Kasb-hunar",
-      shortDesc: "Talaba qizlarni zamonaviy kasb-hunarlarga o'rgatish, tadbirkorlik va dizayn ko'nikmalari",
-      fullDesc: "Talaba-qizlar va xotin-qizlarning bandligini ta'minlash, ularni milliy hunarmandchilik, kasanachilik, zamonaviy tikuvchilik, pazandachilik hamda raqamli biznesga o'rgatish.",
-      color: "#EC4899",
-      gradient: "linear-gradient(135deg, #DB2777 0%, #F472B6 100%)",
-      accentBg: "rgba(236, 72, 153, 0.12)",
-      icon: "fa-solid fa-scissors",
+      title: "Xotin-qizlar bandligi",
+      lead: "Xotin-qizlar bandligini ta'minlash, ularni zamonaviy kasb-hunarga o'rgatish.",
+      about: "Talaba-qizlarni milliy hunarmandchilik, tikuvchilik, pazandachilik, dizayn va raqamli tadbirkorlikka bepul o'qitish, daromad manbai yaratishga ko'maklashish.",
+      color: "#DB2777",
+      icon: "fa-solid fa-person-dress",
       image: "assets/images/tashabbus_5_crafts.jpg",
-      coordinator: {
-        name: "Dilnoza Jumaniyozova",
-        role: "Xotin-qizlar masalalari bo'yicha dekan muovini",
-        phone: "+998 (94) 310-75-90"
-      },
-      stats: {
-        clubsCount: 14,
-        activeStudents: 3120,
-        awards: 25
-      },
+      clubsCount: 14,
+      students: 3120,
+      awards: 25,
       highlights: [
-        "Milliy adras va zamonaviy liboslar dizayn studiyasi",
-        "Qandolatchilik va milliy taomlar pazandachilik maktabi",
-        "Kasanachilik va qo'lda to'qish hunarmandchiligi",
-        "\"Biznes-Ledi\" va SMM orqali daromad topish kursi"
+        "Liboslar dizayni va tikuvchilik studiyasi",
+        "Pazandachilik va qandolatchilik maktabi",
+        "Xorazm kashtachiligi va kulolchilik",
+        "Grafik dizayn, SMM va onlayn savdo kurslari"
       ]
     }
   ],
 
-  clubs: [
+  /* ---------------------------------------------------------------
+     RAHBARIYAT
+     --------------------------------------------------------------- */
+  head: {
+    name: "Matchonov Sanjarbek Madaminovich",
+    role: "5 Muhim Tashabbus Markazi rahbari",
+    photo: "assets/images/leaders/sanjarbek_matchonov.jpg",
+    about: "Universitetdagi barcha to'garaklar, sport musobaqalari, IT loyihalar, kitobxonlik tanlovlari va xotin-qizlar kasb-hunar markazi faoliyatini muvofiqlashtiradi.",
+    room: "UrDU Bosh binosi, 2-qavat, 215-xona",
+    hours: "Dushanba–Juma, 14:00–17:30",
+    phone: "+998 (62) 224-67-15",
+    email: "tashabbus@urdu.uz"
+  },
+
+  leaders: [
     {
-      id: "c1",
-      name: "\"Dutorchi qizlar\" ansambli",
       initiativeId: 1,
-      category: "Musiqa va Folklor",
-      leader: "Mavjuda Yoqubova (O'zbekistonda xizmat ko'rsatgan artist)",
-      location: "UrDU Madaniyat saroyi, 204-xona",
-      schedule: "Dush, Chor, Juma 15:00 - 17:00",
-      enrolled: 42,
-      capacity: 50,
-      badge: "Mashhur",
-      desc: "Xorazm milliy dutor san'ati, maqomlar, xalq kuylarini professional o'rganish."
+      name: "Matluba Rahimova",
+      role: "San'atshunoslik fakulteti dotsenti",
+      photo: "assets/images/leaders/matluba_rahimova.jpg",
+      about: "Teatr to'garaklari, maqom va vokal ijrochiligi, tasviriy san'at ko'rgazmalari hamda universitet san'at festivallarini muvofiqlashtiradi.",
+      room: "San'atshunoslik fakulteti, 304-xona",
+      hours: "Dushanba–Chorshanba, 14:00–17:00",
+      phone: "+998 (91) 420-11-22"
     },
     {
-      id: "c2",
-      name: "\"Nihol\" teatr-studiyasi",
-      initiativeId: 1,
-      category: "Teatr va Sahna",
-      leader: "Rustam Otajonov (Sahnalashtiruvchi rejissyor)",
-      location: "Universitet Katta zal sahnasi",
-      schedule: "Sesh, Pay, Shanba 16:00 - 18:00",
-      enrolled: 35,
-      capacity: 40,
-      badge: "Faol",
+      initiativeId: 2,
+      name: "Jasur Bobojonov",
+      role: "Universitet sport klubi raisi, sport ustasi",
+      photo: "assets/images/leaders/jasur_bobojonov.jpg",
+      about: "Sport seksiyalari, fakultetlararo chempionatlar, voleybol, mini-futbol, kurash va Universiada musobaqalarini tashkil etadi.",
+      room: "Sport majmuasi, 102-xona",
+      hours: "Seshanba–Payshanba, 15:00–18:00",
+      phone: "+998 (90) 555-88-44"
+    },
+    {
+      initiativeId: 3,
+      name: "Sanjarbek O'rinov",
+      role: "IT Park UrDU rezidentura rahbari, PhD",
+      photo: "assets/images/leaders/sanjarbek_orinov.jpg",
+      about: "Dasturlash, kiberxavfsizlik va sun'iy intellekt laboratoriyalari, hakatonlar hamda talabalar startap inkubatsiyasini boshqaradi.",
+      room: "Fizika-matematika fakulteti, IT Lab 412",
+      hours: "Dushanba–Juma, 14:00–17:30",
+      phone: "+998 (93) 777-20-40"
+    },
+    {
+      initiativeId: 4,
+      name: "Gulbahor Xudayberganova",
+      role: "Axborot-resurs markazi direktori, dotsent",
+      photo: "assets/images/leaders/gulbahor_xudayberganova.jpg",
+      about: "Kitobxonlik haftaliklari, mualliflar bilan uchrashuvlar, \"Zakovat\" intellektual o'yinlari va adabiyot klublarini tashkil qiladi.",
+      room: "ARM binosi, 201-xona",
+      hours: "Seshanba–Juma, 10:00–16:00",
+      phone: "+998 (97) 512-33-88"
+    },
+    {
+      initiativeId: 5,
+      name: "Dilnoza Jumaniyozova",
+      role: "Xotin-qizlar masalalari bo'yicha dekan muovini",
+      photo: "assets/images/leaders/dilnoza_jumaniyozova.jpg",
+      about: "Liboslar dizayni, pazandachilik, hunarmandchilik to'garaklari hamda talaba-qizlarni kasbga yo'naltirish loyihalariga mas'ul.",
+      room: "UrDU Bosh binosi, 214-xona",
+      hours: "Dushanba–Payshanba, 14:00–17:00",
+      phone: "+998 (94) 310-75-90"
+    }
+  ],
+
+  /* ---------------------------------------------------------------
+     TO'GARAKLAR
+     photo — faqat murabbiyning o'z surati bo'lsa qo'yiladi,
+     aks holda ism bosh harflari ko'rsatiladi.
+     --------------------------------------------------------------- */
+  clubs: [
+    {
+      id: "dutorchi-qizlar", initiativeId: 1,
+      name: "\"Dutorchi qizlar\" ansambli", category: "Musiqa",
+      mentor: "Mavjuda Yoqubova", mentorRole: "O'zbekistonda xizmat ko'rsatgan artist",
+      photo: "assets/images/teachers/mavjuda_yoqubova.jpg",
+      place: "Madaniyat saroyi, 204-xona", schedule: "Dush, Chor, Juma · 15:00–17:00",
+      enrolled: 42, capacity: 50,
+      desc: "Xorazm dutor san'ati, maqomlar va xalq kuylarini professional darajada o'rganish."
+    },
+    {
+      id: "nihol-teatr", initiativeId: 1,
+      name: "\"Nihol\" teatr-studiyasi", category: "Teatr",
+      mentor: "Rustam Otajonov", mentorRole: "Rejissyor",
+      photo: "assets/images/teachers/rustam_otajonov.jpg",
+      place: "Universitet katta zali sahnasi", schedule: "Sesh, Pay, Shan · 16:00–18:00",
+      enrolled: 35, capacity: 40,
       desc: "Aktyorlik mahorati, sahna nutqi, pantomima va talabalar spektakllarini sahnalashtirish."
     },
     {
-      id: "c3",
-      name: "Miniatyura va Tasviriy San'at",
-      initiativeId: 1,
-      category: "Tasviriy San'at",
-      leader: "Azizbek Matkarimov (Badiiy akademiya a'zosi)",
-      location: "San'atshunoslik fakulteti, 102-ustaxona",
-      schedule: "Dush, Juma 14:00 - 16:30",
-      enrolled: 28,
-      capacity: 30,
-      badge: "Yangi",
-      desc: "Sharq miniatyurasi, moybo'yoq, akvarel va zamonaviy grafik kompozitsiyalar."
+      id: "tasviriy-sanat", initiativeId: 1,
+      name: "Miniatyura va tasviriy san'at", category: "Tasviriy san'at",
+      mentor: "Azizbek Matkarimov", mentorRole: "Badiiy akademiya a'zosi",
+      photo: "assets/images/teachers/azizbek_matkarimov.jpg",
+      place: "San'atshunoslik fakulteti, 102-ustaxona", schedule: "Dush, Juma · 14:00–16:30",
+      enrolled: 28, capacity: 30,
+      desc: "Sharq miniatyurasi, moybo'yoq, akvarel va zamonaviy grafik kompozitsiya."
     },
     {
-      id: "c4",
-      name: "Voleybol — UrDU Terma Jamoasi",
-      initiativeId: 2,
-      category: "Jamoaviy Sport",
-      leader: "Mansur Ro'zmetov (Bosh murabbiy)",
-      location: "UrDU Yopiq sport zali #1",
-      schedule: "Dush, Chor, Juma 17:00 - 19:00",
-      enrolled: 30,
-      capacity: 36,
-      badge: "Chempion",
-      desc: "Universitet qizlar va yigitlar terma jamoasi. Universiada tayyorgarligi."
+      id: "voleybol", initiativeId: 2,
+      name: "Voleybol — UrDU terma jamoasi", category: "Jamoaviy sport",
+      mentor: "Sport klubi murabbiylari", mentorRole: "Universitet sport klubi",
+      place: "Yopiq sport zali №1", schedule: "Dush, Chor, Juma · 17:00–19:00",
+      enrolled: 30, capacity: 36,
+      desc: "Qizlar va yigitlar terma jamoasi, Universiadaga tayyorgarlik."
     },
     {
-      id: "c5",
-      name: "Grossmeyster Shaxmat Klubi",
-      initiativeId: 2,
-      category: "Aqliy Sport",
-      leader: "Umid Shomurodov (FIDE ustasi)",
-      location: "Fizika-matematika binosi, 312-xona",
-      schedule: "Sesh, Pay 15:30 - 17:30",
-      enrolled: 65,
-      capacity: 80,
-      badge: "Intellektual",
-      desc: "Klassik shaxmat, rapid, blits va shaxmat tahlili bo'yicha chuqur mashg'ulotlar."
+      id: "shaxmat", initiativeId: 2,
+      name: "Shaxmat klubi", category: "Aqliy sport",
+      mentor: "Umid Shomurodov", mentorRole: "FIDE ustasi",
+      place: "Fizika-matematika binosi, 312-xona", schedule: "Sesh, Pay · 15:30–17:30",
+      enrolled: 65, capacity: 80,
+      desc: "Klassik shaxmat, rapid va blits, partiyalar tahlili va turnirlar."
     },
     {
-      id: "c6",
-      name: "Milliy Kurash va Dzyudo",
-      initiativeId: 2,
-      category: "Yakkakurash",
-      leader: "Botir Quryozov (Xalqaro toifadagi hakam)",
-      location: "Yakkakurashlar sport zali",
-      schedule: "Dush, Chor, Juma 16:30 - 18:30",
-      enrolled: 48,
-      capacity: 50,
-      badge: "Ommabop",
-      desc: "O'zbek milliy kurashi va xalqaro dzyudo texnikalari, jismoniy chidamlilik."
+      id: "kurash", initiativeId: 2,
+      name: "Milliy kurash va dzyudo", category: "Yakkakurash",
+      mentor: "Botir Quryozov", mentorRole: "Xalqaro toifadagi hakam",
+      place: "Yakkakurashlar sport zali", schedule: "Dush, Chor, Juma · 16:30–18:30",
+      enrolled: 48, capacity: 50,
+      desc: "O'zbek milliy kurashi va dzyudo texnikasi, jismoniy chidamlilik."
     },
     {
-      id: "c7",
-      name: "Web & Mobile Dasturlash (Full-Stack)",
-      initiativeId: 3,
-      category: "Dasturlash",
-      leader: "Temur Xo'jayev (Senior Developer, Google DSC Lead)",
-      location: "IT-Park UrDU Lab, 401-xona",
-      schedule: "Sesh, Pay, Shanba 15:00 - 17:30",
-      enrolled: 95,
-      capacity: 100,
-      badge: "Top Trend",
-      desc: "HTML, CSS, JavaScript, React, Node.js va Flutter orqali real loyihalar yaratish."
+      id: "web-dasturlash", initiativeId: 3,
+      name: "Web va mobil dasturlash", category: "Dasturlash",
+      mentor: "Temur Xo'jayev", mentorRole: "Senior dasturchi",
+      photo: "assets/images/teachers/temur_xojayev.jpg",
+      place: "IT Park UrDU Lab, 401-xona", schedule: "Sesh, Pay, Shan · 15:00–17:30",
+      enrolled: 95, capacity: 100,
+      desc: "HTML, CSS, JavaScript, React, Node.js va Flutter yordamida real loyihalar yaratish."
     },
     {
-      id: "c8",
-      name: "Sun'iy Intellekt va Robototexnika",
-      initiativeId: 3,
-      category: "AI & Hardware",
-      leader: "Farhod Polvonov (PhD)",
-      location: "Raqamli texnologiyalar binosi, 105-xona",
-      schedule: "Dush, Chor 16:00 - 18:30",
-      enrolled: 54,
-      capacity: 60,
-      badge: "Kelajak",
-      desc: "Python, TensorFlow, Arduino, sensorlar va avtomatlashtirilgan robot tizimlari."
+      id: "suniy-intellekt", initiativeId: 3,
+      name: "Sun'iy intellekt va robototexnika", category: "AI va robototexnika",
+      mentor: "Farhod Polvonov", mentorRole: "PhD",
+      place: "Raqamli texnologiyalar binosi, 105-xona", schedule: "Dush, Chor · 16:00–18:30",
+      enrolled: 54, capacity: 60,
+      desc: "Python, mashinali o'qitish, Arduino va sensorlar asosida robot tizimlari."
     },
     {
-      id: "c9",
-      name: "Kiberxavfsizlik va Tarmoqlar",
-      initiativeId: 3,
-      category: "Security",
-      leader: "Otabek Sodiqov (Cisco & CEH sertifikatlangan)",
-      location: "IT-Park UrDU Lab, 403-xona",
-      schedule: "Chor, Shanba 14:30 - 17:00",
-      enrolled: 40,
-      capacity: 45,
-      badge: "Talabgir",
-      desc: "Axborot xavfsizligi, tarmoq himoyasi, penetratsion testlar va axloqiy xakerlik."
+      id: "kiberxavfsizlik", initiativeId: 3,
+      name: "Kiberxavfsizlik va tarmoqlar", category: "Xavfsizlik",
+      mentor: "Otabek Sodiqov", mentorRole: "Cisco va CEH sertifikatlari",
+      place: "IT Park UrDU Lab, 403-xona", schedule: "Chor, Shan · 14:30–17:00",
+      enrolled: 40, capacity: 45,
+      desc: "Axborot xavfsizligi, tarmoq himoyasi va axloqiy xakerlik asoslari."
     },
     {
-      id: "c10",
-      name: "\"Zukko Kitobxon\" Munozara Klubi",
-      initiativeId: 4,
-      category: "Kitobxonlik",
-      leader: "Saida Otamurodova (ARM bo'lim boshlig'i)",
-      location: "UrDU Markaziy ARM mutolaa zali",
-      schedule: "Har Chorshanba 15:00 - 17:00",
-      enrolled: 110,
-      capacity: 120,
-      badge: "Bestseller",
-      desc: "Har oy 2 ta asar mutolaasi, erkin tahlil, mualliflar bilan onlayn teleko'priklar."
+      id: "grafik-dizayn", initiativeId: 3,
+      name: "Grafik dizayn va SMM", category: "Dizayn",
+      mentor: "Jasur Matyoqubov", mentorRole: "Art-direktor",
+      place: "IT Park UrDU Lab, 302-xona", schedule: "Dush, Pay · 16:00–18:30",
+      enrolled: 28, capacity: 30,
+      desc: "Brending, ijtimoiy tarmoqlar uchun kontent, Photoshop, Illustrator va Figma."
     },
     {
-      id: "c11",
-      name: "Notiqlik va Debat Akademiyasi",
-      initiativeId: 4,
-      category: "Liderlik",
-      leader: "Sherzodbek Matkarimov (TEDx spikeri)",
-      location: "Filologiya fakulteti konferens-zali",
-      schedule: "Juma, Shanba 15:30 - 17:30",
-      enrolled: 72,
-      capacity: 80,
-      badge: "Liderlik",
-      desc: "Karl Popper va Britaniya parlamenti formati bo'yicha notiqlik, ritorika san'ati."
+      id: "zukko-kitobxon", initiativeId: 4,
+      name: "\"Zukko kitobxon\" klubi", category: "Kitobxonlik",
+      mentor: "Saida Otamurodova", mentorRole: "ARM bo'lim boshlig'i",
+      photo: "assets/images/teachers/saida_otamurodova.jpg",
+      place: "ARM mutolaa zali", schedule: "Har chorshanba · 15:00–17:00",
+      enrolled: 110, capacity: 120,
+      desc: "Oyiga 2 ta asar mutolaasi, erkin muhokama va mualliflar bilan onlayn uchrashuvlar."
     },
     {
-      id: "c12",
-      name: "Liboslar Dizayni va Milliy Tikuvchilik",
-      initiativeId: 5,
-      category: "Moda & Hunar",
-      leader: "Gulchehra Ibragimova (Dizayner-usta)",
-      location: "Yoshlar markazi Tikuvchilik sexi",
-      schedule: "Dush, Chor, Juma 14:30 - 17:30",
-      enrolled: 55,
-      capacity: 60,
-      badge: "Amaliy",
-      desc: "Milliy atlas va adras liboslar, zamonaviy bichim, kashtachilik va brend yaratish."
+      id: "notiqlik", initiativeId: 4,
+      name: "Notiqlik va debat akademiyasi", category: "Notiqlik",
+      mentor: "Sherzodbek Matkarimov", mentorRole: "TEDx spikeri",
+      place: "Filologiya fakulteti konferens-zali", schedule: "Juma, Shan · 15:30–17:30",
+      enrolled: 72, capacity: 80,
+      desc: "Karl Popper va Britaniya parlamenti formatlarida debat, ritorika san'ati."
     },
     {
-      id: "c13",
-      name: "Pazandachilik & Qandolatchilik Sirlari",
-      initiativeId: 5,
-      category: "Kulinariya",
-      leader: "Zilola Yusupova (Master-shef)",
-      location: "Talabalar turar joyi oshxona-laboratoriyasi",
-      schedule: "Sesh, Shanba 15:00 - 18:00",
-      enrolled: 48,
-      capacity: 50,
-      badge: "Shirin San'at",
-      desc: "Yevropa shirinliklari, milliy pishiriqlar, tort bezash va katering asoslari."
+      id: "liboslar-dizayni", initiativeId: 5,
+      name: "Liboslar dizayni va tikuvchilik", category: "Tikuvchilik",
+      mentor: "Gulchehra Ibragimova", mentorRole: "Dizayner-usta",
+      photo: "assets/images/teachers/gulchehra_ibragimova.jpg",
+      place: "Yoshlar markazi, tikuvchilik sexi", schedule: "Dush, Chor, Juma · 14:30–17:30",
+      enrolled: 55, capacity: 60,
+      desc: "Atlas va adras liboslar, zamonaviy bichim, kashtachilik va shaxsiy brend yaratish."
     },
     {
-      id: "c14",
-      name: "\"Biznes-Ledi\" va Raqamli Tadbirkorlik",
-      initiativeId: 5,
-      category: "Biznes & SMM",
-      leader: "Nilufar Madaminova (Biznes-trener)",
-      location: "Startap binosi, Coworking zonasi",
-      schedule: "Pay, Shanba 15:00 - 17:00",
-      enrolled: 62,
-      capacity: 70,
-      badge: "Daromad",
-      desc: "O'z biznesini boshlash, ijtimoiy tarmoqlarda sotuv (SMM), moliyaviy savodxonlik."
+      id: "pazandachilik", initiativeId: 5,
+      name: "Pazandachilik va qandolatchilik", category: "Kulinariya",
+      mentor: "Zilola Yusupova", mentorRole: "Master-shef",
+      photo: "assets/images/teachers/zilola_yusupova.jpg",
+      place: "Talabalar turar joyi, oshxona-laboratoriya", schedule: "Sesh, Shan · 15:00–18:00",
+      enrolled: 48, capacity: 50,
+      desc: "Milliy pishiriqlar, Yevropa shirinliklari, tort bezash va katering asoslari."
+    },
+    {
+      id: "hunarmandchilik", initiativeId: 5,
+      name: "Kashtachilik va kulolchilik", category: "Hunarmandchilik",
+      mentor: "Anvar Omonov", mentorRole: "Hunarmandlar uyushmasi a'zosi",
+      place: "San'atshunoslik fakulteti, milliy ustaxona", schedule: "Chor, Shan · 14:00–16:30",
+      enrolled: 18, capacity: 25,
+      desc: "Xorazm kashtachiligi, zardo'zlik, kulolchilik va suvenirlar tayyorlash."
+    },
+    {
+      id: "onlayn-savdo", initiativeId: 5,
+      name: "Raqamli tadbirkorlik va onlayn savdo", category: "Tadbirkorlik",
+      mentor: "Nilufar Madaminova", mentorRole: "Biznes-trener",
+      place: "Startap markazi, kovorking", schedule: "Pay, Shan · 15:00–17:00",
+      enrolled: 62, capacity: 70,
+      desc: "O'z biznesini boshlash, marketpleyslarda savdo, SMM va moliyaviy savodxonlik."
     }
   ],
 
-  contestsStats: {
-    total: 48,
-    active: 12,
-    completed: 36
-  },
-
-  vocationalClubs: [
+  /* ---------------------------------------------------------------
+     TANLOVLAR
+     --------------------------------------------------------------- */
+  contests: [
     {
-      id: "voc-1",
-      name: "Tikuvchilik va Liboslar Dizayni",
-      initiativeId: 5,
-      icon: "fa-solid fa-vest-patches",
-      mentor: "Mahbuba Rajabova (Dizayner-usta)",
-      location: "Xotin-qizlar markazi, 102-ustaxona",
-      duration: "3 oylik amaliy kurs",
-      schedule: "Dush, Chor, Juma 14:00 - 17:00",
-      enrolled: 24,
-      capacity: 30,
-      skills: ["Bichish-tikish", "Milliy atlas", "Zamonaviy fason"],
-      desc: "Milliy va zamonaviy liboslar bichish-tikish, modelyerlik asoslari hamda o'z brendini yaratish bo'yicha bepul amaliy mahorat darslari."
-    },
-    {
-      id: "voc-2",
-      name: "Zamonaviy Pazandachilik & Qandolatchilik",
-      initiativeId: 5,
-      icon: "fa-solid fa-cake-candles",
-      mentor: "Shahlo Yoqubova (Bosh master-shef)",
-      location: "Talabalar turar joyi kulinariya laboratoriyasi",
-      duration: "2 oylik intensiv",
-      schedule: "Sesh, Pay, Shanba 15:00 - 18:00",
-      enrolled: 26,
-      capacity: 30,
-      skills: ["Qandolat san'ati", "Yevropa shirinliklari", "Tort bezash"],
-      desc: "Klassik va zamonaviy desertlar, milliy pishiriqlar, shokolad bilan ishlash va fudsanoatda kichik biznes boshlash sirlari."
-    },
-    {
-      id: "voc-3",
-      name: "Grafik Dizayn & SMM Marketing",
-      initiativeId: 5,
-      icon: "fa-solid fa-wand-magic-sparkles",
-      mentor: "Jasur Matyoqubov (Senior Art Director)",
-      location: "IT-Park UrDU Lab, 302-xona",
-      duration: "3 oylik amaliyot",
-      schedule: "Dush, Payshanba 16:00 - 18:30",
-      enrolled: 28,
-      capacity: 30,
-      skills: ["Photoshop", "Illustrator", "Figma", "SMM"],
-      desc: "Brending, ijtimoiy tarmoqlar uchun vizual kontent tayyorlash, reklama bannerlari va frilansda xalqaro buyurtmalar olish."
-    },
-    {
-      id: "voc-4",
-      name: "Milliy Hunarmandchilik & Kulolchilik",
-      initiativeId: 5,
-      icon: "fa-solid fa-gem",
-      mentor: "Anvar Omonov (Hunarmandlar uyushmasi a'zosi)",
-      location: "San'atshunoslik fakulteti, Milliy ustaxona",
-      duration: "4 oylik ustaxona",
-      schedule: "Chor, Shanba 14:00 - 16:30",
-      enrolled: 18,
-      capacity: 25,
-      skills: ["Xorazm kashtachiligi", "Kulolchilik", "Suvenirlar"],
-      desc: "Xorazm an'anaviy kashtachiligi, zardo'zlik, suvenirlar tayyorlash va hunarmandchilik mahsulotlarini sayyohlarga sotish."
-    },
-    {
-      id: "voc-5",
-      name: "Sartaroshlik va Stilistika San'ati",
-      initiativeId: 5,
-      icon: "fa-solid fa-scissors",
-      mentor: "Gulchehra Xudayberganova (Professional stilist)",
-      location: "UrDU Go'zallik va stilistika studiyasi",
-      duration: "2 oylik amaliy kurs",
-      schedule: "Sesh, Juma 14:30 - 17:30",
-      enrolled: 20,
-      capacity: 25,
-      skills: ["Soch turmaklash", "Vizaj", "Estetika"],
-      desc: "Zamonaviy soch turmaklash, to'y va bayram vizaji, kosmetologiya asoslari va go'zallik salonini ochish ko'nikmalari."
-    },
-    {
-      id: "voc-6",
-      name: "Elektron Tijorat & Frilans Kursi",
-      initiativeId: 5,
-      icon: "fa-solid fa-cart-shopping",
-      mentor: "Bekzod Rahimov (E-commerce ekspert)",
-      location: "Coworking markazi, 201-xona",
-      duration: "2 oylik trening",
-      schedule: "Har Shanba 10:00 - 13:00",
-      enrolled: 35,
-      capacity: 40,
-      skills: ["Uzum Market", "Upwork", "Onlayn do'kon", "Logistika"],
-      desc: "Uzum Market va xalqaro platformalarda onlayn savdo yo'lga qo'yish, tovarlarni suratga olish, sotuv va moliya boshqaruvi."
-    }
-  ],
-
-  latestNews: [
-    {
-      id: "news-1",
-      title: "UrDU talabasi Respublika \"Talabalar IT-Hackathon 2026\" g'olibi bo'ldi",
-      category: "3-Tashabbus (IT)",
-      date: "14-Oktyabr, 2026",
+      id: "web-ai-olimpiada", initiativeId: 3, status: "active",
+      title: "Web dasturlash va AI loyihalar olimpiadasi — 2026",
+      period: "01.11.2026 — 05.12.2026", deadline: "2026-12-05",
+      place: "IT Park UrDU, 401-xona", organizer: "Raqamli ta'lim markazi va IT Park",
       image: "assets/images/news_it_hackathon.jpg",
-      excerpt: "UrDU Texnika fakulteti talabalaridan iborat jamoa 48 soatlik Respublika hakatonida sun'iy intellektga asoslangan ekologik monitoring loyihasi bilan 1-o'rinni va 30 mln so'm grantni qo'lga kiritdi.",
-      content: "Abu Rayhon Beruniy nomidagi Urganch davlat universiteti Texnika va raqamli texnologiyalar fakulteti talabalari Toshkent shahrida o'tkazilgan Respublika 'Talabalar IT-Hackathon 2026' musobaqasida yuksak natija ko'rsatdilar. 48 soat davom etgan intensiv marafon davomida talabalarimiz sun'iy intellekt va IoT datchiklariga tayangan holda suv resurslaridan oqilona foydalanish bo'yicha startap prototipini himoya qildilar va mutlaq g'olib deb topildilar."
-    },
-    {
-      id: "news-2",
-      title: "\"Talabalar Teatr Studiyalari\" Respublika Festivali g'oliblari tantanali taqdirlandi",
-      category: "1-Tashabbus (San'at)",
-      date: "11-Oktyabr, 2026",
-      image: "assets/images/news_theater_festival.jpg",
-      excerpt: "Universitet Madaniyat saroyida bo'lib o'tgan festivalda \"Nihol\" talabalar teatr studiyasi \"Jaloliddin Manguberdi\" tarixiy dramasi bilan Gran-pri sohibi bo'ldi.",
-      content: "5 ta muhim tashabbusning 1-yo'nalishi doirasida yoshlarning san'at, teatr va madaniyatga bo'lgan qiziqishini oshirish maqsadida o'tkazilgan festivalda viloyatdagi oliy ta'lim muassasalarining iqtidorli jamoalari bellashdilar. UrDU qoshidagi 'Nihol' teatr studiyasi o'zining yuksak mahorati va sahna nutqi bilan hakamlar hay'atining e'tirofiga sazovor bo'ldi."
-    },
-    {
-      id: "news-3",
-      title: "Xotin-qizlar uchun yangi zamonaviy kasb-hunar markazi tantanali ochildi",
-      category: "5-Tashabbus (Kasb-hunar)",
-      date: "08-Oktyabr, 2026",
-      image: "assets/images/news_vocational_sewing.jpg",
-      excerpt: "Universitetda talaba-qizlar va mahalla yoshlari uchun 12 ta zamonaviy tikuv mashinalari va kompyuterlar bilan jihozlangan bepul kasbga o'qitish markazi ish boshladi.",
-      content: "5-muhim tashabbus doirasida xotin-qizlar bandligini ta'minlash, ularni zamonaviy kasb-hunarlarga o'rgatish maqsadida Urganch davlat universitetida yangi kasb-hunar o'quv ustaxonasi foydalanishga topshirildi. Bu yerda tikuvchilik, liboslar dizayni, qandolatchilik hamda grafik dizayn kurslari bepul tashkil etilmoqda."
-    }
-  ],
-
-  upcomingEvents: [
-    {
-      id: "contest-1",
-      title: "Web Dasturlash va AI Loyihalar Olimpiadasi — 2026",
-      initiativeId: 3,
-      date: "2026-10-25",
-      time: "10:00",
-      displayDate: "01.10.2026 — 25.10.2026",
-      deadline: "25-Oktyabr, 2026",
-      daysLeft: "9 kun qoldi",
-      status: "active",
-      statusText: "Qabul ochiq",
-      location: "IT-Park UrDU Binosi, 401-xona",
-      organizer: "Raqamli ta'lim markazi va IT-Park",
-      type: "IT & Startap",
-      image: "assets/images/news_it_hackathon.jpg",
-      prize: "1-o'rin: 15 000 000 so'm, Diplom va planshet",
-      desc: "Talabalar o'rtasida zamonaviy veb texnologiyalar, sun'iy intellekt va startap loyihalar bo'yicha eng yaxshi innovatsion g'oyalarni saralash tanlovi.",
-      nizom: {
-        title: "\"Web Dasturlash va AI Loyihalar Olimpiadasi — 2026\" Rasmiy Nizomi",
-        purpose: "Urganch davlat universiteti iqtidorli talabalarini dasturiy injiniring va sun'iy intellekt sohalariga jalb qilish, ularning amaliy loyihalarini qo'llab-quvvatlash.",
+      prize: "1-o'rin: 15 mln so'm, diplom va planshet",
+      desc: "Veb texnologiyalar, sun'iy intellekt va startaplar bo'yicha eng yaxshi g'oyalarni saralash.",
+      rules: {
+        purpose: "Iqtidorli talabalarni dasturiy injiniring va sun'iy intellekt sohalariga jalb qilish, amaliy loyihalarini qo'llab-quvvatlash.",
         requirements: [
-          "UrDUning barcha bakalavr va magistratura talabalari ishtirok etishi mumkin.",
-          "Loyihalar yakka tartibda yoki 3 kishigacha bo'lgan jamoalarda taqdim etiladi.",
-          "Loyiha kodi ochiq repozitoriyda (GitHub/GitLab) joylashgan va ishchi veb-havolaga (live demo) ega bo'lishi shart.",
+          "UrDUning barcha bakalavr va magistratura talabalari qatnasha oladi.",
+          "Loyiha yakka yoki 3 kishigacha jamoa bilan taqdim etiladi.",
+          "Kod ochiq repozitoriyda (GitHub/GitLab) va ishlaydigan demo havolasi bilan bo'lishi shart.",
           "Plagiat va tayyor shablonlardan ruxsatsiz foydalanish taqiqlanadi."
         ],
         stages: [
-          "1-bosqich: Onlayn ariza topshirish va texnik hujjatlarni qabul qilish (20-oktyabrgacha).",
-          "2-bosqich: Ekspertlar komissiyasi tomonidan kod sifati va g'oya tekshiruvi (22-oktyabr).",
-          "3-bosqich: Final — UrDU Bosh binosida jonli loyiha taqdimoti (Demo Day, 25-oktyabr)."
+          "Onlayn ariza va texnik hujjatlar — 28-noyabrgacha.",
+          "Ekspertlar komissiyasi tekshiruvi — 1-dekabr.",
+          "Final: jonli taqdimot (Demo Day) — 5-dekabr."
         ],
         criteria: [
           "G'oyaning yangiligi va amaliy ahamiyati — 25 ball",
-          "Arxitektura, toza kod va ma'lumotlar bazasi loyihasi — 30 ball",
-          "Foydalanuvchi interfeysi (UI/UX) va moslashuvchanlik — 25 ball",
-          "Loyiha taqdimoti va savol-javoblar — 20 ball"
+          "Arxitektura va kod sifati — 30 ball",
+          "Interfeys (UI/UX) — 25 ball",
+          "Taqdimot va savol-javob — 20 ball"
         ],
-        jury: "UrDU professor-o'qituvchilari hamda IT-Park rezidentlari bo'lgan Senior dasturchilar.",
-        awards: "1-o'rin: 15 000 000 so'm + Diplom; 2-o'rin: 10 000 000 so'm; 3-o'rin: 5 000 000 so'm."
+        awards: "1-o'rin: 15 mln so'm; 2-o'rin: 10 mln so'm; 3-o'rin: 5 mln so'm."
       }
     },
     {
-      id: "contest-2",
-      title: "\"Talabalar Teatr Studiyalari\" Festival-Ko'rik Tanlovi",
-      initiativeId: 1,
-      date: "2026-10-30",
-      time: "14:00",
-      displayDate: "10.10.2026 — 30.10.2026",
-      deadline: "30-Oktyabr, 2026",
-      daysLeft: "14 kun qoldi",
-      status: "active",
-      statusText: "Qabul ochiq",
-      location: "UrDU Bosh Madaniyat Saroyi",
-      organizer: "Yoshlar bilan ishlash bo'limi va Teatr kafedrasi",
-      type: "Madaniyat & San'at",
+      id: "teatr-festivali", initiativeId: 1, status: "active",
+      title: "\"Talabalar teatr studiyalari\" festival-ko'rik tanlovi",
+      period: "10.11.2026 — 12.12.2026", deadline: "2026-12-12",
+      place: "UrDU Madaniyat saroyi", organizer: "Yoshlar bilan ishlash bo'limi",
       image: "assets/images/news_theater_festival.jpg",
-      prize: "Gran-pri: 12 000 000 so'm va Respublika bosqichiga yo'llanma",
-      desc: "Talaba yoshlarning aktyorlik, sahna mahorati, badiiy nutq va rejissura qobiliyatlarini namoyon etuvchi an'anaviy teatr festivali.",
-      nizom: {
-        title: "\"Talabalar Teatr Studiyalari Festivali\" Nizomi",
-        purpose: "Yoshlar ma'naviyatini yuksaltirish, milliy va jahon mumtoz dramaturgiyasini talabalar teatr jamoalari orqali targ'ib qilish.",
+      prize: "Gran-pri: 12 mln so'm va respublika bosqichiga yo'llanma",
+      desc: "Aktyorlik, sahna mahorati, badiiy nutq va rejissura qobiliyatlarini namoyon etuvchi festival.",
+      rules: {
+        purpose: "Milliy va jahon dramaturgiyasini talabalar teatr jamoalari orqali targ'ib qilish.",
         requirements: [
           "Har bir fakultetdan bitta spektakl yoki 20 daqiqalik kompozitsiya qabul qilinadi.",
-          "Aktyorlar tarkibi faqat UrDU talabalaridan iborat bo'lishi lozim.",
-          "Mavzular: milliy qadriyatlar, tarixiy siymolar yoki zamonaviy yoshlar muammolari."
+          "Aktyorlar faqat UrDU talabalaridan iborat bo'lishi kerak.",
+          "Mavzu: milliy qadriyatlar, tarixiy siymolar yoki zamonaviy yoshlar hayoti."
         ],
         stages: [
-          "Saralash bosqichi: Fakultetlar ichki ko'rigi (20-oktyabrgacha).",
-          "Universitet final bosqichi: UrDU Madaniyat saroyi sahnasida jonli spektakllar (30-oktyabr)."
+          "Fakultetlar ichki saralashi — 1-dekabrgacha.",
+          "Universitet finali, Madaniyat saroyi sahnasi — 12-dekabr."
         ],
         criteria: [
-          "Rejissura yechimi va g'oyaviy pishiqlik — 30 ball",
-          "Aktyorlik mahorati va sahna nutqi — 30 ball",
-          "Musiqiy va vizual bezak, liboslar — 20 ball",
+          "Rejissura va g'oya — 30 ball",
+          "Aktyorlik va sahna nutqi — 30 ball",
+          "Musiqa, bezak va liboslar — 20 ball",
           "Tomoshabin bilan aloqa — 20 ball"
         ],
-        jury: "O'zbekistonda xizmat ko'rsatgan artistlar va teatr san'atshunoslari.",
-        awards: "Gran-pri, 'Eng yaxshi erkak roli', 'Eng yaxshi ayol roli' va maxsus diplomlar."
+        awards: "Gran-pri, \"Eng yaxshi erkak roli\", \"Eng yaxshi ayol roli\" va maxsus diplomlar."
       }
     },
     {
-      id: "contest-3",
-      title: "Rektor Kubogi — Fakultetlararo Voleybol va Mini-Futbol Chempionati",
-      initiativeId: 2,
-      date: "2026-10-28",
-      time: "15:30",
-      displayDate: "05.10.2026 — 28.10.2026",
-      deadline: "28-Oktyabr, 2026",
-      daysLeft: "12 kun qoldi",
-      status: "active",
-      statusText: "Qabul ochiq",
-      location: "UrDU Markaziy Yopiq Sport Majmuasi",
-      organizer: "Jismoniy madaniyat kafedrasi va Sport klubi",
-      type: "Sport",
+      id: "rektor-kubogi", initiativeId: 2, status: "active",
+      title: "Rektor kubogi — voleybol va mini-futbol chempionati",
+      period: "05.11.2026 — 28.11.2026", deadline: "2026-11-28",
+      place: "UrDU markaziy sport majmuasi", organizer: "Jismoniy madaniyat kafedrasi va sport klubi",
       image: "assets/images/contest_sport_cup.jpg",
-      prize: "Rektor Kubogi, oltin medallar va 20 000 000 so'mlik sport inventarlari",
-      desc: "Universitetning 12 ta fakulteti talaba-yoshlari o'rtasida sog'lom turmush tarzini targ'ib qilish va universitet terma jamoasini shakllantirish chempionati.",
-      nizom: {
-        title: "\"Rektor Kubogi Sport Chempionati\" Nizomi",
-        purpose: "Talabalar o'rtasida ommaviy sportni rivojlantirish va terma jamoaga iqtidorlarni saralash.",
+      prize: "Rektor kubogi, medallar va 20 mln so'mlik sport anjomlari",
+      desc: "Fakultetlar o'rtasida chempionat va universitet terma jamoasini shakllantirish.",
+      rules: {
+        purpose: "Ommaviy sportni rivojlantirish va terma jamoaga iqtidorlarni saralash.",
         requirements: [
-          "Jamoa a'zolari UrDU talabasi ekanligini tasdiqlovchi talabalik guvohnomasiga ega bo'lishi kerak.",
-          "Har bir jamoada 8 nafardan 12 nafargacha ishtirokchi ro'yxatga olinadi.",
-          "Tibbiy ko'rikdan o'tganlik to'g'risida ma'lumotnoma talab etiladi."
+          "Jamoa a'zolari talabalik guvohnomasiga ega bo'lishi kerak.",
+          "Har bir jamoada 8 dan 12 nafargacha o'yinchi.",
+          "Tibbiy ko'rikdan o'tganlik haqida ma'lumotnoma."
         ],
         stages: [
-          "Guruh bosqichi o'yinlari: 15-22 oktyabr kunlari.",
-          "Yarim final va Final: 28-oktyabr kuni Markaziy sport zalida."
+          "Guruh bosqichi — 15–22-noyabr.",
+          "Yarim final va final — 28-noyabr."
         ],
         criteria: [
-          "FIVB va FIFA xalqaro rasmiy o'yin qoidalari asosida hakamlik qilinadi.",
-          "O'yinlarda fair-play (halol o'yin) tamoyillari qat'iy nazoratga olinadi."
+          "FIVB va FIFA rasmiy qoidalari asosida hakamlik.",
+          "Fair-play tamoyillariga qat'iy rioya qilinadi."
         ],
-        jury: "Milliy va xalqaro toifadagi professional hakamlar hay'ati.",
-        awards: "1, 2 va 3-o'rin sohiblariga medallar, diplomlar va esdalik sovg'alari."
+        awards: "1–3-o'rin sohiblariga medallar, diplomlar va esdalik sovg'alari."
       }
     },
     {
-      id: "contest-4",
-      title: "\"Eng Yaxshi Kitobxon Talaba\" Oylik Universitet Tanlovi",
-      initiativeId: 4,
-      date: "2026-10-20",
-      time: "11:00",
-      displayDate: "01.10.2026 — 20.10.2026",
-      deadline: "20-Oktyabr, 2026",
-      daysLeft: "4 kun qoldi",
-      status: "active",
-      statusText: "Qabul ochiq",
-      location: "UrDU Axborot-Resurs Markazi",
-      organizer: "ARM va Filologiya fakulteti",
-      type: "Kitobxonlik",
+      id: "eng-yaxshi-kitobxon", initiativeId: 4, status: "active",
+      title: "\"Eng yaxshi kitobxon talaba\" tanlovi",
+      period: "01.11.2026 — 20.11.2026", deadline: "2026-11-20",
+      place: "UrDU Axborot-resurs markazi", organizer: "ARM va Filologiya fakulteti",
       image: "assets/images/tashabbus_4_books.jpg",
-      prize: "1-o'rin: 5 000 000 so'm vaucher va elektron kitoblar jamlanmasi",
-      desc: "Belgilangan 10 ta o'zbek va jahon adabiyoti durdonalarini o'qib, tahliliy test va insholar orqali eng zukko kitobxon talabani aniqlash.",
-      nizom: {
-        title: "\"Eng Yaxshi Kitobxon Talaba\" Tanlovi Nizomi",
-        purpose: "Yoshlar o'rtasida mutolaa madaniyatini yuksaltirish, badiiy tafakkur va so'zlashuv savodxonligini rivojlantirish.",
+      prize: "1-o'rin: noutbuk va kitoblar to'plami",
+      desc: "Tavsiya etilgan 10 ta asar bo'yicha test va insho orqali eng zukko kitobxonni aniqlash.",
+      rules: {
+        purpose: "Mutolaa madaniyatini yuksaltirish, badiiy tafakkur va nutq savodxonligini rivojlantirish.",
         requirements: [
-          "Barcha bosqich talabalari shaxsiy arizasi bilan ishtirok etishi mumkin.",
-          "Tanlov uchun tavsiya etilgan adabiyotlar ro'yxatidagi asarlarni o'qigan bo'lish lozim."
+          "Barcha kurs talabalari shaxsiy ariza bilan qatnasha oladi.",
+          "Tavsiya etilgan adabiyotlar ro'yxatidagi asarlarni o'qigan bo'lish lozim."
         ],
         stages: [
-          "1-bosqich: Onlayn test sinovi (50 ta savol) — 15-oktyabr.",
-          "2-bosqich: Insho yozish va asar tahlili bo'yicha jonli suhbat — 20-oktyabr."
+          "Onlayn test (50 savol) — 15-noyabr.",
+          "Insho va asar tahlili bo'yicha suhbat — 20-noyabr."
         ],
         criteria: [
-          "Asar mazmunini to'liq o'zlashtirganlik — 40 ball",
-          "Tahliliy fikrlash va shaxsiy munosabat — 30 ball",
-          "Notiqlik va adabiy til me'yorlariga rioya etish — 30 ball"
+          "Asar mazmunini bilish — 40 ball",
+          "Tahliliy fikrlash — 30 ball",
+          "Nutq madaniyati — 30 ball"
         ],
-        jury: "O'zbek adabiyoti kafedrasi professorlari va taniqli yozuvchilar.",
-        awards: "G'olibga noutbuk, diplom hamda maxsus kitoblar jamlanmasi."
+        awards: "G'olibga noutbuk, diplom va kitoblar to'plami."
       }
     },
     {
-      id: "contest-5",
-      title: "\"Tadbirkor Qiz\" Biznes-G'oyalar va Hunarmandchilik Tanlovi",
-      initiativeId: 5,
-      date: "2026-11-10",
-      time: "11:00",
-      displayDate: "15.10.2026 — 10.11.2026",
-      deadline: "10-Noyabr, 2026",
-      daysLeft: "25 kun qoldi",
-      status: "active",
-      statusText: "Qabul ochiq",
-      location: "UrDU Startap va Kovorking Markazi",
-      organizer: "Xotin-qizlar maslahat kengashi",
-      type: "Biznes & Hunar",
+      id: "tadbirkor-qiz", initiativeId: 5, status: "active",
+      title: "\"Tadbirkor qiz\" biznes-g'oyalar tanlovi",
+      period: "15.11.2026 — 20.12.2026", deadline: "2026-12-20",
+      place: "UrDU startap va kovorking markazi", organizer: "Xotin-qizlar maslahat kengashi",
       image: "assets/images/news_vocational_sewing.jpg",
-      prize: "1-o'rin: 10 000 000 so'm startap granti va tikuv uskunasi",
-      desc: "Talaba-qizlarning tadbirkorlik tashabbuslari, milliy hunarmandchilik va zamonaviy xizmatlar sohasidagi eng istiqbolli biznes-rejalarini qo'llab-quvvatlash.",
-      nizom: {
-        title: "\"Tadbirkor Qiz\" Tanlovi Nizomi",
-        purpose: "Xotin-qizlarning iqtisodiy faolligini oshirish, talaba-qizlarni o'z biznesini boshlashiga grantlar orqali ko'maklashish.",
+      prize: "1-o'rin: 10 mln so'm grant va tikuv uskunasi",
+      desc: "Talaba-qizlarning hunarmandchilik va xizmatlar sohasidagi biznes-rejalarini qo'llab-quvvatlash.",
+      rules: {
+        purpose: "Talaba-qizlarning iqtisodiy faolligini oshirish va o'z biznesini boshlashiga grant orqali ko'maklashish.",
         requirements: [
-          "UrDU talaba-qizlari shaxsiy biznes loyihalari bilan qatnashishi mumkin.",
-          "Loyiha ijtimoiy yo'naltirilgan va yangi ish o'rinlari yaratishga qaratilgan bo'lishi maqsadga muvofiq."
+          "UrDU talaba-qizlari shaxsiy biznes loyihasi bilan qatnashadi.",
+          "Loyiha yangi ish o'rinlari yaratishga yo'naltirilgan bo'lishi maqsadga muvofiq."
         ],
         stages: [
-          "1-bosqich: Biznes-reja va mahsulot namunalari qabul qilinadi (01-noyabrgacha).",
-          "2-bosqich: Mentorlar ko'magida loyihalarni takomillashtirish treningi (05-noyabr).",
-          "3-bosqich: Hakamlar oldida himoya qilish va ko'rgazma (10-noyabr)."
+          "Biznes-reja va mahsulot namunalari — 5-dekabrgacha.",
+          "Mentorlar bilan trening — 10-dekabr.",
+          "Hakamlar oldida himoya va ko'rgazma — 20-dekabr."
         ],
         criteria: [
-          "Loyihaning iqtisodiy rentabelligi va amalga oshishi — 35 ball",
-          "Ijodiy yondashuv va milliy uslub — 35 ball",
-          "Moliyaviy hisob-kitoblarning to'g'riligi — 30 ball"
+          "Iqtisodiy samaradorlik — 35 ball",
+          "Ijodiy yondashuv — 35 ball",
+          "Moliyaviy hisob-kitoblar — 30 ball"
         ],
-        jury: "Tadbirkor ayollar assotsiatsiyasi vakillari va bank ekspertlari.",
-        awards: "1-o'rin: 10 mln so'mlik startap granti, zamonaviy uskunalar."
+        awards: "1-o'rin: 10 mln so'm startap granti va zamonaviy uskunalar."
       }
     },
     {
-      id: "contest-6",
-      title: "Respublika Yoshlar Innovatsion Loyihalari — 2026 (Bahorgi Mavsum)",
-      initiativeId: 3,
-      date: "2026-05-20",
-      time: "10:00",
-      displayDate: "15.04.2026 — 20.05.2026",
-      deadline: "20-May, 2026",
-      daysLeft: "Yakunlangan",
-      status: "completed",
-      statusText: "Yakunlangan",
-      location: "Toshkent shahri, Yoshlar Akademiyasi",
-      organizer: "Innovatsion rivojlanish agentligi va UrDU",
-      type: "IT & Startap",
+      id: "innovatsion-loyihalar", initiativeId: 3, status: "completed",
+      title: "Respublika yoshlar innovatsion loyihalari — 2026",
+      period: "15.04.2026 — 20.05.2026", deadline: "2026-05-20",
+      place: "Toshkent, Yoshlar akademiyasi", organizer: "Innovatsion rivojlanish agentligi",
       image: "assets/images/dostonbek_winner.jpg",
-      prize: "Faxrli 2-o'rin: Dostonbek Olloquliyev (UrDU talabasi)",
-      desc: "Respublika miqyosida o'tkazilgan nufuzli ko'rik-tanlovda UrDU talabasi Dostonbek Olloquliyev o'z startap loyihasi bilan faxrli 2-o'rinni egalladi.",
-      nizom: {
-        title: "\"Yoshlar Innovatsion Loyihalari — 2026\" Rasmiy Nizomi",
-        purpose: "Mamlakatimiz yosh olim va innovatorlarining eng ilg'or ilmiy ishlanmalarini qo'llab-quvvatlash.",
-        requirements: ["Respublika OTM talabalari va yosh tadqiqotchilari."],
-        stages: ["Universitet bosqichi", "Viloyat bosqichi", "Respublika final bosqichi"],
+      prize: "Faxrli 2-o'rin: Dostonbek Olloquliyev",
+      desc: "Respublika ko'rik-tanlovida UrDU talabasi startap loyihasi bilan 2-o'rinni egalladi.",
+      rules: {
+        purpose: "Yosh innovatorlarning ilg'or ishlanmalarini qo'llab-quvvatlash.",
+        requirements: ["Respublika OTM talabalari va yosh tadqiqotchilar."],
+        stages: ["Universitet bosqichi", "Viloyat bosqichi", "Respublika finali"],
         criteria: ["Ilmiy asoslanganlik", "Tijoratlashtirish imkoniyati", "Ijtimoiy samara"],
-        jury: "Fanlar akademiyasi olimlari va xorijiy ekspertlar.",
-        awards: "G'oliblarga maxsus mukofotlar va davlat granti ajratilgan."
+        awards: "G'oliblarga mukofotlar va davlat granti."
       }
     }
   ],
 
-  facultyLeaderboard: [
-    { rank: 1, name: "Fizika-matematika fakulteti", points: 98.6, activeStudents: 1840, initiativesBadge: "Mutlaq yetakchi" },
-    { rank: 2, name: "Texnika va raqamli texnologiyalar", points: 96.2, activeStudents: 1720, initiativesBadge: "IT yetakchisi" },
-    { rank: 3, name: "Filologiya fakulteti", points: 95.4, activeStudents: 1910, initiativesBadge: "Kitobxonlik yetakchisi" },
-    { rank: 4, name: "Jismoniy madaniyat fakulteti", points: 94.8, activeStudents: 1530, initiativesBadge: "Sport chempioni" },
-    { rank: 5, name: "Pedagogika va san'at fakulteti", points: 92.5, activeStudents: 1640, initiativesBadge: "San'at markazi" },
-    { rank: 6, name: "Tabiiy fanlar fakulteti", points: 91.0, activeStudents: 1480, initiativesBadge: "Faol ishtirokchi" },
-    { rank: 7, name: "Tarix fakulteti", points: 89.7, activeStudents: 1290, initiativesBadge: "Madaniyat targ'ibotchisi" },
-    { rank: 8, name: "Xorijiy filologiya fakulteti", points: 88.3, activeStudents: 1380, initiativesBadge: "Xalqaro aloqalar" }
+  /* ---------------------------------------------------------------
+     YANGILIKLAR
+     --------------------------------------------------------------- */
+  news: [
+    {
+      id: "it-hackathon",
+      initiativeId: 3,
+      date: "14.10.2026",
+      title: "UrDU talabalari \"Talabalar IT-Hackathon 2026\" g'olibi bo'ldi",
+      image: "assets/images/news_it_hackathon.jpg",
+      excerpt: "48 soatlik respublika hakatonida sun'iy intellektga asoslangan ekologik monitoring loyihasi 1-o'rin va 30 mln so'm grantni qo'lga kiritdi.",
+      body: "Texnika va raqamli texnologiyalar fakulteti talabalari Toshkentda o'tkazilgan respublika hakatonida suv resurslaridan oqilona foydalanish bo'yicha sun'iy intellekt va IoT datchiklariga asoslangan startap prototipini himoya qilib, mutlaq g'olib deb topildi."
+    },
+    {
+      id: "teatr-festivali",
+      initiativeId: 1,
+      date: "11.10.2026",
+      title: "Teatr studiyalari festivalida \"Nihol\" Gran-pri sohibi bo'ldi",
+      image: "assets/images/news_theater_festival.jpg",
+      excerpt: "Madaniyat saroyida o'tgan festivalda \"Nihol\" teatr-studiyasi \"Jaloliddin Manguberdi\" tarixiy dramasi bilan g'olib bo'ldi.",
+      body: "Festivalda viloyatdagi oliy ta'lim muassasalarining teatr jamoalari bellashdi. \"Nihol\" teatr-studiyasi yuksak sahna mahorati va nutq madaniyati bilan hakamlar e'tirofiga sazovor bo'ldi."
+    },
+    {
+      id: "kasb-hunar-markazi",
+      initiativeId: 5,
+      date: "08.10.2026",
+      title: "Xotin-qizlar uchun yangi kasb-hunar markazi ochildi",
+      image: "assets/images/news_vocational_sewing.jpg",
+      excerpt: "12 ta zamonaviy tikuv mashinasi va kompyuterlar bilan jihozlangan bepul o'quv ustaxonasi ish boshladi.",
+      body: "Ustaxonada tikuvchilik, liboslar dizayni, qandolatchilik va grafik dizayn kurslari talaba-qizlar hamda mahalla yoshlari uchun bepul tashkil etilmoqda."
+    }
   ],
 
-  hallOfFame: [
+  /* ---------------------------------------------------------------
+     YUTUQLAR (bosh sahifa slayderi va shon-sharaf doskasi)
+     --------------------------------------------------------------- */
+  winners: [
     {
-      id: "w1",
+      name: "Dostonbek Olloquliyev",
+      photo: "assets/images/dostonbek_winner.jpg",
+      initiativeId: 3,
+      place: "2-o'rin",
+      contest: "Respublika \"Innovatsion loyihalar\" tanlovi",
+      text: "Istiqbolli startap loyihasi bilan respublika bosqichida faxrli 2-o'rinni egalladi."
+    },
+    {
       name: "Alisher Axmedov",
+      photo: "assets/images/winner_1.jpg",
+      initiativeId: 3,
       faculty: "Texnika va raqamli texnologiyalar",
-      initiative: "3-Tashabbus (IT)",
-      achievement: "Respublika Yosh dasturchilar hakatoni 1-o'rin sohibi",
-      image: "assets/images/winner_1.jpg",
-      quote: "\"UrDU IT-klubida o'rgangan bilimlarim orqali jamoamiz bilan birinchi millionlik startapimizni boshladik.\""
+      place: "1-o'rin",
+      contest: "Talabalar IT-Challenge hakatoni",
+      text: "Sun'iy intellekt asosidagi startap loyihasi bilan mutlaq g'olib bo'ldi.",
+      quote: "UrDU IT-klubida o'rgangan bilimlarim bilan jamoamiz birinchi startapini boshladi."
     },
     {
-      id: "w2",
       name: "Dilnoza Karimova",
+      photo: "assets/images/winner_2.jpg",
+      initiativeId: 5,
       faculty: "Pedagogika va san'at fakulteti",
-      initiative: "1 & 5-Tashabbuslar",
-      achievement: "\"Zulfiya\" nomidagi davlat mukofoti sohibasi, Dizayner",
-      image: "assets/images/winner_2.jpg",
-      quote: "\"Milliy merosimiz va zamonaviy san'at uyg'unligi — yangi O'zbekiston yoshlarining eng buyuk kuchi!\""
+      place: "Davlat mukofoti",
+      contest: "\"Zulfiya\" nomidagi davlat mukofoti",
+      text: "Milliy liboslar dizayni yo'nalishida yuksak mahorat ko'rsatib, davlat mukofotiga sazovor bo'ldi.",
+      quote: "Milliy meros va zamonaviy san'at uyg'unligi — yoshlarning eng katta kuchi."
     }
   ],
 
-  quizQuestions: [
-    {
-      id: 1,
-      question: "Bo'sh vaqtingiz bo'lganda eng ko'p nima bilan shug'ullanish sizga rohat bag'ishlaydi?",
-      options: [
-        { text: "Musiqa tinglash, gitara/dutor chalish yoki chizmachilik qilish", initiativeId: 1 },
-        { text: "Yugurish, to'p o'ynash, turnikda mashq qilish yoki shaxmat surish", initiativeId: 2 },
-        { text: "Kompyuterda kod yozish, yangi ilovalar va texnologiyalarni sinash", initiativeId: 3 },
-        { text: "Qiziqarli badiiy asar yoki ilmiy kitob o'qish, fikr almashish", initiativeId: 4 },
-        { text: "Qo'l mehnati, tikuvchilik, pazandachilik yoki yangi biznes g'oyalar tuzish", initiativeId: 5 }
-      ]
-    },
-    {
-      id: 2,
-      question: "Qaysi sohada erishgan yutug'ingiz sizni eng ko'p ilhomlantirgan bo'lardi?",
-      options: [
-        { text: "Katta sahnada tomoshabinlar olqishiga sazovor bo'lish", initiativeId: 1 },
-        { text: "Chempionatda shohsupaning eng yuqori pog'onasiga chiqish", initiativeId: 2 },
-        { text: "Minglab odamlar foydalanadigan dastur yoki robot yaratish", initiativeId: 3 },
-        { text: "\"Eng yaxshi kitobxon\" tanlovida g'olib bo'lib kitob javonini to'ldirish", initiativeId: 4 },
-        { text: "O'z shaxsiy brendim yoki qo'l mehnati mahsulotlarimni bozorga chiqarish", initiativeId: 5 }
-      ]
-    },
-    {
-      id: 3,
-      question: "Qanday muhitda o'zingizni eng erkin va baxtli his qilasiz?",
-      options: [
-        { text: "Konsert zali, teatr sahnasi va ijodiy ustaxonada", initiativeId: 1 },
-        { text: "Sport arenasi, stadion va musobaqa hayajonida", initiativeId: 2 },
-        { text: "Yorug' IT-kovorking, zamonaviy kompyuter va ikkita monitor qarshisida", initiativeId: 3 },
-        { text: "Shinam kutubxona, kitob hidli sokin mutolaa zalida", initiativeId: 4 },
-        { text: "Moda atelesi, oshxona studiyasi yoki biznes muzokaralar xonasida", initiativeId: 5 }
-      ]
-    },
-    {
-      id: 4,
-      question: "Kelgusi 1 yil ichida qaysi ko'nikmangizni 10 barobarga oshirishni xohlaysiz?",
-      options: [
-        { text: "Aktyorlik, vokal yoki san'at asari yaratish qobiliyatini", initiativeId: 1 },
-        { text: "Jismoniy kuch, sport mahorati va temir intizomni", initiativeId: 2 },
-        { text: "Dasturlash, kiberxavfsizlik va sun'iy intellekt texnologiyalarini", initiativeId: 3 },
-        { text: "Notiqlik, tanqidiy fikrlash va boy so'z boyligini", initiativeId: 4 },
-        { text: "Kasb-hunar, dizayn va mustaqil daromad topish yo'llarini", initiativeId: 5 }
-      ]
-    }
+  /* ---------------------------------------------------------------
+     FAKULTETLAR REYTINGI
+     --------------------------------------------------------------- */
+  faculties: [
+    { name: "Fizika-matematika fakulteti", points: 98.6, students: 1840, note: "Mutlaq yetakchi" },
+    { name: "Texnika va raqamli texnologiyalar fakulteti", points: 96.2, students: 1720, note: "IT yo'nalishida yetakchi" },
+    { name: "Filologiya fakulteti", points: 95.4, students: 1910, note: "Kitobxonlikda yetakchi" },
+    { name: "Jismoniy madaniyat fakulteti", points: 94.8, students: 1530, note: "Sport chempioni" },
+    { name: "Pedagogika va san'at fakulteti", points: 92.5, students: 1640, note: "San'atda yetakchi" },
+    { name: "Tabiiy fanlar fakulteti", points: 91.0, students: 1480, note: "Faol ishtirokchi" },
+    { name: "Tarix fakulteti", points: 89.7, students: 1290, note: "Faol ishtirokchi" },
+    { name: "Xorijiy filologiya fakulteti", points: 88.3, students: 1380, note: "Faol ishtirokchi" }
   ],
 
-  recommendedBooks: [
-    { title: "Boburnoma", author: "Zahiriddin Muhammad Bobur", category: "Tarix va Adabiyot", pages: "480", rating: "4.9" },
-    { title: "O'tkan kunlar", author: "Abdulla Qodiriy", category: "Klassika", pages: "360", rating: "5.0" },
-    { title: "Yulduzli tunlar", author: "Pirimqul Qodirov", category: "Tarixiy roman", pages: "520", rating: "4.9" },
-    { title: "Raqamli Qal'a (Digital Fortress)", author: "Den Braun", category: "IT & Triller", pages: "440", rating: "4.8" },
-    { title: "Atom Odatlar (Atomic Habits)", author: "Jeyms Klir", category: "Shaxsiy rivojlanish", pages: "320", rating: "4.9" }
+  /* ---------------------------------------------------------------
+     KUTUBXONA
+     --------------------------------------------------------------- */
+  books: [
+    { title: "O'tkan kunlar", author: "Abdulla Qodiriy", category: "O'zbek adabiyoti", pages: 360, cover: "assets/images/books/book_otkan_kunlar.jpg",
+      desc: "O'zbek romanchiligining gultoji: Otabek va Kumushning muhabbati, xonliklar davridagi millat taqdiri." },
+    { title: "Boburnoma", author: "Zahiriddin Muhammad Bobur", category: "Tarix", pages: 480, cover: "assets/images/books/book_boburnoma.jpg",
+      desc: "Tarix, geografiya va etnografiyaga oid jahonga mashhur memuar, Boburiylar saltanatining vujudga kelishi." },
+    { title: "Yulduzli tunlar", author: "Pirimqul Qodirov", category: "Tarix", pages: 520, cover: "assets/images/books/book_yulduzli_tunlar.jpg",
+      desc: "Bobur Mirzoning murakkab hayot yo'li, shohlik va shoirlik haqidagi tarixiy roman." },
+    { title: "Atom odatlar", author: "Jeyms Klir", category: "Shaxsiy rivojlanish", pages: 320, cover: "assets/images/books/book_atom_odatlar.jpg",
+      desc: "Kichik kundalik odatlar orqali o'qish va ishda katta natijalarga erishish usullari." },
+    { title: "Raqamli qal'a", author: "Den Braun", category: "Jahon adabiyoti", pages: 440, cover: "assets/images/books/book_raqamli_qala.jpg",
+      desc: "Kriptografiya, kiberxavfsizlik va buzib bo'lmas kodlar haqidagi intellektual triller." },
+    { title: "Alkimyogar", author: "Paulo Koelo", category: "Jahon adabiyoti", pages: 224, cover: "assets/images/books/book_alkimyogar.jpg",
+      desc: "O'z orzusi ortidan yo'lga chiqqan yosh cho'pon Santyago haqidagi falsafiy asar." }
   ],
 
+  /* ---------------------------------------------------------------
+     SAVOL-JAVOB
+     --------------------------------------------------------------- */
   faqs: [
+    { q: "To'garaklar pullikmi?", a: "Yo'q. 5 tashabbus doirasidagi barcha to'garaklar, sport seksiyalari va kasb-hunar kurslari UrDU talabalari uchun bepul." },
+    { q: "Bir nechta to'garakka a'zo bo'lsam bo'ladimi?", a: "Ha. Dars jadvalingizga xalaqit bermasa, bir vaqtning o'zida bir nechta to'garakka qatnashishingiz mumkin." },
+    { q: "Mashg'ulotlar qachon bo'ladi?", a: "Asosiy darslardan keyin, odatda 14:30 dan 18:30 gacha. Har bir to'garak jadvali uning kartochkasida ko'rsatilgan." },
+    { q: "Faol qatnashganlarga qanday imtiyozlar bor?", a: "Faol talabalar va tanlov sovrindorlari rag'batlantiriladi, respublika tanlovlariga yo'llanma oladi va fakultet reytingiga ball qo'shiladi." },
+    { q: "Yangi to'garak ochishni taklif qilsam bo'ladimi?", a: "Ha. Taklifingizni Aloqa sahifasidagi shakl orqali yoki markazga to'g'ridan-to'g'ri yuboring." }
+  ],
+
+  /* ---------------------------------------------------------------
+     TEST: "Qaysi tashabbus sizga mos?"
+     --------------------------------------------------------------- */
+  quiz: [
     {
-      q: "UrDU talabalari uchun 5 tashabbus to'garaklari bepulmi?",
-      a: "Ha, universitetimizning barcha talabalari uchun barcha to'garaklar, sport seksiyalari, IT laboratoriyalari va kasb-hunar kurslari 100% BEPUL tashkil etilgan."
+      q: "Bo'sh vaqtingizda nima bilan shug'ullanishni yoqtirasiz?",
+      a: [
+        ["Musiqa, rasm chizish yoki sahna", 1],
+        ["Sport, yugurish yoki shaxmat", 2],
+        ["Kod yozish va yangi texnologiyalar", 3],
+        ["Kitob o'qish va fikr almashish", 4],
+        ["Qo'l mehnati, pazandachilik, biznes g'oyalar", 5]
+      ]
     },
     {
-      q: "Bir vaqtning o'zida bir nechta to'garakka a'zo bo'lish mumkinmi?",
-      a: "Albatta! Dars jadvalingizga xalaqit bermagan holda siz 2 yoki undan ortiq to'garaklarga a'zo bo'lishingiz mumkin (masalan, IT dasturlash va Shaxmat klubi)."
+      q: "Qaysi yutuq sizni ko'proq ilhomlantiradi?",
+      a: [
+        ["Katta sahnada olqish olish", 1],
+        ["Chempionatda shohsupaga chiqish", 2],
+        ["Minglab odam ishlatadigan ilova yaratish", 3],
+        ["\"Eng yaxshi kitobxon\" bo'lish", 4],
+        ["O'z mahsulotimni bozorga chiqarish", 5]
+      ]
     },
     {
-      q: "Mashg'ulotlar qaysi paytda o'tkaziladi?",
-      a: "Barcha to'garaklar talabalarning asosiy o'quv mashg'ulotlaridan so'ng — soat 14:30 dan 18:30 gacha bo'lgan qulay vaqtlarda olib boriladi."
+      q: "Qayerda o'zingizni eng erkin his qilasiz?",
+      a: [
+        ["Konsert zali yoki ijodiy ustaxonada", 1],
+        ["Sport zali yoki stadionda", 2],
+        ["Kompyuter qarshisida, IT-kovorkingda", 3],
+        ["Sokin kutubxonada", 4],
+        ["Atelye, oshxona-studiya yoki kovorkingda", 5]
+      ]
     },
     {
-      q: "To'garak a'zolari uchun qanday imtiyoz va rag'batlantirishlar mavjud?",
-      a: "Faol talabalar universitet stipendiyalari, moddiy rag'batlantirish, xalqaro va respublika tanlovlariga yo'llanmalar hamda fakultet reyting ballariga ega bo'ladilar."
-    },
-    {
-      q: "Yangi to'garak ochish yoki taklif bildirish imkoni bormi?",
-      a: "Ha! Har bir talaba o'zining yangi klubi yoki tashabbusini Yoshlar ittifoqi UrDU boshlang'ich tashkilotiga taqdim etishi va qo'llab-quvvatlanishi mumkin."
+      q: "Bir yilda qaysi ko'nikmangizni oshirmoqchisiz?",
+      a: [
+        ["Ijro yoki ijod mahorati", 1],
+        ["Jismoniy kuch va intizom", 2],
+        ["Dasturlash va sun'iy intellekt", 3],
+        ["Notiqlik va tanqidiy fikrlash", 4],
+        ["Kasb-hunar va mustaqil daromad", 5]
+      ]
     }
   ]
 };
 
-// -------------------------------------------------------------------
-// Dynamic LocalStorage Sync & Dashboard CRUD Operations
-// -------------------------------------------------------------------
-(function syncUrDUStorage() {
-  try {
-    const savedClubs = localStorage.getItem('urdu_custom_clubs');
-    if (savedClubs) {
-      URDUDATA.clubs = JSON.parse(savedClubs);
-    }
-    const savedEvents = localStorage.getItem('urdu_custom_events');
-    if (savedEvents) {
-      URDUDATA.upcomingEvents = JSON.parse(savedEvents);
-    }
-    const savedStats = localStorage.getItem('urdu_custom_stats');
-    if (savedStats) {
-      URDUDATA.stats = Object.assign(URDUDATA.stats, JSON.parse(savedStats));
-    }
-  } catch (e) {
-    console.warn("Storage sync error:", e);
-  }
-})();
-
-URDUDATA.saveClubsState = function() {
-  try {
-    localStorage.setItem('urdu_custom_clubs', JSON.stringify(URDUDATA.clubs));
-  } catch(e) {
-    console.warn("Failed to persist clubs", e);
-  }
+/* Hisoblangan umumiy ko'rsatkichlar — qo'lda yozilmaydi, shuning uchun hamma joyda bir xil */
+SITE.totals = {
+  clubs: SITE.initiatives.reduce((s, i) => s + i.clubsCount, 0),
+  students: SITE.initiatives.reduce((s, i) => s + i.students, 0),
+  awards: SITE.initiatives.reduce((s, i) => s + i.awards, 0),
+  activeContests: SITE.contests.filter(c => c.status === "active" && new Date(c.deadline + "T23:59:59") >= new Date()).length
 };
-
-URDUDATA.saveEventsState = function() {
-  try {
-    localStorage.setItem('urdu_custom_events', JSON.stringify(URDUDATA.upcomingEvents));
-  } catch(e) {
-    console.warn("Failed to persist events", e);
-  }
-};
-
-URDUDATA.addClub = function(club) {
-  URDUDATA.clubs.unshift(club);
-  URDUDATA.saveClubsState();
-};
-
-URDUDATA.deleteClub = function(id) {
-  URDUDATA.clubs = URDUDATA.clubs.filter(c => c.id !== id);
-  URDUDATA.saveClubsState();
-};
-
-URDUDATA.addEvent = function(event) {
-  URDUDATA.upcomingEvents.unshift(event);
-  URDUDATA.saveEventsState();
-};
-
-URDUDATA.deleteEvent = function(id) {
-  URDUDATA.upcomingEvents = URDUDATA.upcomingEvents.filter(e => e.id !== id);
-  URDUDATA.saveEventsState();
-};
-
-URDUDATA.getRegistrations = function() {
-  try {
-    return JSON.parse(localStorage.getItem('urdu_5t_passes') || '[]');
-  } catch(e) {
-    return [];
-  }
-};
-
-URDUDATA.updateRegistrationStatus = function(regId, status) {
-  try {
-    const list = URDUDATA.getRegistrations();
-    const item = list.find(r => r.id === regId);
-    if (item) {
-      item.status = status;
-      localStorage.setItem('urdu_5t_passes', JSON.stringify(list));
-    }
-  } catch(e) {
-    console.warn(e);
-  }
-};
-
-URDUDATA.deleteRegistration = function(regId) {
-  try {
-    const list = URDUDATA.getRegistrations().filter(r => r.id !== regId);
-    localStorage.setItem('urdu_5t_passes', JSON.stringify(list));
-  } catch(e) {
-    console.warn(e);
-  }
-};
-
