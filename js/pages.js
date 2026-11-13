@@ -54,20 +54,12 @@
       const W = SITE.winners;
       slider.innerHTML = W.map((w, idx) => `
         <div class="slide${idx === 0 ? " active" : ""}" aria-hidden="${idx !== 0}">
-          <img src="${w.photo}" alt="${esc(w.name)}">
-          <div class="slide-body">
-            <span class="slide-place"><i class="fa-solid fa-trophy"></i> ${esc(w.place)}</span>
-            <h3>${esc(w.name)}</h3>
-            <div class="slide-contest">${esc(w.contest)}</div>
-            <p>${esc(w.text)}</p>
-          </div>
+          <img src="${w.photo}" alt="${esc(w.name)} — ${esc(w.contest)}">
         </div>`).join("") + `
         <div class="slider-controls">
+          <button type="button" class="icon-btn" data-dir="-1" aria-label="Oldingi"><i class="fa-solid fa-chevron-left"></i></button>
           <div class="slider-dots">${W.map((_, i) => `<button type="button" aria-label="${i + 1}-slayd"${i === 0 ? ' class="active"' : ""}></button>`).join("")}</div>
-          <div class="slider-arrows">
-            <button type="button" class="icon-btn" data-dir="-1" aria-label="Oldingi"><i class="fa-solid fa-chevron-left"></i></button>
-            <button type="button" class="icon-btn" data-dir="1" aria-label="Keyingi"><i class="fa-solid fa-chevron-right"></i></button>
-          </div>
+          <button type="button" class="icon-btn" data-dir="1" aria-label="Keyingi"><i class="fa-solid fa-chevron-right"></i></button>
         </div>`;
 
       const slides = $$(".slide", slider);
@@ -86,7 +78,6 @@
       play();
     }
 
-    fillStats($("#stats"));
     fillInitiatives($("#initiatives"));
 
     // Har tashabbusdan eng mashhur to'garak (+ bitta qo'shimcha) — 6 ta
@@ -103,55 +94,6 @@
       : `<div class="empty"><i class="fa-regular fa-calendar-xmark"></i>Hozircha qabul ochiq tanlov yo'q</div>`;
 
     $("#home-news").innerHTML = SITE.news.map(newsCard).join("");
-
-    quiz($("#quiz"));
-  }
-
-  /* ---------- "Qaysi tashabbus sizga mos?" testi ---------- */
-  function quiz(box) {
-    if (!box) return;
-    const Q = SITE.quiz;
-    let step = 0;
-    let score = {};
-
-    const render = () => {
-      if (step < Q.length) {
-        const q = Q[step];
-        box.innerHTML = `
-          <div class="quiz-progress">${Q.map((_, i) => `<span class="${i < step ? "done" : ""}"></span>`).join("")}</div>
-          <p class="eyebrow">Savol ${step + 1} / ${Q.length}</p>
-          <h3>${esc(q.q)}</h3>
-          <div class="quiz-options">
-            ${q.a.map(([text, id]) => `<button type="button" class="quiz-option" data-id="${id}">${esc(text)}</button>`).join("")}
-          </div>`;
-        return;
-      }
-      const best = Object.entries(score).sort((a, b) => b[1] - a[1])[0][0];
-      const i = initiative(best);
-      box.innerHTML = `
-        <div class="quiz-progress">${Q.map(() => '<span class="done"></span>').join("")}</div>
-        <div class="quiz-result" style="--c:${i.color}">
-          <span class="init-icon"><i class="${i.icon}"></i></span>
-          <p class="eyebrow">Sizga mos yo'nalish</p>
-          <h3>${i.id}-tashabbus: ${esc(i.title)}</h3>
-          <p>${esc(i.about)}</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="togaraklar.html?t=${i.id}">To'garaklarni ko'rish</a>
-            <button type="button" class="btn btn-outline" id="quiz-restart"><i class="fa-solid fa-rotate-left"></i> Qaytadan</button>
-          </div>
-        </div>`;
-    };
-
-    box.addEventListener("click", (e) => {
-      const opt = e.target.closest(".quiz-option");
-      if (opt) {
-        score[opt.dataset.id] = (score[opt.dataset.id] || 0) + 1;
-        step++;
-        render();
-      }
-      if (e.target.closest("#quiz-restart")) { step = 0; score = {}; render(); }
-    });
-    render();
   }
 
   /* ---------- Markaz haqida ---------- */

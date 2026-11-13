@@ -88,7 +88,7 @@
           <div class="header-actions">
             <button type="button" class="icon-btn" id="search-open" aria-label="Qidiruv (Ctrl+K)"><i class="fa-solid fa-magnifying-glass"></i></button>
             <button type="button" class="icon-btn" id="theme-toggle" aria-label="Yorug'/qorong'i rejim"><i class="fa-solid fa-moon"></i></button>
-            <button type="button" class="btn btn-primary btn-sm header-cta" data-join>A'zo bo'lish</button>
+            <a href="${U.hemis}" class="btn btn-primary btn-sm header-cta" target="_blank" rel="noopener" title="HEMIS orqali kirish"><i class="fa-solid fa-right-to-bracket"></i><span>Kirish</span></a>
             <button type="button" class="icon-btn burger" id="burger" aria-label="Menyu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
           </div>
         </div>

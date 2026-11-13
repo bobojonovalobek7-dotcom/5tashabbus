@@ -202,21 +202,21 @@ ul { margin: 0; padding: 0; list-style: none; }
 .hero-strip span { height: 6px; flex: 1; border-radius: 3px; max-width: 70px; }
 
 .slider { position: relative; border-radius: 24px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-lg); overflow: hidden; }
-.slide { display: none; grid-template-columns: 220px 1fr; min-height: 300px; }
-.slide.active { display: grid; animation: fade .5s ease; }
+.slider { aspect-ratio: 16 / 9; }
+.slide { display: none; position: absolute; inset: 0; }
+.slide.active { display: block; animation: fade .5s ease; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-.slide img { width: 100%; height: 100%; object-fit: cover; }
-.slide-body { padding: 30px 28px 64px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
-.slide-place { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #FEF3C7; color: #92400E; font-weight: 700; font-size: .8rem; }
-.slide-body h3 { font-size: 1.5rem; font-weight: 800; }
-.slide-contest { color: var(--brand); font-weight: 600; font-size: .95rem; }
-.slide-body p { color: var(--text-2); font-size: .95rem; }
-.slider-controls { position: absolute; left: 248px; right: 24px; bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+.slide img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+.slider-controls {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 14px; padding: 6px; border-radius: 999px;
+  background: rgba(10, 18, 40, .45); backdrop-filter: blur(6px);
+}
+.slider-controls .icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #fff; color: #0F172A; }
+.slider-controls .icon-btn:hover { background: var(--gold); color: #1A1300; }
 .slider-dots { display: flex; gap: 6px; }
-.slider-dots button { width: 8px; height: 8px; border-radius: 4px; background: var(--border); transition: .2s; }
-.slider-dots button.active { width: 24px; background: var(--brand); }
-.slider-arrows { display: flex; gap: 6px; }
-.slider-arrows .icon-btn { width: 36px; height: 36px; border-radius: 10px; }
+.slider-dots button { width: 8px; height: 8px; border-radius: 4px; background: rgba(255,255,255,.55); transition: .2s; }
+.slider-dots button.active { width: 24px; background: #fff; }
 
 /* ---------- 7. Statistika ---------- */
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: -1px; }
@@ -434,20 +434,6 @@ ul { margin: 0; padding: 0; list-style: none; }
 
 .map { border: 0; width: 100%; height: 320px; border-radius: var(--radius); display: block; }
 
-/* ---------- 13. Test (quiz) ---------- */
-.quiz { max-width: 760px; margin: 0 auto; padding: 36px; }
-.quiz-progress { display: flex; gap: 6px; margin-bottom: 26px; }
-.quiz-progress span { flex: 1; height: 5px; border-radius: 3px; background: var(--surface-2); }
-.quiz-progress span.done { background: var(--brand); }
-.quiz h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
-.quiz-options { display: grid; gap: 10px; }
-.quiz-option { text-align: left; padding: 15px 18px; border-radius: 12px; border: 1.5px solid var(--border); font-weight: 500; transition: .15s; background: var(--surface); }
-.quiz-option:hover { border-color: var(--brand); background: var(--brand-50); }
-.quiz-result { text-align: center; display: grid; justify-items: center; gap: 14px; }
-.quiz-result .init-icon { width: 72px; height: 72px; font-size: 1.8rem; margin: 0; }
-.quiz-result p { color: var(--text-2); max-width: 520px; }
-.quiz-result .hero-actions { justify-content: center; }
-
 /* ---------- 14. CTA ---------- */
 .cta {
   position: relative; overflow: hidden; border-radius: 24px; padding: 52px;
@@ -551,7 +537,8 @@ ul { margin: 0; padding: 0; list-style: none; }
   .has-dropdown.open .dropdown { display: block; }
   .has-dropdown:hover .dropdown { display: none; }
   .has-dropdown.open:hover .dropdown { display: block; }
-  .header-cta { display: none; }
+  .header-cta span { display: none; }
+  .header-cta { width: 42px; height: 42px; padding: 0; border-radius: 12px; }
   .hero .container { grid-template-columns: 1fr; gap: 40px; }
   .grid-4, .stats { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
@@ -572,13 +559,11 @@ ul { margin: 0; padding: 0; list-style: none; }
   .grid-2, .grid-3, .grid-5, .steps { grid-template-columns: 1fr; }
   .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
   .stat { padding: 16px; flex-direction: column; align-items: flex-start; gap: 10px; }
-  .slide { grid-template-columns: 1fr; }
-  .slide img { aspect-ratio: 4 / 3; height: auto; object-position: top; }
-  .slider-controls { left: 24px; }
+  .slider { aspect-ratio: 4 / 3; }
   .form-row { grid-template-columns: 1fr; }
   .fame-card { grid-template-columns: 1fr; }
   .fame-card img { aspect-ratio: 1 / 1; height: auto; object-position: top; }
-  .doc, .quiz, .cta { padding: 26px 22px; }
+  .doc, .cta { padding: 26px 22px; }
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
   .search-input { min-width: 0; width: 100%; }
   .modal-box { padding: 24px 20px; }

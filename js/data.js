@@ -598,52 +598,6 @@ const SITE = {
     { q: "Mashg'ulotlar qachon bo'ladi?", a: "Asosiy darslardan keyin, odatda 14:30 dan 18:30 gacha. Har bir to'garak jadvali uning kartochkasida ko'rsatilgan." },
     { q: "Faol qatnashganlarga qanday imtiyozlar bor?", a: "Faol talabalar va tanlov sovrindorlari rag'batlantiriladi, respublika tanlovlariga yo'llanma oladi va fakultet reytingiga ball qo'shiladi." },
     { q: "Yangi to'garak ochishni taklif qilsam bo'ladimi?", a: "Ha. Taklifingizni Aloqa sahifasidagi shakl orqali yoki markazga to'g'ridan-to'g'ri yuboring." }
-  ],
-
-  /* ---------------------------------------------------------------
-     TEST: "Qaysi tashabbus sizga mos?"
-     --------------------------------------------------------------- */
-  quiz: [
-    {
-      q: "Bo'sh vaqtingizda nima bilan shug'ullanishni yoqtirasiz?",
-      a: [
-        ["Musiqa, rasm chizish yoki sahna", 1],
-        ["Sport, yugurish yoki shaxmat", 2],
-        ["Kod yozish va yangi texnologiyalar", 3],
-        ["Kitob o'qish va fikr almashish", 4],
-        ["Qo'l mehnati, pazandachilik, biznes g'oyalar", 5]
-      ]
-    },
-    {
-      q: "Qaysi yutuq sizni ko'proq ilhomlantiradi?",
-      a: [
-        ["Katta sahnada olqish olish", 1],
-        ["Chempionatda shohsupaga chiqish", 2],
-        ["Minglab odam ishlatadigan ilova yaratish", 3],
-        ["\"Eng yaxshi kitobxon\" bo'lish", 4],
-        ["O'z mahsulotimni bozorga chiqarish", 5]
-      ]
-    },
-    {
-      q: "Qayerda o'zingizni eng erkin his qilasiz?",
-      a: [
-        ["Konsert zali yoki ijodiy ustaxonada", 1],
-        ["Sport zali yoki stadionda", 2],
-        ["Kompyuter qarshisida, IT-kovorkingda", 3],
-        ["Sokin kutubxonada", 4],
-        ["Atelye, oshxona-studiya yoki kovorkingda", 5]
-      ]
-    },
-    {
-      q: "Bir yilda qaysi ko'nikmangizni oshirmoqchisiz?",
-      a: [
-        ["Ijro yoki ijod mahorati", 1],
-        ["Jismoniy kuch va intizom", 2],
-        ["Dasturlash va sun'iy intellekt", 3],
-        ["Notiqlik va tanqidiy fikrlash", 4],
-        ["Kasb-hunar va mustaqil daromad", 5]
-      ]
-    }
   ]
 };
 
