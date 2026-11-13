@@ -325,6 +325,7 @@ main > .section:last-child { padding-bottom: 0; }
 .leader-list { display: grid; gap: 16px; }
 .leader-card { grid-template-columns: 180px 1fr; }
 .leader-card .person-photo { min-height: 180px; }
+.leader-card .person-photo img { position: absolute; inset: 0; }
 .leader-card .person-body { padding: 20px 28px; gap: 6px; }
 .leader-card h3 { font-size: 1.3rem; }
 .leader-card .person-body .meta { border-top: 0; padding-top: 4px; margin-top: 0; }

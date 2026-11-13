@@ -124,13 +124,13 @@ const SITE = {
      RAHBARIYAT
      --------------------------------------------------------------- */
   head: {
-    name: "Matchonov Sanjarbek Madaminovich",
+    name: "Muxammad Erimbetov",
     role: "Markaz rahbari",
-    photo: "assets/images/leaders/sanjarbek_matchonov.jpg",
+    photo: "assets/images/leaders/muxammad_erimbetov.jpg",
     about: "Universitetdagi barcha to'garaklar, sport musobaqalari, IT loyihalar, kitobxonlik tanlovlari va xotin-qizlar kasb-hunar markazi faoliyatini muvofiqlashtiradi.",
     room: "UrDU Bosh binosi, 2-qavat, 215-xona",
     hours: "Dushanba–Juma, 14:00–17:30",
-    phone: "+998 (62) 224-67-15",
+    phone: "+998 (94) 981-69-99",
     email: "tashabbus@urdu.uz"
   },
 

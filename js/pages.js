@@ -154,16 +154,12 @@
       <div class="person-body">
         <h3>${esc(h.name)}</h3>
         <div class="person-role">${esc(h.role)}</div>
-        <p>${esc(h.about)}</p>
         <div class="meta">
-          <div><i class="fa-solid fa-door-open"></i><span>${esc(h.room)}</span></div>
-          <div><i class="fa-regular fa-clock"></i><span>Qabul: ${esc(h.hours)}</span></div>
           <div><i class="fa-solid fa-phone"></i><a href="${tel(h.phone)}">${esc(h.phone)}</a></div>
-          <div><i class="fa-solid fa-envelope"></i><a href="mailto:${h.email}">${esc(h.email)}</a></div>
         </div>
       </div>`;
 
-    // Sahifada 1–3-tashabbus sardorlari ko'rsatiladi (markaz rahbari kartasi uslubida)
+    // Sahifada 1–3-tashabbus sardorlari ko'rsatiladi (rahbar kartasi bilan bir xil uslubda)
     $("#leaders").innerHTML = SITE.leaders.filter((l) => l.initiativeId <= 3).map((l) => {
       const i = initiative(l.initiativeId);
       return `
