@@ -70,11 +70,9 @@
         slides.forEach((s, i) => { s.classList.toggle("active", i === cur); s.setAttribute("aria-hidden", i !== cur); });
         dots.forEach((d, i) => d.classList.toggle("active", i === cur));
       };
-      const play = () => { clearInterval(timer); timer = setInterval(() => show(cur + 1), 6000); };
+      const play = () => { clearInterval(timer); timer = setInterval(() => show(cur + 1), 4500); };
       dots.forEach((d, i) => d.addEventListener("click", () => { show(i); play(); }));
       $$("[data-dir]", slider).forEach((b) => b.addEventListener("click", () => { show(cur + Number(b.dataset.dir)); play(); }));
-      slider.addEventListener("mouseenter", () => clearInterval(timer));
-      slider.addEventListener("mouseleave", play);
       play();
     }
 
@@ -154,7 +152,6 @@
     $("#head-card").innerHTML = `
       <div class="person-photo"><img src="${h.photo}" alt="${esc(h.name)}"></div>
       <div class="person-body">
-        <span class="eyebrow">Markaz rahbari</span>
         <h3>${esc(h.name)}</h3>
         <div class="person-role">${esc(h.role)}</div>
         <p>${esc(h.about)}</p>
@@ -166,10 +163,11 @@
         </div>
       </div>`;
 
-    $("#leaders").innerHTML = SITE.leaders.map((l) => {
+    // Sahifada 1–3-tashabbus sardorlari ko'rsatiladi (markaz rahbari kartasi uslubida)
+    $("#leaders").innerHTML = SITE.leaders.filter((l) => l.initiativeId <= 3).map((l) => {
       const i = initiative(l.initiativeId);
       return `
-        <article class="card person-card reveal" style="--c:${i.color}">
+        <article class="card head-card reveal" style="--c:${i.color}">
           <div class="person-photo">
             <img src="${l.photo}" alt="${esc(l.name)}" loading="lazy">
             <span class="tag"><i class="${i.icon}"></i> ${i.id}-tashabbus</span>

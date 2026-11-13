@@ -126,7 +126,7 @@ const SITE = {
      --------------------------------------------------------------- */
   head: {
     name: "Matchonov Sanjarbek Madaminovich",
-    role: "5 Muhim Tashabbus Markazi rahbari",
+    role: "Markaz rahbari",
     photo: "assets/images/leaders/sanjarbek_matchonov.jpg",
     about: "Universitetdagi barcha to'garaklar, sport musobaqalari, IT loyihalar, kitobxonlik tanlovlari va xotin-qizlar kasb-hunar markazi faoliyatini muvofiqlashtiradi.",
     room: "UrDU Bosh binosi, 2-qavat, 215-xona",
