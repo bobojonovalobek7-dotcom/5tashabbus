@@ -167,18 +167,14 @@
     $("#leaders").innerHTML = SITE.leaders.filter((l) => l.initiativeId <= 3).map((l) => {
       const i = initiative(l.initiativeId);
       return `
-        <article class="card head-card reveal" style="--c:${i.color}">
+        <article class="card head-card leader-card reveal" style="--c:${i.color}">
           <div class="person-photo">
             <img src="${l.photo}" alt="${esc(l.name)}" loading="lazy">
-            <span class="tag"><i class="${i.icon}"></i> ${i.id}-tashabbus</span>
           </div>
           <div class="person-body">
             <h3>${esc(l.name)}</h3>
             <div class="person-role">${esc(i.title)} yo'nalishi sardori</div>
-            <p>${esc(l.role)}. ${esc(l.about)}</p>
             <div class="meta">
-              <div><i class="fa-solid fa-door-open"></i><span>${esc(l.room)}</span></div>
-              <div><i class="fa-regular fa-clock"></i><span>${esc(l.hours)}</span></div>
               <div><i class="fa-solid fa-phone"></i><a href="${tel(l.phone)}">${esc(l.phone)}</a></div>
             </div>
           </div>
