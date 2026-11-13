@@ -88,10 +88,36 @@
     if (extra) featured.push(extra);
     $("#featured-clubs").innerHTML = featured.slice(0, 6).map(clubCard).join("");
 
-    const active = SITE.contests.filter(isOpen).sort((a, b) => a.deadline.localeCompare(b.deadline)).slice(0, 3);
-    $("#home-contests").innerHTML = active.length
-      ? active.map(contestCard).join("")
-      : `<div class="empty"><i class="fa-regular fa-calendar-xmark"></i>Hozircha qabul ochiq tanlov yo'q</div>`;
+    // Statistika plitkalari — raqamlar data.js dan hisoblanadi
+    const vocational = SITE.initiatives.find((i) => i.id === 5);
+    const tiles = [
+      ["fa-users", fmt(SITE.totals.students), "Faol talabalar"],
+      ["fa-people-group", SITE.totals.clubs, "To'garaklar"],
+      ["fa-trophy", SITE.contests.length, "Tanlovlar"],
+      ["fa-layer-group", vocational ? vocational.clubsCount : 0, "Kasb-hunar to'garaklari"],
+      ["fa-building-columns", SITE.faculties.length, "Fakultetlar"],
+      ["fa-award", SITE.totals.awards, "Yutuqlar"]
+    ];
+    $("#home-stats").innerHTML = tiles.map(([icon, num, label]) => `
+      <div class="tile">
+        <i class="fa-solid ${icon}"></i>
+        <strong>${num}</strong>
+        <span>${label}</span>
+      </div>`).join("");
+
+    // Tanlovlar ro'yxati: avval qabul ochiqlari (muddati yaqinroq), keyin yakunlanganlar
+    const contests = [...SITE.contests]
+      .sort((a, b) => Number(isOpen(b)) - Number(isOpen(a)) || a.deadline.localeCompare(b.deadline))
+      .slice(0, 5);
+    const dmy = (iso) => iso.split("-").reverse().join(".");
+    $("#home-contests").innerHTML = contests.map((c) => `
+      <a class="contest-row" href="tanlovlar.html#${c.id}">
+        <img src="${c.image}" alt="" loading="lazy">
+        <span>
+          <strong>${esc(c.title)}</strong>
+          <small><i class="fa-regular fa-clock"></i> ${isOpen(c) ? `${dmy(c.deadline)} gacha` : "Yakunlangan"}</small>
+        </span>
+      </a>`).join("");
 
     $("#home-news").innerHTML = SITE.news.map(newsCard).join("");
   }
