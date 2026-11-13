@@ -71,7 +71,6 @@
           <div class="topbar-info">
             <span class="hide-sm"><i class="fa-solid fa-location-dot"></i>${esc(U.address)}</span>
             <a href="${tel(U.phone)}"><i class="fa-solid fa-phone"></i>${esc(U.phone)}</a>
-            <a href="mailto:${U.email}" class="hide-sm"><i class="fa-solid fa-envelope"></i>${esc(U.email)}</a>
           </div>
           <div class="topbar-social">
             ${U.socials.map((s) => `<a href="${s.url}" target="_blank" rel="noopener" aria-label="${s.name}"><i class="${s.icon}"></i></a>`).join("")}

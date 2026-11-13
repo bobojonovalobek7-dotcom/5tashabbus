@@ -317,7 +317,7 @@ main > .section:last-child { padding-bottom: 0; }
 .person-body > p { color: var(--text-2); font-size: .9rem; }
 .person-body .meta { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
 
-.head-card { --c: var(--brand); display: grid; grid-template-columns: 280px 1fr; overflow: hidden; margin-bottom: 20px; }
+.head-card { --c: var(--brand); display: grid; grid-template-columns: 280px 1fr; overflow: hidden; margin-bottom: 16px; }
 .head-card .person-photo { aspect-ratio: auto; min-height: 280px; }
 .head-card .person-body { padding: 28px 32px; gap: 10px; justify-content: center; }
 .head-card .person-body .meta { margin-top: 6px; padding-top: 12px; }

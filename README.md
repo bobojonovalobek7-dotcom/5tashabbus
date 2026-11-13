@@ -66,4 +66,4 @@ So'ng brauzerda `http://127.0.0.1:3000` ni oching. Serverga joylash uchun `deplo
 ## Aloqa
 
 - [urdu.uz](https://urdu.uz) · Urganch shahri, Hamid Olimjon ko'chasi, 14-uy
-- +998 (62) 224-67-00 · info@urdu.uz
+- +998 (94) 981-69-99 · info@urdu.uz

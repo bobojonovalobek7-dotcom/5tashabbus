@@ -11,7 +11,7 @@ const SITE = {
     center: "5 Muhim Tashabbus Markazi",
     address: "Urganch shahri, Hamid Olimjon ko'chasi, 14-uy",
     office: "UrDU Bosh binosi, 2-qavat, 215-xona",
-    phone: "+998 (62) 224-67-00",
+    phone: "+998 (94) 981-69-99",
     youthPhone: "+998 (62) 224-67-15",
     email: "info@urdu.uz",
     centerEmail: "tashabbus@urdu.uz",
@@ -19,9 +19,8 @@ const SITE = {
     hemis: "https://hemis.urdu.uz",
     library: "https://arm.urdu.uz",
     socials: [
-      { name: "Telegram", icon: "fa-brands fa-telegram", url: "https://t.me/urdu_uz" },
-      { name: "Instagram", icon: "fa-brands fa-instagram", url: "https://instagram.com/urdu_uz" },
-      { name: "Facebook", icon: "fa-brands fa-facebook", url: "https://facebook.com/urdu.uz" }
+      { name: "Telegram", icon: "fa-brands fa-telegram", url: "https://t.me/Muxammad_Erimbetov" },
+      { name: "Instagram", icon: "fa-brands fa-instagram", url: "https://instagram.com/muxammad.erimbetov" }
     ]
   },
 
