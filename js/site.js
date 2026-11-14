@@ -14,7 +14,9 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const tel = (p) => "tel:" + p.replace(/[^\d+]/g, "");
   const fmt = (n) => Number(n).toLocaleString("ru-RU").replace(/,/g, " ");
-  const initiative = (id) => SITE.initiatives.find((i) => i.id === Number(id));
+  // 1–5 tashabbuslar va qo'shimcha guruhlar (6 — ilmiy to'garaklar)
+  const initiative = (id) => SITE.groups.find((i) => i.id === Number(id));
+  const groupLabel = (g) => (g.id <= 5 ? `${g.id}-tashabbus` : g.title);
   const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
   /* ---------- Tema (yorug' / qorong'i) ---------- */
@@ -197,7 +199,7 @@
               <div class="field">
                 <label for="j-init">Tashabbus</label>
                 <select id="j-init" name="initiative">
-                  ${SITE.initiatives.map((i) => `<option value="${i.id}">${i.id}. ${esc(i.title)}</option>`).join("")}
+                  ${SITE.groups.map((i) => `<option value="${i.id}">${i.id <= 5 ? i.id + ". " : ""}${esc(i.title)}</option>`).join("")}
                 </select>
               </div>
               <div class="field">
@@ -286,7 +288,7 @@
     const groups = [
       ["Sahifalar", PAGES.filter((p) => has(p[0])).map((p) => [p[1], p[2], p[0], ""])],
       ["Tashabbuslar", SITE.initiatives.filter((i) => has(i.title, i.lead)).map((i) => [`togaraklar.html?t=${i.id}`, "fa-flag", i.title, `${i.id}-tashabbus`])],
-      ["To'garaklar", SITE.clubs.filter((c) => has(c.name, c.category, c.mentor, c.desc)).map((c) => [`togaraklar.html?q=${encodeURIComponent(c.name)}`, "fa-people-group", c.name, c.mentor])],
+      ["To'garaklar", SITE.clubs.filter((c) => has(c.name, c.place, c.mentors.join(" "))).map((c) => [`togaraklar.html?q=${encodeURIComponent(c.name)}`, "fa-people-group", c.name, c.mentors.join(", ")])],
       ["Tanlovlar", SITE.contests.filter((c) => has(c.title, c.desc)).map((c) => [`tanlovlar.html#${c.id}`, "fa-trophy", c.title, c.period])],
       ["Kitoblar", SITE.books.filter((b) => has(b.title, b.author)).map((b) => ["kutubxona.html", "fa-book", b.title, b.author])]
     ].filter((g) => g[1].length);
@@ -395,29 +397,24 @@
 
   function clubCard(c) {
     const i = initiative(c.initiativeId);
-    const pct = Math.min(100, Math.round((c.enrolled / c.capacity) * 100));
-    const left = c.capacity - c.enrolled;
+    const mentors = c.mentors.length ? c.mentors : ["Rahbar belgilanmagan"];
+    const phones = c.phones.map((p) => (p.tel ? `<a href="tel:${p.tel}">${esc(p.text)}</a>` : esc(p.text))).join(", ");
     return `
       <article class="card card-hover club-card" style="--c:${i.color}">
         <div class="club-top">
-          <span class="tag"><i class="${i.icon}"></i> ${i.id}-tashabbus</span>
-          <span class="tag tag-muted">${esc(c.category)}</span>
+          <span class="tag"><i class="${i.icon}"></i> ${esc(groupLabel(i))}</span>
+          ${c.students ? `<span class="tag tag-muted"><i class="fa-solid fa-users"></i> ${c.students} o'quvchi</span>` : ""}
         </div>
         <h3>${esc(c.name)}</h3>
-        <p>${esc(c.desc)}</p>
         <div class="mentor">
-          ${avatar(c.mentor, c.photo)}
-          <div><strong>${esc(c.mentor)}</strong><span>${esc(c.mentorRole)}</span></div>
+          ${avatar(mentors[0])}
+          <div><strong>${esc(mentors.join(", "))}</strong>${phones ? `<span>${phones}</span>` : ""}</div>
         </div>
         <div class="meta">
-          <div><i class="fa-regular fa-clock"></i><span>${esc(c.schedule)}</span></div>
-          <div><i class="fa-solid fa-location-dot"></i><span>${esc(c.place)}</span></div>
+          ${c.schedule ? `<div><i class="fa-regular fa-clock"></i><span>${esc(c.schedule)}</span></div>` : ""}
+          ${c.place ? `<div><i class="fa-solid fa-location-dot"></i><span>${esc(c.place)}</span></div>` : ""}
         </div>
         <div class="club-foot">
-          <div class="seats">
-            <small>${c.enrolled} / ${c.capacity} talaba · ${left > 0 ? `${left} o'rin bor` : "o'rin qolmagan"}</small>
-            <div class="progress"><span style="width:${pct}%"></span></div>
-          </div>
           <button type="button" class="btn btn-primary btn-sm" data-join="${c.id}">A'zo bo'lish</button>
         </div>
       </article>`;
@@ -524,5 +521,5 @@
   renderModals();
   bindEvents();
 
-  window.UI = { $, $$, esc, tel, fmt, initiative, initials, avatar, clubCard, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
+  window.UI = { $, $$, esc, tel, fmt, initiative, groupLabel, initials, avatar, clubCard, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
 })();

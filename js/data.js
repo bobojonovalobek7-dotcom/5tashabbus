@@ -36,15 +36,7 @@ const SITE = {
       color: "#7C3AED",
       icon: "fa-solid fa-palette",
       image: "assets/images/tashabbus_1_art.jpg",
-      clubsCount: 18,
-      students: 2450,
-      awards: 38,
-      highlights: [
-        "\"Dutorchi qizlar\" milliy ansambli",
-        "\"Nihol\" talabalar teatr-studiyasi",
-        "Xorazm maqom va dostonchilik maktabi",
-        "Miniatyura va tasviriy san'at ustaxonasi"
-      ]
+      awards: 38
     },
     {
       id: 2,
@@ -54,15 +46,7 @@ const SITE = {
       color: "#16A34A",
       icon: "fa-solid fa-volleyball",
       image: "assets/images/tashabbus_2_sport.jpg",
-      clubsCount: 22,
-      students: 4120,
-      awards: 56,
-      highlights: [
-        "Voleybol va mini-futbol talabalar ligasi",
-        "Shaxmat va shashka klubi",
-        "Milliy kurash va dzyudo maktabi",
-        "Zamonaviy sport majmuasi va trenajyor zallari"
-      ]
+      awards: 56
     },
     {
       id: 3,
@@ -72,15 +56,7 @@ const SITE = {
       color: "#0284C7",
       icon: "fa-solid fa-laptop-code",
       image: "assets/images/tashabbus_3_it.jpg",
-      clubsCount: 16,
-      students: 3890,
-      awards: 29,
-      highlights: [
-        "Web va mobil dasturlash laboratoriyasi",
-        "Sun'iy intellekt va robototexnika klubi",
-        "Kiberxavfsizlik va tarmoqlar",
-        "\"UrDU Hackathon\" va startap inkubatori"
-      ]
+      awards: 29
     },
     {
       id: 4,
@@ -90,15 +66,7 @@ const SITE = {
       color: "#D97706",
       icon: "fa-solid fa-book-open-reader",
       image: "assets/images/tashabbus_4_books.jpg",
-      clubsCount: 15,
-      students: 4980,
-      awards: 44,
-      highlights: [
-        "\"Zukko kitobxon\" munozara klubi",
-        "Notiqlik va debat akademiyasi",
-        "\"Eng yaxshi kitobxon talaba\" tanlovi",
-        "Adiblar bilan ma'naviy-ma'rifiy uchrashuvlar"
-      ]
+      awards: 44
     },
     {
       id: 5,
@@ -108,15 +76,7 @@ const SITE = {
       color: "#DB2777",
       icon: "fa-solid fa-person-dress",
       image: "assets/images/tashabbus_5_crafts.jpg",
-      clubsCount: 14,
-      students: 3120,
-      awards: 25,
-      highlights: [
-        "Liboslar dizayni va tikuvchilik studiyasi",
-        "Pazandachilik va qandolatchilik maktabi",
-        "Xorazm kashtachiligi va kulolchilik",
-        "Grafik dizayn, SMM va onlayn savdo kurslari"
-      ]
+      awards: 25
     }
   ],
 
@@ -188,146 +148,96 @@ const SITE = {
   ],
 
   /* ---------------------------------------------------------------
-     TO'GARAKLAR
-     photo — faqat murabbiyning o'z surati bo'lsa qo'yiladi,
-     aks holda ism bosh harflari ko'rsatiladi.
+     TO'GARAKLAR — "Jami to'garaklar ro'yxati.xlsx" (2026–2027 o'quv yili)
+     initiativeId: 1–5 tashabbuslar, 6 — ilmiy to'garaklar.
+     students — o'quvchilar soni, mentors — rahbarlar, phones — telefonlar.
      --------------------------------------------------------------- */
-  clubs: [
+  extraGroups: [
     {
-      id: "dutorchi-qizlar", initiativeId: 1,
-      name: "\"Dutorchi qizlar\" ansambli", category: "Musiqa",
-      mentor: "Mavjuda Yoqubova", mentorRole: "O'zbekistonda xizmat ko'rsatgan artist",
-      photo: "assets/images/teachers/mavjuda_yoqubova.jpg",
-      place: "Madaniyat saroyi, 204-xona", schedule: "Dush, Chor, Juma · 15:00–17:00",
-      enrolled: 42, capacity: 50,
-      desc: "Xorazm dutor san'ati, maqomlar va xalq kuylarini professional darajada o'rganish."
-    },
-    {
-      id: "nihol-teatr", initiativeId: 1,
-      name: "\"Nihol\" teatr-studiyasi", category: "Teatr",
-      mentor: "Rustam Otajonov", mentorRole: "Rejissyor",
-      photo: "assets/images/teachers/rustam_otajonov.jpg",
-      place: "Universitet katta zali sahnasi", schedule: "Sesh, Pay, Shan · 16:00–18:00",
-      enrolled: 35, capacity: 40,
-      desc: "Aktyorlik mahorati, sahna nutqi, pantomima va talabalar spektakllarini sahnalashtirish."
-    },
-    {
-      id: "tasviriy-sanat", initiativeId: 1,
-      name: "Miniatyura va tasviriy san'at", category: "Tasviriy san'at",
-      mentor: "Azizbek Matkarimov", mentorRole: "Badiiy akademiya a'zosi",
-      photo: "assets/images/teachers/azizbek_matkarimov.jpg",
-      place: "San'atshunoslik fakulteti, 102-ustaxona", schedule: "Dush, Juma · 14:00–16:30",
-      enrolled: 28, capacity: 30,
-      desc: "Sharq miniatyurasi, moybo'yoq, akvarel va zamonaviy grafik kompozitsiya."
-    },
-    {
-      id: "voleybol", initiativeId: 2,
-      name: "Voleybol — UrDU terma jamoasi", category: "Jamoaviy sport",
-      mentor: "Sport klubi murabbiylari", mentorRole: "Universitet sport klubi",
-      place: "Yopiq sport zali №1", schedule: "Dush, Chor, Juma · 17:00–19:00",
-      enrolled: 30, capacity: 36,
-      desc: "Qizlar va yigitlar terma jamoasi, Universiadaga tayyorgarlik."
-    },
-    {
-      id: "shaxmat", initiativeId: 2,
-      name: "Shaxmat klubi", category: "Aqliy sport",
-      mentor: "Umid Shomurodov", mentorRole: "FIDE ustasi",
-      place: "Fizika-matematika binosi, 312-xona", schedule: "Sesh, Pay · 15:30–17:30",
-      enrolled: 65, capacity: 80,
-      desc: "Klassik shaxmat, rapid va blits, partiyalar tahlili va turnirlar."
-    },
-    {
-      id: "kurash", initiativeId: 2,
-      name: "Milliy kurash va dzyudo", category: "Yakkakurash",
-      mentor: "Botir Quryozov", mentorRole: "Xalqaro toifadagi hakam",
-      place: "Yakkakurashlar sport zali", schedule: "Dush, Chor, Juma · 16:30–18:30",
-      enrolled: 48, capacity: 50,
-      desc: "O'zbek milliy kurashi va dzyudo texnikasi, jismoniy chidamlilik."
-    },
-    {
-      id: "web-dasturlash", initiativeId: 3,
-      name: "Web va mobil dasturlash", category: "Dasturlash",
-      mentor: "Temur Xo'jayev", mentorRole: "Senior dasturchi",
-      photo: "assets/images/teachers/temur_xojayev.jpg",
-      place: "IT Park UrDU Lab, 401-xona", schedule: "Sesh, Pay, Shan · 15:00–17:30",
-      enrolled: 95, capacity: 100,
-      desc: "HTML, CSS, JavaScript, React, Node.js va Flutter yordamida real loyihalar yaratish."
-    },
-    {
-      id: "suniy-intellekt", initiativeId: 3,
-      name: "Sun'iy intellekt va robototexnika", category: "AI va robototexnika",
-      mentor: "Farhod Polvonov", mentorRole: "PhD",
-      place: "Raqamli texnologiyalar binosi, 105-xona", schedule: "Dush, Chor · 16:00–18:30",
-      enrolled: 54, capacity: 60,
-      desc: "Python, mashinali o'qitish, Arduino va sensorlar asosida robot tizimlari."
-    },
-    {
-      id: "kiberxavfsizlik", initiativeId: 3,
-      name: "Kiberxavfsizlik va tarmoqlar", category: "Xavfsizlik",
-      mentor: "Otabek Sodiqov", mentorRole: "Cisco va CEH sertifikatlari",
-      place: "IT Park UrDU Lab, 403-xona", schedule: "Chor, Shan · 14:30–17:00",
-      enrolled: 40, capacity: 45,
-      desc: "Axborot xavfsizligi, tarmoq himoyasi va axloqiy xakerlik asoslari."
-    },
-    {
-      id: "grafik-dizayn", initiativeId: 3,
-      name: "Grafik dizayn va SMM", category: "Dizayn",
-      mentor: "Jasur Matyoqubov", mentorRole: "Art-direktor",
-      place: "IT Park UrDU Lab, 302-xona", schedule: "Dush, Pay · 16:00–18:30",
-      enrolled: 28, capacity: 30,
-      desc: "Brending, ijtimoiy tarmoqlar uchun kontent, Photoshop, Illustrator va Figma."
-    },
-    {
-      id: "zukko-kitobxon", initiativeId: 4,
-      name: "\"Zukko kitobxon\" klubi", category: "Kitobxonlik",
-      mentor: "Saida Otamurodova", mentorRole: "ARM bo'lim boshlig'i",
-      photo: "assets/images/teachers/saida_otamurodova.jpg",
-      place: "ARM mutolaa zali", schedule: "Har chorshanba · 15:00–17:00",
-      enrolled: 110, capacity: 120,
-      desc: "Oyiga 2 ta asar mutolaasi, erkin muhokama va mualliflar bilan onlayn uchrashuvlar."
-    },
-    {
-      id: "notiqlik", initiativeId: 4,
-      name: "Notiqlik va debat akademiyasi", category: "Notiqlik",
-      mentor: "Sherzodbek Matkarimov", mentorRole: "TEDx spikeri",
-      place: "Filologiya fakulteti konferens-zali", schedule: "Juma, Shan · 15:30–17:30",
-      enrolled: 72, capacity: 80,
-      desc: "Karl Popper va Britaniya parlamenti formatlarida debat, ritorika san'ati."
-    },
-    {
-      id: "liboslar-dizayni", initiativeId: 5,
-      name: "Liboslar dizayni va tikuvchilik", category: "Tikuvchilik",
-      mentor: "Gulchehra Ibragimova", mentorRole: "Dizayner-usta",
-      photo: "assets/images/teachers/gulchehra_ibragimova.jpg",
-      place: "Yoshlar markazi, tikuvchilik sexi", schedule: "Dush, Chor, Juma · 14:30–17:30",
-      enrolled: 55, capacity: 60,
-      desc: "Atlas va adras liboslar, zamonaviy bichim, kashtachilik va shaxsiy brend yaratish."
-    },
-    {
-      id: "pazandachilik", initiativeId: 5,
-      name: "Pazandachilik va qandolatchilik", category: "Kulinariya",
-      mentor: "Zilola Yusupova", mentorRole: "Master-shef",
-      photo: "assets/images/teachers/zilola_yusupova.jpg",
-      place: "Talabalar turar joyi, oshxona-laboratoriya", schedule: "Sesh, Shan · 15:00–18:00",
-      enrolled: 48, capacity: 50,
-      desc: "Milliy pishiriqlar, Yevropa shirinliklari, tort bezash va katering asoslari."
-    },
-    {
-      id: "hunarmandchilik", initiativeId: 5,
-      name: "Kashtachilik va kulolchilik", category: "Hunarmandchilik",
-      mentor: "Anvar Omonov", mentorRole: "Hunarmandlar uyushmasi a'zosi",
-      place: "San'atshunoslik fakulteti, milliy ustaxona", schedule: "Chor, Shan · 14:00–16:30",
-      enrolled: 18, capacity: 25,
-      desc: "Xorazm kashtachiligi, zardo'zlik, kulolchilik va suvenirlar tayyorlash."
-    },
-    {
-      id: "onlayn-savdo", initiativeId: 5,
-      name: "Raqamli tadbirkorlik va onlayn savdo", category: "Tadbirkorlik",
-      mentor: "Nilufar Madaminova", mentorRole: "Biznes-trener",
-      place: "Startap markazi, kovorking", schedule: "Pay, Shan · 15:00–17:00",
-      enrolled: 62, capacity: 70,
-      desc: "O'z biznesini boshlash, marketpleyslarda savdo, SMM va moliyaviy savodxonlik."
+      id: 6,
+      title: "Ilmiy to'garaklar",
+      lead: "Fan, tadqiqot, til va tafakkurga oid ilmiy to'garaklar.",
+      color: "#0D9488",
+      icon: "fa-solid fa-flask"
     }
+  ],
+
+  clubs: [
+    {"id": "t1", "initiativeId": 2, "name": "Badminton (erkaklar va ayollar)", "schedule": "Dushanba, Chorshanba, Juma · 14:00–16:00", "place": "Texnika fakulteti", "students": 377, "mentors": ["Bekchanov M.", "Sailxonova N."], "phones": [{"text": "+998 99 122-75-02", "tel": "+998991227502"}, {"text": "+998 88 887-78-08", "tel": "+998888877808"}]},
+    {"id": "t2", "initiativeId": 2, "name": "Basketbol (erkaklar va ayollar)", "schedule": "Dushanba, Chorshanba, Juma · 10:00–12:00", "place": "UrDU sport zali", "students": 467, "mentors": ["Hasanov O.", "Shamurotova B.", "Egamberdiyev B."], "phones": [{"text": "+998 97 459-36-18", "tel": "+998974593618"}, {"text": "+998 91 436-96-70", "tel": "+998914369670"}, {"text": "+998 87 025-14-41", "tel": "+998870251441"}]},
+    {"id": "t3", "initiativeId": 2, "name": "Voleybol (erkaklar va ayollar)", "schedule": "Dushanba, Chorshanba, Juma · 17:00–18:30", "place": "UrDU sport zali", "students": 428, "mentors": ["Masharipov F.", "Ro‘zmetov R.", "Ro‘zmetov N.", "Saforboyev N.", "Ro‘zmetov A."], "phones": [{"text": "+998 93 282-09-00", "tel": "+998932820900"}, {"text": "+998 97 513-87-88", "tel": "+998975138788"}, {"text": "+998 94 230-70-60", "tel": "+998942307060"}, {"text": "+998 90 431-01-08", "tel": "+998904310108"}, {"text": "+998 99 526-69-99", "tel": "+998995266999"}]},
+    {"id": "t4", "initiativeId": 2, "name": "Qo‘l to‘pi (erkaklar va ayollar)", "schedule": "Seshanba, Payshanba, Shanba · 16:00–17:30", "place": "UrDU sport zali", "students": 409, "mentors": ["Karimova A.", "Xasanova Sh."], "phones": [{"text": "+998 93 284-17-71", "tel": "+998932841771"}, {"text": "+998 93 922-99-17", "tel": "+998939229917"}]},
+    {"id": "t5", "initiativeId": 2, "name": "Yengil atletika (erkaklar va ayollar)", "schedule": "Dushanba, Seshanba, Chorshanba, Payshanba, Juma · 15:00–17:00", "place": "Yoshlik sport majmuasi", "students": 425, "mentors": ["Yusupov B.", "Sobirov M.", "Sherov Z."], "phones": [{"text": "+998 88 600-85-85", "tel": "+998886008585"}, {"text": "+998 91 861-18-00", "tel": "+998918611800"}, {"text": "+998 93 921-88-08", "tel": "+998939218808"}]},
+    {"id": "t6", "initiativeId": 2, "name": "Kurash", "schedule": "Seshanba, Payshanba, Shanba · 16:00–18:00", "place": "UrDU kurash zali", "students": 318, "mentors": ["Qodirov S.", "Matvafoyev A."], "phones": [{"text": "+998 94 114-81-81", "tel": "+998941148181"}, {"text": "+998 91 431-00-07", "tel": "+998914310007"}]},
+    {"id": "t7", "initiativeId": 2, "name": "Dzyudo (erkaklar va ayollar)", "schedule": "Dushanba, Chorshanba, Juma · 16:00–17:30", "place": "UrDU kurash zali", "students": 189, "mentors": ["Iskandarov N.", "Atajonova G."], "phones": [{"text": "+998 91 275-95-55", "tel": "+998912759555"}, {"text": "+998 90 559-59-75", "tel": "+998905595975"}]},
+    {"id": "t8", "initiativeId": 2, "name": "Erkin kurash va yunon-rum kurashi", "schedule": "Dushanba, Chorshanba, Juma · 17:00–19:00", "place": "UrDU kurash zali", "students": 183, "mentors": ["Satipov B.", "Jumaniyazova M."], "phones": [{"text": "+998 93 093-92-29", "tel": "+998930939229"}, {"text": "+998 99 104-69-93", "tel": "+998991046993"}]},
+    {"id": "t9", "initiativeId": 2, "name": "Stol tennisi", "schedule": "Dushanba, Seshanba, Chorshanba, Payshanba, Juma · 17:00", "place": "Kimyo texnologiyalari fakulteti", "students": 178, "mentors": ["Kenjayev S.", "Maxmudov Y."], "phones": [{"text": "+998 94 230-60-70", "tel": "+998942306070"}, {"text": "+998 90 430-01-00", "tel": "+998904300100"}]},
+    {"id": "t10", "initiativeId": 2, "name": "Futbol", "schedule": "Dushanba, Seshanba, Chorshanba, Payshanba, Juma · 14:00", "place": "UrDU sport maydoni", "students": 497, "mentors": ["Ataniyozov B.", "Yusufboyev Sh.", "Sadullayev A."], "phones": [{"text": "+998 50 070-86-00", "tel": "+998500708600"}, {"text": "+998 91 424-95-96", "tel": "+998914249596"}, {"text": "+998 97 600-76-77", "tel": "+998976007677"}]},
+    {"id": "t11", "initiativeId": 2, "name": "Shashka va shaxmat", "schedule": "Seshanba, Chorshanba, Juma · 15:00–17:00", "place": "5-son TTJ, 4-xona", "students": 165, "mentors": ["Bobojonov N."], "phones": [{"text": "+998 20 012-84-94", "tel": "+998200128494"}]},
+    {"id": "t12", "initiativeId": 2, "name": "Og‘ir atletika", "schedule": "Dushanba, Chorshanba, Juma · 15:00–17:00", "place": "UrDU kurash zali", "students": 192, "mentors": ["Ozodov K."], "phones": [{"text": "+998 91 779-97-97", "tel": "+998917799797"}]},
+    {"id": "t13", "initiativeId": 2, "name": "Regbi-7 (erkaklar va ayollar)", "schedule": "Dushanba, Chorshanba, Juma · 15:00–17:00", "place": "UrDU sport maydoni", "students": 389, "mentors": ["Gilijova A.", "Abdullayev Z."], "phones": [{"text": "+998 94 314-47-07", "tel": "+998943144707"}, {"text": "+998 90 713-07-99", "tel": "+998907130799"}]},
+    {"id": "t14", "initiativeId": 2, "name": "Suzish", "schedule": "Seshanba, Chorshanba, Juma · 14:00–16:00", "place": "Urganch Olimpiya va Paralimpiya STM", "students": 87, "mentors": ["Raximov Q.", "Sobirova L."], "phones": [{"text": "+998 91 918-08-98", "tel": "+998919180898"}, {"text": "+998 99 134-54-52", "tel": "+998991345452"}]},
+    {"id": "t15", "initiativeId": 6, "name": "Sheva materiallarini yig‘ish va tadqiq qilish", "schedule": "Dushanba · 14:00", "place": "5-son TTJ", "students": 15, "mentors": ["Norbo‘tayeva Sh.R."], "phones": [{"text": "+998 97 792-18-84", "tel": "+998977921884"}]},
+    {"id": "t16", "initiativeId": 3, "name": "Kompyuter lingvistikasi", "schedule": "Juma · 10:00", "place": "313-xona", "students": 14, "mentors": ["Sultonova D.A."], "phones": [{"text": "+998 93 468-24-60", "tel": "+998934682460"}]},
+    {"id": "t17", "initiativeId": 4, "name": "Arab tili", "schedule": "Har oyning 3-juma kuni · 13:00", "place": "339-xona", "students": 10, "mentors": ["Bobojonova X.K."], "phones": [{"text": "+998 99 966-23-74", "tel": "+998999662374"}]},
+    {"id": "t18", "initiativeId": 4, "name": "Fors tili", "schedule": "Har oyning 3-haftasi · 14:00", "place": "324-xona", "students": 15, "mentors": ["Rajabova Umida B."], "phones": [{"text": "+998 97 221-37-27", "tel": "+998972213727"}]},
+    {"id": "t19", "initiativeId": 6, "name": "Xorazm shevashunosligi", "schedule": "Chorshanba · 13:00", "place": "339-xona", "students": 15, "mentors": ["Alimova Sh."], "phones": [{"text": "+998 94 316-48-30", "tel": "+998943164830"}]},
+    {"id": "t20", "initiativeId": 6, "name": "Yosh tilshunoslar", "schedule": "Juma · 13:30", "place": "5-son TTJ", "students": 14, "mentors": ["Jumaniyozova D.M."], "phones": [{"text": "+998 99 576-41-24", "tel": "+998995764124"}]},
+    {"id": "t21", "initiativeId": 6, "name": "Iqtidorli yoshlar", "schedule": "Har oyning 3-payshanba kuni · 14:00", "place": "338-xona", "students": 22, "mentors": ["Boymuratova X.A."], "phones": [{"text": "+998 93 743-69-79", "tel": "+998937436979"}]},
+    {"id": "t22", "initiativeId": 6, "name": "Yosh folklorshunos", "schedule": "Har oyning 3-chorshanba kuni · 14:00", "place": "5-son TTJ", "students": 15, "mentors": ["Ochilova O.B."], "phones": [{"text": "+998 99 347-89-09", "tel": "+998993478909"}]},
+    {"id": "t23", "initiativeId": 3, "name": "Tarmoq xavfsizligi va veb xavfsizlik", "schedule": "Payshanba · 10:30–11:50", "place": "Intellektual ilmlar va texnologiyalar fakulteti, Inkubatsiya markazi", "students": 25, "mentors": ["Matyaqubov Og‘abek Baxrombek o‘g‘li"], "phones": [{"text": "+998 93 750-10-95", "tel": "+998937501095"}]},
+    {"id": "t24", "initiativeId": 3, "name": "Python dasturlash tili", "schedule": "Chorshanba, Juma · 16:00", "place": "Intellektual ilmlar va texnologiyalar fakulteti, Inkubatsiya markazi", "students": 24, "mentors": ["Boltayev Rustam"], "phones": [{"text": "+998 91 277-99-97", "tel": "+998912779997"}]},
+    {"id": "t25", "initiativeId": 3, "name": "Algoritmlar va dasturlash", "schedule": "Juma (juft hafta) 10:30; Shanba (toq hafta) 14:00", "place": "5-son TTJ, 4-xona", "students": 26, "mentors": ["Madatov X.A."], "phones": [{"text": "+998 93 922-32-72", "tel": "+998939223272"}]},
+    {"id": "t26", "initiativeId": 3, "name": "Artificial Intelligence and Machine Learning", "schedule": "Seshanba, Chorshanba · 14:00", "place": "5-son TTJ, 4-xona", "students": 25, "mentors": ["Mattiyev J.M."], "phones": [{"text": "+998 99 585-42-23", "tel": "+998995854223"}]},
+    {"id": "t27", "initiativeId": 3, "name": "Tarmoq administratorligi", "schedule": "Chorshanba, Juma · 16:00", "place": "Intellektual ilmlar va texnologiyalar fakulteti, Inkubatsiya markazi", "students": 24, "mentors": ["Olimov Olimboy Otabekovich"], "phones": [{"text": "+998 90 738-90-07", "tel": "+998907389007"}]},
+    {"id": "t28", "initiativeId": 3, "name": "Robototexnika", "schedule": "Chorshanba, Juma · 15:00", "place": "Intellektual ilmlar va texnologiyalar fakulteti, Inkubatsiya markazi", "students": 28, "mentors": ["Omonov Ibratbek"], "phones": [{"text": "+998 97 792-94-94", "tel": "+998977929494"}]},
+    {"id": "t29", "initiativeId": 3, "name": "Kompyuter tarmoqlari", "schedule": "Dushanba · 14:00", "place": "Intellektual ilmlar va texnologiyalar fakulteti, Inkubatsiya markazi", "students": 20, "mentors": ["Matsapayev Jamshidbek"], "phones": [{"text": "+998 99 967-01-27", "tel": "+998999670127"}]},
+    {"id": "t30", "initiativeId": 3, "name": "Dasturlash", "schedule": "Dushanba, Payshanba · 15:00", "place": "Intellektual ilmlar va texnologiyalar fakulteti, Inkubatsiya markazi", "students": 30, "mentors": ["Ibragimov Muhiddin Faxraddin o‘g‘li"], "phones": [{"text": "+998 97 759-15-32", "tel": "+998977591532"}]},
+    {"id": "t31", "initiativeId": 3, "name": "Veb dasturlash", "schedule": "Payshanba · 14:00", "place": "Intellektual ilmlar va texnologiyalar fakulteti, Inkubatsiya markazi", "students": 25, "mentors": ["Sharipov Sirojbek Ravshanbek o‘g‘li"], "phones": [{"text": "+998 90 579-09-29", "tel": "+998905790929"}]},
+    {"id": "t32", "initiativeId": 5, "name": "Pazandachilik", "schedule": "Chorshanba · 16:00", "place": "Texnopark", "students": 30, "mentors": ["Ochilova S."], "phones": [{"text": "+998 93 922-09-12", "tel": "+998939220912"}]},
+    {"id": "t33", "initiativeId": 1, "name": "\"Art Decor\"", "schedule": "Juma · 14:00", "place": "XTF-107", "students": 30, "mentors": ["Xudayberganov Erkavoy Xaitbayevich"], "phones": [{"text": "+998 97 090-36-12", "tel": "+998970903612"}]},
+    {"id": "t34", "initiativeId": 5, "name": "Matolarga naqsh berish va pardozlash", "schedule": "Juma · 16:00", "place": "XTF-109", "students": 15, "mentors": ["Matkarimova D.B."], "phones": [{"text": "+998 93 752-18-98", "tel": "+998937521898"}]},
+    {"id": "t35", "initiativeId": 5, "name": "\"Libos konstruktor texnologi\"", "schedule": "Chorshanba · 16:00", "place": "QXMT-108", "students": 30, "mentors": ["Matchanova Gulrux Xaytmatovna"], "phones": [{"text": "+998 88 857-15-11", "tel": "+998888571511"}]},
+    {"id": "t36", "initiativeId": 5, "name": "Milliy dizayn", "schedule": "Juma · 16:00", "place": "QXMT-107", "students": 30, "mentors": ["Salayeva Nozima Sultanovna"], "phones": [{"text": "+998 93 465-55-60", "tel": "+998934655560"}]},
+    {"id": "t37", "initiativeId": 4, "name": "\"FoodTech English Club\"", "schedule": "Seshanba, Payshanba", "place": "", "students": null, "mentors": ["Sadullayeva Maftuna"], "phones": []},
+    {"id": "t38", "initiativeId": 1, "name": "Talabalar teatr studiyasi", "schedule": "Seshanba · 16:00", "place": "TTJ ma’naviyat xonasi", "students": 9, "mentors": ["Artikova Manzura Atabayevna"], "phones": [{"text": "+998 91 424-21-12", "tel": "+998914242112"}]},
+    {"id": "t39", "initiativeId": 3, "name": "Kompyuter texnologiyalari", "schedule": "", "place": "", "students": null, "mentors": ["Abdukarimov Zafarbek Anvarbekovich"], "phones": []},
+    {"id": "t40", "initiativeId": 4, "name": "Yosh notiqlar", "schedule": "Payshanba · 12:00", "place": "QXMT-103", "students": 15, "mentors": ["Davletova Gulnora Atanazarovna"], "phones": [{"text": "+998 99 735-74-63", "tel": "+998997357463"}]},
+    {"id": "t41", "initiativeId": 4, "name": "Zakovat", "schedule": "", "place": "", "students": null, "mentors": ["Nurmetov Sardor Baxtiyorovich"], "phones": []},
+    {"id": "t42", "initiativeId": 2, "name": "Mini futbol", "schedule": "Chorshanba · 15:00", "place": "Fakultet sport maydoni", "students": 30, "mentors": ["Abdukarimov Zafarbek Anvarbekovich"], "phones": [{"text": "+998 99 968-81-80", "tel": "+998999688180"}]},
+    {"id": "t43", "initiativeId": 6, "name": "Yosh texnolog", "schedule": "Chorshanba · 14:00", "place": "XTF-101 (konferensiya xonasi)", "students": 10, "mentors": ["Aitova Shaxlo Kamilovna"], "phones": [{"text": "+998 93 289-82-89", "tel": "+998932898289"}]},
+    {"id": "t44", "initiativeId": 4, "name": "Turk tili", "schedule": "Dushanba, Chorshanba · 13:00", "place": "QXMT-105", "students": 25, "mentors": ["Otaboyeva Gulshanbonu Inoyat qizi"], "phones": [{"text": "+998 77 877-88-38", "tel": "+998778778838"}]},
+    {"id": "t45", "initiativeId": 3, "name": "Smart Process AI", "schedule": "Chorshanba · 16:00", "place": "QXMT-106", "students": 20, "mentors": ["T.S.Saitmuratov"], "phones": []},
+    {"id": "t46", "initiativeId": 6, "name": "Yosh faylasuflar", "schedule": "Chorshanba · 16:00", "place": "Tarix va huquq fakulteti, ARM 1-zal", "students": 33, "mentors": ["Kamilov Abror"], "phones": [{"text": "+998 90 559-95-59", "tel": "+998905599559"}]},
+    {"id": "t47", "initiativeId": 4, "name": "Tarixni ruscha o‘rganamiz", "schedule": "Dushanba, Juma · 11:00", "place": "Tarix va huquq fakulteti, Besh tashabbus xonasi", "students": 15, "mentors": ["Aliyeva Oygul"], "phones": [{"text": "+998 93 721-83-82", "tel": "+998937218382"}]},
+    {"id": "t48", "initiativeId": 6, "name": "Yosh sudyalar", "schedule": "Payshanba · 17:00", "place": "Tarix va huquq fakulteti, 408-xona", "students": 22, "mentors": ["Rahimberganov Sardor"], "phones": [{"text": "+998 95 575-44-11", "tel": "+998955754411"}]},
+    {"id": "t49", "initiativeId": 5, "name": "Issiqxona va parnik xo‘jaligini tashkil etish", "schedule": "Juma · 13:30", "place": "TATU issiqxonasi", "students": 24, "mentors": ["Abdullayev Dadaxon Murodbekovich", "Yoqubov Diyorbek Zafar o‘g‘li"], "phones": [{"text": "+998 50 000-75-00", "tel": "+998500007500"}]},
+    {"id": "t50", "initiativeId": 5, "name": "Gulchilik", "schedule": "Seshanba · 15:30", "place": "TATU issiqxonasi", "students": 24, "mentors": ["Ismayilova Intizor", "Babajanova Hulkar Madraximovna", "Urinova Dilfuza Djumabayevna"], "phones": [{"text": "+998 91 430-30-08", "tel": "+998914303008"}, {"text": "+998 90 438-72-35", "tel": "+998904387235"}]},
+    {"id": "t51", "initiativeId": 6, "name": "Didaktik ko‘rgazmalar loyihalarini yaratish", "schedule": "Chorshanba · 15:30", "place": "5-son TTJ", "students": 24, "mentors": ["Matsaidova Sayyora Xudayberganovna"], "phones": [{"text": "+998 94 111-90-94", "tel": "+998941119094"}]},
+    {"id": "t52", "initiativeId": 5, "name": "Buxgalteriya hisobi va audit", "schedule": "Payshanba · 16:00", "place": "Masofaviy shaklda (Telegram):, materiallar — t.me/+HHNXv7jcuC0wNzVi, savollar — t.me/urdubuxgaltertogaragi", "students": 100, "mentors": ["Saitmuratov Saitmurat (dotsent, PhD)", "Eshniyazova Yulduz (dotsent, PhD)"], "phones": [{"text": "+998 90 951-47-30", "tel": "+998909514730"}]},
+    {"id": "t53", "initiativeId": 5, "name": "Yosh gidlar", "schedule": "Seshanba, Payshanba · 10:00", "place": "Universitet binosi", "students": 40, "mentors": ["To‘rayev Og‘abek Kaxramanovich", "Kuralbayev Jo‘rabek Aybekovich"], "phones": [{"text": "+998 95 771-44-77", "tel": "+998957714477"}]},
+    {"id": "t54", "initiativeId": 6, "name": "Matematika 1-guruh", "schedule": "Dushanba 13:30–14:30; Seshanba 11:30–12:30; Payshanba 13:30–14:30", "place": "S-222, S-215", "students": 25, "mentors": ["J.U.Xujamov", "S.A.Bekmetova", "B.M.Sultanov"], "phones": [{"text": "+998 94 230-44-71", "tel": "+998942304471"}, {"text": "+998 97 211-95-67", "tel": "+998972119567"}, {"text": "+998 91 992-36-36", "tel": "+998919923636"}]},
+    {"id": "t55", "initiativeId": 6, "name": "Matematika 2-guruh", "schedule": "Seshanba 10:30–11:30; Chorshanba 11:30–12:30; Payshanba 11:30–12:30; Juma 11:30–12:30", "place": "S-217, S-215", "students": 25, "mentors": ["R.A.Sharipov", "M.D.Vaisova", "J.SH.Abdullayev", "S.A.Bekmetova"], "phones": [{"text": "+998 94 230-18-80", "tel": "+998942301880"}, {"text": "+998 97 603-21-75", "tel": "+998976032175"}, {"text": "+998 91 435-88-07", "tel": "+998914358807"}, {"text": "+998 97 211-95-67", "tel": "+998972119567"}]},
+    {"id": "t56", "initiativeId": 6, "name": "Matematika 3-guruh", "schedule": "Dushanba 11:30–12:30; Seshanba 15:30–16:30; Chorshanba 11:30–12:30; Juma 10:00–11:00", "place": "S-217", "students": 25, "mentors": ["J.SH.Abdullayev", "R.A.Sharipov", "B.M.Sultanov", "M.D.Vaisova"], "phones": [{"text": "+998 91 435-88-07", "tel": "+998914358807"}, {"text": "+998 94 230-18-80", "tel": "+998942301880"}, {"text": "+998 91 992-36-36", "tel": "+998919923636"}, {"text": "+998 97 603-21-75", "tel": "+998976032175"}]},
+    {"id": "t57", "initiativeId": 6, "name": "Fizik innovator", "schedule": "Chorshanba 11:30–12:30; Juma 12:30–13:30", "place": "S-01B", "students": 28, "mentors": ["K.M.Ruzimov", "H.Sh.Matyoqubov"], "phones": [{"text": "+998 88 600-32-80", "tel": "+998886003280"}, {"text": "+998 97 511-21-88", "tel": "+998975112188"}]},
+    {"id": "t58", "initiativeId": 1, "name": "\"Tabassum\" dutorchilar ansambli", "schedule": "Seshanba, Payshanba · 15:00", "place": "214-xona", "students": 15, "mentors": ["Matyakubova Umida G‘ayibayevna"], "phones": [{"text": "+998 97 608-83-55", "tel": "+998976088355"}]},
+    {"id": "t59", "initiativeId": 1, "name": "\"Feruz\" ansambli", "schedule": "Dushanba · 14:00", "place": "112-xona", "students": 14, "mentors": ["Djumaniyazov Umrbek Maxsudovich"], "phones": [{"text": "+998 99 942-12-17", "tel": "+998999421217"}]},
+    {"id": "t60", "initiativeId": 1, "name": "\"Navozanda\"", "schedule": "Chorshanba · 13:00", "place": "111-xona", "students": 10, "mentors": ["Matyoqubov Ergash G‘oyibboyevich"], "phones": [{"text": "+998 97 360-96-72", "tel": "+998973609672"}]},
+    {"id": "t61", "initiativeId": 1, "name": "\"Yosh rassomlar\"", "schedule": "Payshanba · 14:00", "place": "S-01A", "students": 15, "mentors": ["Karimov Xamidbek Otaxanovich"], "phones": [{"text": "+998 97 858-21-71", "tel": "+998978582171"}]},
+    {"id": "t62", "initiativeId": 1, "name": "\"Grafika\"", "schedule": "Payshanba · 13:00", "place": "S-01B", "students": 15, "mentors": ["Begnazarov Shamshir Marimbayevich"], "phones": [{"text": "+998 91 430-52-50", "tel": "+998914305250"}]},
+    {"id": "t63", "initiativeId": 1, "name": "\"Dastgohli rangtasvir\"", "schedule": "Juma · 13:30", "place": "S-04A", "students": 14, "mentors": ["Kalandarov Shamsiddin Sitmamatovich"], "phones": [{"text": "+998 93 922-88-10", "tel": "+998939228810"}]},
+    {"id": "t64", "initiativeId": 1, "name": "\"Amaliy san’at\"", "schedule": "Seshanba · 14:00", "place": "S-04B", "students": 22, "mentors": ["Safasheva Surayyo Sadikovna"], "phones": [{"text": "+998 88 779-44-18", "tel": "+998887794418"}]},
+    {"id": "t65", "initiativeId": 6, "name": "\"Yosh psixologlar 1\"", "schedule": "Dushanba · 14:00", "place": "306-xona", "students": 15, "mentors": ["Pirjonov Sarvarbek Davlatovich"], "phones": [{"text": "+998 94 230-06-16", "tel": "+998942300616"}]},
+    {"id": "t66", "initiativeId": 6, "name": "\"Yosh psixologlar 2\"", "schedule": "Dushanba · 14:00", "place": "312-xona", "students": 10, "mentors": ["Atamuratova Zamira Ikromovna"], "phones": [{"text": "+998 97 788-24-39", "tel": "+998977882439"}]},
+    {"id": "t67", "initiativeId": 4, "name": "\"Zakovat\"", "schedule": "Chorshanba · 14:00", "place": "312-xona", "students": 40, "mentors": ["Xudayberganov Azizbek Obidjonovich"], "phones": [{"text": "+998 93 759-76-67", "tel": "+998937597667"}]},
+    {"id": "t68", "initiativeId": 4, "name": "Book club", "schedule": "Ikki haftada bir juma · 11:30–13:30", "place": "ARM 506-xona, S-306", "students": 50, "mentors": ["Tillayeva Mohiniso Oybek qizi"], "phones": [{"text": "+998 99 874-25-02", "tel": "+998998742502"}]},
+    {"id": "t69", "initiativeId": 4, "name": "Adabiy tanqidchilik", "schedule": "Ikki haftada bir chorshanba · 11:30–13:30", "place": "ARM 506-xona, S-306", "students": 50, "mentors": ["Saparbayeva Gulandom Masharipovna"], "phones": [{"text": "+998 93 921-65-95", "tel": "+998939216595"}]},
+    {"id": "t70", "initiativeId": 4, "name": "Erfolg hat 3 Buchstaben: TUN", "schedule": "Payshanba · 14:00", "place": "5-son TTJ, 5-xona", "students": 13, "mentors": ["Qilicheva Shahlo Marksovna"], "phones": [{"text": "93-280-99-6", "tel": ""}]},
+    {"id": "t71", "initiativeId": 4, "name": "Oui, je parle français", "schedule": "Seshanba · 11:00", "place": "5-son TTJ, 5-xona", "students": 10, "mentors": ["Navruzova Mutabar"], "phones": [{"text": "+998 97 605-14-95", "tel": "+998976051495"}]},
+    {"id": "t72", "initiativeId": 4, "name": "Translation studies", "schedule": "Chorshanba · 15:00", "place": "Smart-418", "students": 29, "mentors": ["Xusainova Shaxnozabonu"], "phones": [{"text": "+998 91 277-78-68", "tel": "+998912777868"}]},
+    {"id": "t73", "initiativeId": 6, "name": "Grant academy", "schedule": "Seshanba 11:30; Chorshanba 13:30", "place": "Asosiy-449", "students": 25, "mentors": ["Eshchanova Mavjuda Xudayorovna"], "phones": [{"text": "+998 99 983-48-22", "tel": "+998999834822"}]},
+    {"id": "t74", "initiativeId": 6, "name": "Research writers", "schedule": "Seshanba · 14:30", "place": "Asosiy-418", "students": 25, "mentors": ["Qalandarova Dilfuza"], "phones": [{"text": "+998 97 761-22-10", "tel": "+998977612210"}]},
+    {"id": "t75", "initiativeId": 4, "name": "English Literature, Art and Translation", "schedule": "Juma · 11:30", "place": "ARM", "students": 20, "mentors": ["Sapayeva Bibijon Rustamovna"], "phones": [{"text": "+998 93 921-59-89", "tel": "+998939215989"}]}
   ],
 
   /* ---------------------------------------------------------------
@@ -601,9 +511,17 @@ const SITE = {
 };
 
 /* Hisoblangan umumiy ko'rsatkichlar — qo'lda yozilmaydi, shuning uchun hamma joyda bir xil */
+/* Har bir tashabbus/guruh uchun to'garaklar va o'quvchilar soni to'garaklar ro'yxatidan hisoblanadi */
+SITE.groups = SITE.initiatives.concat(SITE.extraGroups);
+SITE.groups.forEach((g) => {
+  const list = SITE.clubs.filter((c) => c.initiativeId === g.id);
+  g.clubsCount = list.length;
+  g.students = list.reduce((s, c) => s + (c.students || 0), 0);
+});
+
 SITE.totals = {
-  clubs: SITE.initiatives.reduce((s, i) => s + i.clubsCount, 0),
-  students: SITE.initiatives.reduce((s, i) => s + i.students, 0),
+  clubs: SITE.clubs.length,
+  students: SITE.clubs.reduce((s, c) => s + (c.students || 0), 0),
   awards: SITE.initiatives.reduce((s, i) => s + i.awards, 0),
   activeContests: SITE.contests.filter(c => c.status === "active" && new Date(c.deadline + "T23:59:59") >= new Date()).length
 };

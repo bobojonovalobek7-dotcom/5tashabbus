@@ -19,7 +19,7 @@
   function fillStats(el) {
     if (!el) return;
     const items = [
-      ["fa-users", fmt(SITE.totals.students), "faol talaba"],
+      ["fa-users", fmt(SITE.totals.students), "to'garak a'zosi"],
       ["fa-people-group", SITE.totals.clubs + "+", "to'garak va seksiya"],
       ["fa-trophy", SITE.totals.activeContests, "faol tanlov"],
       ["fa-medal", SITE.totals.awards, "sovrinli o'rin"]
@@ -80,20 +80,21 @@
 
     // Har tashabbusdan eng mashhur to'garak (+ bitta qo'shimcha) — 6 ta
     const featured = SITE.initiatives.map((i) =>
-      SITE.clubs.filter((c) => c.initiativeId === i.id).sort((a, b) => b.enrolled - a.enrolled)[0]
+      SITE.clubs.filter((c) => c.initiativeId === i.id).sort((a, b) => (b.students || 0) - (a.students || 0))[0]
     ).filter(Boolean);
-    const extra = SITE.clubs.filter((c) => !featured.includes(c)).sort((a, b) => b.enrolled - a.enrolled)[0];
+    const extra = SITE.clubs.filter((c) => c.initiativeId === 6).sort((a, b) => (b.students || 0) - (a.students || 0))[0];
     if (extra) featured.push(extra);
     $("#featured-clubs").innerHTML = featured.slice(0, 6).map(clubCard).join("");
 
     // Statistika plitkalari — raqamlar data.js dan hisoblanadi
-    const vocational = SITE.initiatives.find((i) => i.id === 5);
+    const vocational = SITE.groups.find((i) => i.id === 5);
+    const science = SITE.groups.find((i) => i.id === 6);
     const tiles = [
-      ["fa-users", fmt(SITE.totals.students), "Faol talabalar"],
+      ["fa-users", fmt(SITE.totals.students), "To'garak a'zolari"],
       ["fa-people-group", SITE.totals.clubs, "To'garaklar"],
       ["fa-trophy", SITE.contests.length, "Tanlovlar"],
       ["fa-layer-group", vocational ? vocational.clubsCount : 0, "Kasb-hunar to'garaklari"],
-      ["fa-building-columns", SITE.faculties.length, "Fakultetlar"],
+      ["fa-flask", science ? science.clubsCount : 0, "Ilmiy to'garaklar"],
       ["fa-award", SITE.totals.awards, "Yutuqlar"]
     ];
     $("#home-stats").innerHTML = tiles.map(([icon, num, label]) => `
@@ -133,10 +134,10 @@
             <span class="tag" style="--c:${i.color}"><i class="${i.icon}"></i> ${i.id}-tashabbus</span>
             <h3>${esc(i.title)}</h3>
             <p>${esc(i.about)}</p>
-            <ul class="check-list">${i.highlights.map((h) => `<li><i class="fa-solid fa-circle-check"></i>${esc(h)}</li>`).join("")}</ul>
+            <ul class="check-list">${SITE.clubs.filter((c) => c.initiativeId === i.id).sort((a, b) => (b.students || 0) - (a.students || 0)).slice(0, 4).map((c) => `<li><i class="fa-solid fa-circle-check"></i>${esc(c.name)}</li>`).join("")}</ul>
             <div class="mini-stats">
               <div><strong>${i.clubsCount}</strong><span>to'garak</span></div>
-              <div><strong>${fmt(i.students)}</strong><span>talaba</span></div>
+              <div><strong>${fmt(i.students)}</strong><span>o'quvchi</span></div>
               <div><strong>${i.awards}</strong><span>sovrin</span></div>
             </div>
             ${l ? `<div class="mentor">${avatar(l.name, l.photo)}<div><strong>${esc(l.name)}</strong><span>Yo'nalish sardori</span></div></div>` : ""}
@@ -187,13 +188,13 @@
     input.value = query;
 
     chips.innerHTML = chip("Barchasi", "all", filter === "all", null, SITE.clubs.length) +
-      SITE.initiatives.map((i) => chip(i.title, String(i.id), filter === String(i.id), i.color, SITE.clubs.filter((c) => c.initiativeId === i.id).length)).join("");
+      SITE.groups.map((i) => chip(i.title, String(i.id), filter === String(i.id), i.color, SITE.clubs.filter((c) => c.initiativeId === i.id).length)).join("");
 
     const render = () => {
       const q = query.trim().toLowerCase();
       const list = SITE.clubs.filter((c) =>
         (filter === "all" || c.initiativeId === Number(filter)) &&
-        (!q || [c.name, c.category, c.mentor, c.desc, c.place].some((f) => f.toLowerCase().includes(q)))
+        (!q || [c.name, c.place, c.schedule, c.mentors.join(" ")].some((f) => (f || "").toLowerCase().includes(q)))
       );
       $("#club-count").textContent = `${list.length} ta to'garak topildi`;
       $("#club-list").innerHTML = list.length
