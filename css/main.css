@@ -58,6 +58,8 @@
 /* ---------- 2. Asos ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* Yopiq mobil menyu ekran o'ngida turadi — gorizontal aylantirish chiqmasin */
+html, body { overflow-x: clip; }
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -486,6 +488,7 @@ main > .section:last-child { padding-bottom: 0; }
 .footer .contact-row i { margin-top: 5px; color: var(--gold); width: 16px; }
 .footer .socials a { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: rgba(255,255,255,.08); color: #fff; }
 .footer .socials a:hover { background: var(--gold); color: #1A1300; }
+.footer-credit { margin: 0; padding: 0 0 14px; text-align: center; font-size: .7rem; color: rgba(255,255,255,.28); letter-spacing: .02em; }
 .footer-bottom { margin-top: 28px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,.1); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: .85rem; }
 
 /* ---------- 16. Modal, qidiruv, toast ---------- */

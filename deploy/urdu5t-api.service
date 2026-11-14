@@ -1,0 +1,25 @@
+# Dashboard backend (to'garaklar va tanlovlar API)
+# Joylashuv: /etc/systemd/system/urdu5t-api.service
+[Unit]
+Description=UrDU 5 tashabbus dashboard API
+After=network.target
+
+[Service]
+User=urdu5t
+Group=urdu5t
+Environment=URDU5T_DATA=/var/lib/urdu5t
+Environment=URDU5T_PORT=8090
+ExecStart=/usr/bin/python3 /var/www/5tashabbus/backend/server.py
+Restart=on-failure
+RestartSec=3
+
+# Xavfsizlik: faqat o'z ma'lumotlar papkasiga yoza oladi
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/urdu5t
+UMask=0022
+
+[Install]
+WantedBy=multi-user.target

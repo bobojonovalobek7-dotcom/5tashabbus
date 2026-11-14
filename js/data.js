@@ -511,17 +511,34 @@ const SITE = {
 };
 
 /* Hisoblangan umumiy ko'rsatkichlar — qo'lda yozilmaydi, shuning uchun hamma joyda bir xil */
-/* Har bir tashabbus/guruh uchun to'garaklar va o'quvchilar soni to'garaklar ro'yxatidan hisoblanadi */
 SITE.groups = SITE.initiatives.concat(SITE.extraGroups);
-SITE.groups.forEach((g) => {
-  const list = SITE.clubs.filter((c) => c.initiativeId === g.id);
-  g.clubsCount = list.length;
-  g.students = list.reduce((s, c) => s + (c.students || 0), 0);
-});
 
-SITE.totals = {
-  clubs: SITE.clubs.length,
-  students: SITE.clubs.reduce((s, c) => s + (c.students || 0), 0),
-  awards: SITE.initiatives.reduce((s, i) => s + i.awards, 0),
-  activeContests: SITE.contests.filter(c => c.status === "active" && new Date(c.deadline + "T23:59:59") >= new Date()).length
+/* Har bir tashabbus/guruh uchun to'garaklar va o'quvchilar soni to'garaklar ro'yxatidan hisoblanadi */
+SITE.recompute = function () {
+  SITE.groups.forEach((g) => {
+    const list = SITE.clubs.filter((c) => c.initiativeId === g.id);
+    g.clubsCount = list.length;
+    g.students = list.reduce((s, c) => s + (c.students || 0), 0);
+  });
+  SITE.totals = {
+    clubs: SITE.clubs.length,
+    students: SITE.clubs.reduce((s, c) => s + (c.students || 0), 0),
+    awards: SITE.initiatives.reduce((s, i) => s + i.awards, 0),
+    activeContests: SITE.contests.filter((c) => c.status === "active" && new Date(c.deadline + "T23:59:59") >= new Date()).length
+  };
+};
+SITE.recompute();
+
+/* Serverda dashboard bo'lsa, to'garaklar va tanlovlar u yerdan olinadi.
+   Server javob bermasa, shu fayldagi ro'yxat ishlatiladi. */
+SITE.load = async function () {
+  try {
+    const get = (k) => fetch(`api/${k}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
+    const [clubs, contests] = await Promise.all([get("clubs"), get("contests")]);
+    if (Array.isArray(clubs)) SITE.clubs = clubs;
+    if (Array.isArray(contests)) SITE.contests = contests;
+    SITE.recompute();
+  } catch (e) {
+    /* API yo'q (masalan, oddiy statik server) — data.js dagi ro'yxat qoladi */
+  }
 };

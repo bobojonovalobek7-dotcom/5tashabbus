@@ -140,6 +140,7 @@
             <span>© ${new Date().getFullYear()} ${esc(U.name)}</span>
             <a href="${U.website}" target="_blank" rel="noopener">urdu.uz</a>
           </div>
+          <p class="footer-credit">Sayt muallifi: Bobojonov Alobek</p>
         </div>
       </footer>`;
     document.body.insertAdjacentHTML("beforeend", html);

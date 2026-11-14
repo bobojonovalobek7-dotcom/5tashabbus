@@ -28,3 +28,7 @@ yarn-error.log*
 .system_generated/
 scratch/
 *.pem
+
+# Dashboard backend ma'lumotlari (baza, parol, yuklangan rasmlar)
+backend/data/
+__pycache__/

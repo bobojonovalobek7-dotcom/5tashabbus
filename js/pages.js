@@ -342,8 +342,10 @@
   }
 
   const routes = { home, markaz, rahbariyat, togaraklar, tanlovlar, reyting, kutubxona, aloqa };
-  const fn = routes[document.body.dataset.page];
-  if (fn) fn();
-  faq($("#faq"));
-  initReveal();
+  SITE.load().then(() => {
+    const fn = routes[document.body.dataset.page];
+    if (fn) fn();
+    faq($("#faq"));
+    initReveal();
+  });
 })();
