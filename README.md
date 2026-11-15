@@ -86,6 +86,10 @@ Skript fayllarni serverga yuboradi, `urdu5t-api` xizmatini va Nginx sozlamasini 
 ssh -t root@SERVER "sudo -u urdu5t URDU5T_DATA=/var/lib/urdu5t python3 /var/www/5tashabbus/backend/server.py set-password"
 ```
 
+Sayt manzili: <https://5tashabbus.ursu.uz> (DNS Cloudflare orqali, SSL rejimi "Full").
+Serverdagi Let's Encrypt sertifikati bir marta `bash deploy/https.sh` bilan olinadi,
+keyin `certbot.timer` uni o'zi yangilaydi.
+
 ## Aloqa
 
 - [urdu.uz](https://urdu.uz) · Urganch shahri, Hamid Olimjon ko'chasi, 14-uy

@@ -46,8 +46,15 @@ systemctl daemon-reload
 systemctl enable --quiet urdu5t-api
 systemctl restart urdu5t-api
 
+install -d -m 755 /var/www/letsencrypt
+install -m 644 /var/www/5tashabbus/deploy/nginx-5tashabbus-site.conf /etc/nginx/snippets/5tashabbus-site.conf
 install -m 644 /var/www/5tashabbus/deploy/nginx-5tashabbus.conf /etc/nginx/sites-available/5tashabbus
 ln -sf /etc/nginx/sites-available/5tashabbus /etc/nginx/sites-enabled/5tashabbus
+# HTTPS: sertifikat bo'lsa yoqiladi (birinchi marta: bash deploy/https.sh)
+if [ -f /etc/letsencrypt/live/5tashabbus.ursu.uz/fullchain.pem ]; then
+  install -m 644 /var/www/5tashabbus/deploy/nginx-5tashabbus-ssl.conf /etc/nginx/sites-available/5tashabbus-ssl
+  ln -sf /etc/nginx/sites-available/5tashabbus-ssl /etc/nginx/sites-enabled/5tashabbus-ssl
+fi
 # Nginx'ning standart "Welcome" sahifasi 80-portni egallamasin
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
@@ -60,4 +67,4 @@ curl -fsS -o /dev/null http://127.0.0.1/api/clubs && echo "Sayt va API: javob be
 [ -f /var/lib/urdu5t/admin_password ] || echo "DIQQAT: admin paroli hali o'rnatilmagan."
 REMOTE
 
-echo "==> Tayyor: http://${HOST#*@}/"
+echo "==> Tayyor: https://5tashabbus.ursu.uz/"
