@@ -70,7 +70,7 @@
       case "clubs": return [g && g.title, it.students ? `${it.students} o'quvchi` : "", (it.mentors || []).join(", ")];
       case "contests": return [g && g.title, it.period, it.status === "completed" ? "Yakunlangan" : "Faol"];
       case "news": return [dmy(it.date), g && g.title];
-      case "staff": return [Number(it.initiativeId) === 0 ? "Markaz rahbari" : g && `${g.title} yo'nalishi sardori`, it.phone, it.showOnPage ? "" : "sahifada ko'rinmaydi"];
+      case "staff": return [it.role, it.phone, it.telegram && it.telegram.replace(/^https:\/\/t\.me\//, "@"), it.showOnPage === false ? "sahifada ko'rinmaydi" : ""];
       case "stats": return [it.value ? `Qiymat: ${it.value}` : "Avtomatik hisoblanadi"];
       case "groups": return [Number(it.id) <= 5 ? `${it.id}-tashabbus` : "Qo'shimcha yo'nalish", it.awards ? `${it.awards} sovrin` : ""];
       case "winners": return [it.place, it.contest];
@@ -103,7 +103,8 @@
 
     const q = state.query.trim().toLowerCase();
     const list = (state.items[state.kind] || []).filter((it) => !q || JSON.stringify(it).toLowerCase().includes(q));
-    $("#rows").innerHTML = list.length ? list.map((it) => {
+    const sortable = s.sortable && !q;
+    $("#rows").innerHTML = list.length ? list.map((it, idx) => {
       const thumb = thumbOf(state.kind, it);
       return `
         <div class="card row">
@@ -113,6 +114,8 @@
             <small>${esc(subtitle(state.kind, it).filter(Boolean).join(" · "))}</small>
           </div>
           <div class="actions">
+            ${sortable ? `<button type="button" class="icon-btn" data-move="${esc(it.id)}" data-dir="-1" aria-label="Yuqoriga"${idx === 0 ? " disabled" : ""}><i class="fa-solid fa-arrow-up"></i></button>
+            <button type="button" class="icon-btn" data-move="${esc(it.id)}" data-dir="1" aria-label="Pastga"${idx === list.length - 1 ? " disabled" : ""}><i class="fa-solid fa-arrow-down"></i></button>` : ""}
             <button type="button" class="icon-btn" data-edit="${esc(it.id)}" aria-label="Tahrirlash"><i class="fa-solid fa-pen"></i></button>
             ${s.mode === "list" ? `<button type="button" class="icon-btn danger" data-del="${esc(it.id)}" aria-label="O'chirish"><i class="fa-solid fa-trash"></i></button>` : ""}
           </div>
@@ -158,7 +161,7 @@
             <button type="button" class="btn btn-outline btn-sm" data-clear="${f.key}"${v ? "" : " hidden"}>Olib tashlash</button>
           </div>`;
         return `<div class="field" data-img="${f.key}"><label>${esc(f.label)}${f.required ? " *" : ""}</label>${input}
-          <p class="hint">${f.hint ? esc(f.hint) + " " : ""}JPG, PNG yoki WEBP, 4 MB gacha.</p></div>`;
+          <p class="hint">${f.hint ? esc(f.hint) + " " : ""}JPG, PNG yoki WEBP. Katta rasm avtomatik kichraytiriladi.</p></div>`;
       default: {
         const type = { int: "number", number: "number", date: "date", email: "email", url: "url" }[f.type] || "text";
         const step = f.type === "number" ? ' step="0.1"' : f.type === "int" ? ' step="1" min="0"' : "";
@@ -239,6 +242,31 @@
     });
   }
 
+  // Katta rasm (telefon kamerasi) brauzerning o'zida 1600px gacha kichraytiriladi
+  const MAX_SIDE = 1600;
+  function loadImage(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Rasmni o'qib bo'lmadi. JPG, PNG yoki WEBP tanlang.")); };
+      img.src = url;
+    });
+  }
+  async function prepareImage(file) {
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error("Faqat JPG, PNG yoki WEBP rasm yuklash mumkin");
+    const img = await loadImage(file);
+    const scale = Math.min(1, MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
+    if (scale === 1 && file.size <= 1.5 * 1024 * 1024) return readFile(file);
+    const c = document.createElement("canvas");
+    c.width = Math.round(img.naturalWidth * scale);
+    c.height = Math.round(img.naturalHeight * scale);
+    const ctx = c.getContext("2d");
+    if (file.type !== "image/png") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height); }
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+    return c.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.86);
+  }
+
   function setImage(key, path) {
     const box = $(`[data-img="${key}"]`);
     box.querySelector("input[type=hidden]").value = path;
@@ -283,7 +311,27 @@
     $("#rows").addEventListener("click", async (e) => {
       const ed = e.target.closest("[data-edit]");
       const del = e.target.closest("[data-del]");
+      const mv = e.target.closest("[data-move]");
       const list = state.items[state.kind] || [];
+      if (mv && !mv.disabled) {
+        const ids = list.map((x) => String(x.id));
+        const i = ids.indexOf(mv.dataset.move), j = i + Number(mv.dataset.dir);
+        if (i < 0 || j < 0 || j >= ids.length) return;
+        [ids[i], ids[j]] = [ids[j], ids[i]];
+        const kind = state.kind;
+        // Darhol ko'rsatamiz, so'ng serverga yozamiz
+        state.items[kind] = ids.map((id) => list.find((x) => String(x.id) === id));
+        render();
+        try {
+          state.items[kind] = await api("POST", `${kind}/order`, { ids });
+          SITE.apply(state.items);
+          render();
+        } catch (err) {
+          alert(err.message);
+          await loadAll();
+        }
+        return;
+      }
       if (ed) openEdit(list.find((x) => String(x.id) === ed.dataset.edit));
       if (del) {
         const item = list.find((x) => String(x.id) === del.dataset.del);
@@ -306,13 +354,15 @@
       const file = input.files[0];
       const err = $("#edit-error");
       err.textContent = "";
-      if (file.size > 4 * 1024 * 1024) { err.textContent = "Rasm 4 MB dan katta"; return; }
+      const box = input.closest(".img-field");
+      box.classList.add("loading");
       try {
-        const { path } = await api("POST", "upload", { data: await readFile(file) });
+        const { path } = await api("POST", "upload", { data: await prepareImage(file) });
         setImage(input.dataset.upload, path);
       } catch (ex) {
         err.textContent = ex.message;
       }
+      box.classList.remove("loading");
       input.value = "";
     });
     $("#edit-fields").addEventListener("click", (e) => {

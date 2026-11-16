@@ -156,22 +156,29 @@
       <div class="person-photo">${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">` : avatar(p.name)}</div>
       <div class="person-body">
         <h3>${esc(p.name)}</h3>
-        <div class="person-role">${esc(role)}</div>
-        ${p.phone ? `<div class="meta"><div><i class="fa-solid fa-phone"></i><a href="${tel(p.phone)}">${esc(p.phone)}</a></div></div>` : ""}
+        ${role ? `<div class="person-role">${esc(role)}</div>` : ""}
+        ${p.phone || p.telegram ? `<div class="meta">
+          ${p.phone ? `<div><i class="fa-solid fa-phone"></i><a href="${tel(p.phone)}">${esc(p.phone)}</a></div>` : ""}
+          ${p.telegram ? `<div><i class="fa-brands fa-telegram"></i><a href="${esc(p.telegram)}" target="_blank" rel="noopener">${esc(p.telegram.replace(/^https:\/\/t\.me\//, "@"))}</a></div>` : ""}
+        </div>` : ""}
       </div>`;
+    const roleOf = (p) => {
+      if (p.role) return p.role;
+      if (p.initiativeId === 0) return "Markaz rahbari";
+      const i = initiative(p.initiativeId);
+      return i ? `${i.title} yo'nalishi sardori` : "";
+    };
+    const colorOf = (p) => (initiative(p.initiativeId) || {}).color || "var(--brand)";
 
-    const h = SITE.head;
+    // Dashboarddagi tartib bo'yicha; birinchi xodim katta kartochkada
+    const people = (SITE.staff || [SITE.head, ...SITE.leaders])
+      .filter((p) => p && (p.showOnPage === undefined ? p.initiativeId <= 3 : p.showOnPage));
+    const [first, ...rest] = people;
     const headEl = $("#head-card");
-    if (h && h.showOnPage !== false) headEl.innerHTML = card(h, h.role || "Markaz rahbari");
+    if (first) { headEl.innerHTML = card(first, roleOf(first)); headEl.style.setProperty("--c", colorOf(first)); }
     else headEl.remove();
-
-    // Dashboardda "Rahbariyat sahifasida ko'rsatilsin" belgilangan sardorlar
-    $("#leaders").innerHTML = SITE.leaders
-      .filter((l) => (l.showOnPage === undefined ? l.initiativeId <= 3 : l.showOnPage))
-      .map((l) => {
-        const i = initiative(l.initiativeId);
-        return `<article class="card head-card leader-card reveal" style="--c:${i.color}">${card(l, l.role || `${i.title} yo'nalishi sardori`)}</article>`;
-      }).join("");
+    $("#leaders").innerHTML = rest.map((p) =>
+      `<article class="card head-card leader-card reveal" style="--c:${colorOf(p)}">${card(p, roleOf(p))}</article>`).join("");
   }
 
   /* ---------- To'garaklar ---------- */
@@ -332,7 +339,8 @@
         <div class="mentor" style="--c:${i.color}">
           ${avatar(l.name, l.photo)}
           <div style="flex:1"><strong>${esc(l.name)}</strong><span>${i.id}. ${esc(i.title)}</span></div>
-          <a class="icon-btn" href="${tel(l.phone)}" aria-label="${esc(l.name)} — qo'ng'iroq"><i class="fa-solid fa-phone"></i></a>
+          ${l.telegram ? `<a class="icon-btn" href="${esc(l.telegram)}" target="_blank" rel="noopener" aria-label="${esc(l.name)} — Telegram"><i class="fa-brands fa-telegram"></i></a>` : ""}
+          ${l.phone ? `<a class="icon-btn" href="${tel(l.phone)}" aria-label="${esc(l.name)} — qo'ng'iroq"><i class="fa-solid fa-phone"></i></a>` : ""}
         </div>`;
     }).join("");
 

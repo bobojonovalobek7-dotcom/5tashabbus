@@ -88,12 +88,13 @@ SCHEMA = {
         F("excerpt", "Qisqa matn", "textarea", limit=600),
         F("body", "To'liq matn", "textarea", limit=5000, rows=6),
     ]},
-    "staff": {"label": "Xodimlar", "one": "Xodim", "mode": "list", "title": "name", "fields": [
+    "staff": {"label": "Xodimlar", "one": "Xodim", "mode": "list", "title": "name", "sortable": True,
+              "note": "Saytdagi «Rahbariyat» sahifasida xodimlar shu tartibda chiqadi: birinchisi katta kartochkada. "
+                      "Tartibni o'ng tomondagi ↑ ↓ tugmalari bilan o'zgartiring.", "fields": [
         F("name", "Ism-familiya", required=True),
-        F("initiativeId", "Vazifasi", "select", half=True, options=[{"value": 0, "label": "Markaz rahbari"}] + [
-            {"value": g["value"], "label": f"{g['value']}-tashabbus sardori ({g['label']})"} for g in GROUPS_1_5]),
+        F("role", "Lavozim", half=True, placeholder="Markaz rahbari"),
         F("phone", "Telefon", half=True),
-        F("role", "Lavozim (ixtiyoriy)", hint="Bo'sh qolsa: «Markaz rahbari» yoki «… yo'nalishi sardori» yoziladi"),
+        F("telegram", "Telegram", "telegram", placeholder="@username yoki https://t.me/username"),
         F("photo", "Rasm", "image"),
         F("showOnPage", "Rahbariyat sahifasida ko'rsatilsin", "bool"),
     ]},
@@ -222,7 +223,9 @@ def save_item(kind, item, item_id=None):
         if item_id is None:
             item_id = new_id(kind, item)
             item["id"] = item_id
-            pos = conn.execute("SELECT COALESCE(MIN(position), 0) - 1 FROM items WHERE kind=?", (kind,)).fetchone()[0]
+            # Tartiblanadigan bo'limlarda yangi yozuv oxiriga, qolganlarida boshiga qo'shiladi
+            agg = "MAX(position), 0) + 1" if SCHEMA[kind].get("sortable") else "MIN(position), 0) - 1"
+            pos = conn.execute(f"SELECT COALESCE({agg} FROM items WHERE kind=?", (kind,)).fetchone()[0]
             conn.execute(
                 "INSERT INTO items(kind, id, position, data, updated_at) VALUES (?,?,?,?,?)",
                 (kind, item_id, pos, json.dumps(item, ensure_ascii=False), now),
@@ -251,6 +254,18 @@ def all_items():
         if r["kind"] in out:
             out[r["kind"]].append(json.loads(r["data"]))
     return out
+
+
+def reorder_items(kind, ids):
+    if not isinstance(ids, list) or not all(isinstance(i, str) for i in ids):
+        raise ValueError("Tartib noto'g'ri")
+    with db() as conn:
+        existing = {r[0] for r in conn.execute("SELECT id FROM items WHERE kind=?", (kind,))}
+        if set(ids) != existing or len(ids) != len(existing):
+            raise ValueError("Ro'yxat eskirgan, sahifani yangilang")
+        for pos, item_id in enumerate(ids):
+            conn.execute("UPDATE items SET position=? WHERE kind=? AND id=?", (pos, kind, item_id))
+    return list_items(kind)
 
 
 def delete_item(kind, item_id):
@@ -393,6 +408,14 @@ def clean_field(f, v):
             if str(o["value"]) == str(v):
                 return o["value"]
         raise ValueError(f"{label}: noto'g'ri tanlangan")
+    if t == "telegram":
+        v = text(v, 200)
+        if not v:
+            return ""
+        m = re.fullmatch(r"(?:https?://)?(?:www\.)?(?:t\.me|telegram\.me)/([A-Za-z0-9_]{4,32})/?|@?([A-Za-z0-9_]{4,32})", v)
+        if not m:
+            raise ValueError(f"{label}: @username yoki https://t.me/username ko'rinishida yozing")
+        return "https://t.me/" + (m.group(1) or m.group(2))
     if t == "image":
         v = text(v, 300)
         if v and (not IMAGE_RE.fullmatch(v) or ".." in v):
@@ -606,6 +629,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self.error(401, "Avval tizimga kiring")
             if parts == ["api", "upload"]:
                 return self.send_json({"path": save_upload(self.read_json().get("data"))})
+            if len(parts) == 3 and parts[1] in KINDS and parts[2] == "order":
+                if not SCHEMA[parts[1]].get("sortable"):
+                    return self.error(405, "Bu bo'lim tartiblanmaydi")
+                return self.send_json(reorder_items(parts[1], self.read_json().get("ids")))
             if len(parts) == 2 and parts[1] in KINDS:
                 if SCHEMA[parts[1]]["mode"] != "list":
                     return self.error(405, "Bu bo'limga yangi yozuv qo'shilmaydi")

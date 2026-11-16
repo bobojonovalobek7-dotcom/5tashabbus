@@ -564,6 +564,7 @@ SITE.apply = function (d) {
 
   if (list("staff")) {
     const staff = d.staff.map((p) => ({ ...p, initiativeId: Number(p.initiativeId) || 0 }));
+    SITE.staff = staff;  // dashboarddagi tartibda
     const head = staff.find((p) => p.initiativeId === 0);
     if (head) SITE.head = { ...head, role: head.role || "Markaz rahbari" };
     SITE.leaders = staff.filter((p) => p.initiativeId > 0);

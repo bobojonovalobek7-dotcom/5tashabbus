@@ -36,6 +36,8 @@
     .check { display: flex; gap: 10px; align-items: center; font-weight: 600; }
     .check input { width: 18px; height: 18px; }
     textarea.lines { min-height: 90px; }
+    .img-field.loading { opacity: .55; pointer-events: none; }
+    .row .icon-btn:disabled { opacity: .35; cursor: default; }
     [hidden] { display: none !important; }
     @media (max-width: 600px) { .row { grid-template-columns: 1fr auto; } .row .thumb { display: none; } }
   </style>
@@ -110,7 +112,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/data.js?v=20261116"></script>
-<script src="js/admin.js?v=20261116"></script>
+<script src="js/data.js?v=20261117"></script>
+<script src="js/admin.js?v=20261117"></script>
 </body>
 </html>
