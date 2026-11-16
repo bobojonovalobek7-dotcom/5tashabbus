@@ -1,4 +1,178 @@
 {
+ "settings": [
+  {
+   "id": "site",
+   "name": "Abu Rayhon Beruniy nomidagi Urganch davlat universiteti",
+   "center": "5 Muhim Tashabbus Markazi",
+   "address": "Urganch shahri, Hamid Olimjon ko'chasi, 14-uy",
+   "office": "UrDU Bosh binosi, 2-qavat, 215-xona",
+   "hours": "Dushanba–Juma, 14:00–17:30",
+   "phone": "+998 (94) 981-69-99",
+   "youthPhone": "+998 (62) 224-67-15",
+   "centerEmail": "tashabbus@urdu.uz",
+   "email": "info@urdu.uz",
+   "website": "https://urdu.uz",
+   "hemis": "https://hemis.urdu.uz",
+   "library": "https://arm.urdu.uz",
+   "telegram": "https://t.me/Muxammad_Erimbetov",
+   "instagram": "https://instagram.com/muxammad.erimbetov",
+   "facebook": "",
+   "youtube": ""
+  }
+ ],
+ "stats": [
+  {
+   "id": "students",
+   "label": "To'garak a'zolari",
+   "icon": "fa-users",
+   "value": ""
+  },
+  {
+   "id": "clubs",
+   "label": "To'garaklar",
+   "icon": "fa-people-group",
+   "value": ""
+  },
+  {
+   "id": "contests",
+   "label": "Tanlovlar",
+   "icon": "fa-trophy",
+   "value": ""
+  },
+  {
+   "id": "group5",
+   "label": "Kasb-hunar to'garaklari",
+   "icon": "fa-layer-group",
+   "value": ""
+  },
+  {
+   "id": "group6",
+   "label": "Ilmiy to'garaklar",
+   "icon": "fa-flask",
+   "value": ""
+  },
+  {
+   "id": "awards",
+   "label": "Yutuqlar",
+   "icon": "fa-award",
+   "value": ""
+  }
+ ],
+ "groups": [
+  {
+   "id": "1",
+   "title": "Madaniyat va san'at",
+   "lead": "Musiqa, rassomlik, adabiyot va teatrga qiziqishni oshirish, iste'dodlarni yuzaga chiqarish.",
+   "color": "#7C3AED",
+   "icon": "fa-solid fa-palette",
+   "about": "Talabalarning musiqa, tasviriy san'at, teatr va adabiyot sohalaridagi qobiliyatlarini rivojlantirish. Milliy cholg'u ansambllari, teatr-studiya va san'at ustaxonalari faoliyat yuritadi.",
+   "image": "assets/images/tashabbus_1_art.jpg",
+   "awards": 38
+  },
+  {
+   "id": "2",
+   "title": "Sport",
+   "lead": "Yoshlarni jismoniy chiniqtirish, sportga keng jalb etish va sog'lom turmush tarzini targ'ib qilish.",
+   "color": "#16A34A",
+   "icon": "fa-solid fa-volleyball",
+   "about": "Talabalar o'rtasida ommaviy sportni rivojlantirish, fakultetlararo chempionatlar va \"Rektor kubogi\" musobaqalarini o'tkazish, terma jamoalarni Universiadaga tayyorlash.",
+   "image": "assets/images/tashabbus_2_sport.jpg",
+   "awards": 56
+  },
+  {
+   "id": "3",
+   "title": "Axborot texnologiyalari",
+   "lead": "Kompyuter texnologiyalari va internetdan samarali foydalanishni tashkil etish.",
+   "color": "#0284C7",
+   "icon": "fa-solid fa-laptop-code",
+   "about": "Dasturlash, sun'iy intellekt, robototexnika va kiberxavfsizlik bo'yicha amaliy laboratoriyalar. Hakatonlar, startap inkubatori va IT Park bilan hamkorlik.",
+   "image": "assets/images/tashabbus_3_it.jpg",
+   "awards": 29
+  },
+  {
+   "id": "4",
+   "title": "Kitobxonlik",
+   "lead": "Kitobxonlikni keng targ'ib qilish va mutolaaga bo'lgan qiziqishni oshirish.",
+   "color": "#D97706",
+   "icon": "fa-solid fa-book-open-reader",
+   "about": "Yoshlar o'rtasida mutolaa madaniyatini yuksaltirish: kitobxonlar klubi, munozara va notiqlik maktabi, \"Zakovat\" turnirlari va adiblar bilan uchrashuvlar.",
+   "image": "assets/images/tashabbus_4_books.jpg",
+   "awards": 44
+  },
+  {
+   "id": "5",
+   "title": "Xotin-qizlar bandligi",
+   "lead": "Xotin-qizlar bandligini ta'minlash, ularni zamonaviy kasb-hunarga o'rgatish.",
+   "color": "#DB2777",
+   "icon": "fa-solid fa-person-dress",
+   "about": "Talaba-qizlarni milliy hunarmandchilik, tikuvchilik, pazandachilik, dizayn va raqamli tadbirkorlikka bepul o'qitish, daromad manbai yaratishga ko'maklashish.",
+   "image": "assets/images/tashabbus_5_crafts.jpg",
+   "awards": 25
+  },
+  {
+   "id": "6",
+   "title": "Ilmiy to'garaklar",
+   "lead": "Fan, tadqiqot, til va tafakkurga oid ilmiy to'garaklar.",
+   "color": "#0D9488",
+   "icon": "fa-solid fa-flask"
+  }
+ ],
+ "staff": [
+  {
+   "id": "head",
+   "initiativeId": 0,
+   "name": "Muxammad Erimbetov",
+   "role": "Markaz rahbari",
+   "photo": "assets/images/leaders/muxammad_erimbetov.jpg",
+   "phone": "+998 (94) 981-69-99",
+   "showOnPage": true
+  },
+  {
+   "id": "sardor-1",
+   "initiativeId": 1,
+   "name": "Matluba Rahimova",
+   "role": "",
+   "photo": "assets/images/leaders/matluba_rahimova.jpg",
+   "phone": "+998 (91) 420-11-22",
+   "showOnPage": true
+  },
+  {
+   "id": "sardor-2",
+   "initiativeId": 2,
+   "name": "Jasur Bobojonov",
+   "role": "",
+   "photo": "assets/images/leaders/jasur_bobojonov.jpg",
+   "phone": "+998 (90) 555-88-44",
+   "showOnPage": true
+  },
+  {
+   "id": "sardor-3",
+   "initiativeId": 3,
+   "name": "Sanjarbek O'rinov",
+   "role": "",
+   "photo": "assets/images/leaders/sanjarbek_orinov.jpg",
+   "phone": "+998 (93) 777-20-40",
+   "showOnPage": true
+  },
+  {
+   "id": "sardor-4",
+   "initiativeId": 4,
+   "name": "Gulbahor Xudayberganova",
+   "role": "",
+   "photo": "assets/images/leaders/gulbahor_xudayberganova.jpg",
+   "phone": "+998 (97) 512-33-88",
+   "showOnPage": false
+  },
+  {
+   "id": "sardor-5",
+   "initiativeId": 5,
+   "name": "Dilnoza Jumaniyozova",
+   "role": "",
+   "photo": "assets/images/leaders/dilnoza_jumaniyozova.jpg",
+   "phone": "+998 (94) 310-75-90",
+   "showOnPage": false
+  }
+ ],
  "clubs": [
   {
    "id": "t1",
@@ -1593,6 +1767,209 @@
     ],
     "awards": "G'oliblarga mukofotlar va davlat granti."
    }
+  }
+ ],
+ "news": [
+  {
+   "id": "it-hackathon",
+   "initiativeId": 3,
+   "date": "2026-10-14",
+   "title": "UrDU talabalari \"Talabalar IT-Hackathon 2026\" g'olibi bo'ldi",
+   "image": "assets/images/news_it_hackathon.jpg",
+   "excerpt": "48 soatlik respublika hakatonida sun'iy intellektga asoslangan ekologik monitoring loyihasi 1-o'rin va 30 mln so'm grantni qo'lga kiritdi.",
+   "body": "Texnika va raqamli texnologiyalar fakulteti talabalari Toshkentda o'tkazilgan respublika hakatonida suv resurslaridan oqilona foydalanish bo'yicha sun'iy intellekt va IoT datchiklariga asoslangan startap prototipini himoya qilib, mutlaq g'olib deb topildi."
+  },
+  {
+   "id": "teatr-festivali",
+   "initiativeId": 1,
+   "date": "2026-10-11",
+   "title": "Teatr studiyalari festivalida \"Nihol\" Gran-pri sohibi bo'ldi",
+   "image": "assets/images/news_theater_festival.jpg",
+   "excerpt": "Madaniyat saroyida o'tgan festivalda \"Nihol\" teatr-studiyasi \"Jaloliddin Manguberdi\" tarixiy dramasi bilan g'olib bo'ldi.",
+   "body": "Festivalda viloyatdagi oliy ta'lim muassasalarining teatr jamoalari bellashdi. \"Nihol\" teatr-studiyasi yuksak sahna mahorati va nutq madaniyati bilan hakamlar e'tirofiga sazovor bo'ldi."
+  },
+  {
+   "id": "kasb-hunar-markazi",
+   "initiativeId": 5,
+   "date": "2026-10-08",
+   "title": "Xotin-qizlar uchun yangi kasb-hunar markazi ochildi",
+   "image": "assets/images/news_vocational_sewing.jpg",
+   "excerpt": "12 ta zamonaviy tikuv mashinasi va kompyuterlar bilan jihozlangan bepul o'quv ustaxonasi ish boshladi.",
+   "body": "Ustaxonada tikuvchilik, liboslar dizayni, qandolatchilik va grafik dizayn kurslari talaba-qizlar hamda mahalla yoshlari uchun bepul tashkil etilmoqda."
+  }
+ ],
+ "winners": [
+  {
+   "id": "winner-1",
+   "name": "Dostonbek Olloquliyev",
+   "photo": "assets/images/dostonbek_winner.jpg",
+   "initiativeId": 3,
+   "place": "2-o'rin",
+   "contest": "Respublika \"Innovatsion loyihalar\" tanlovi",
+   "text": "Istiqbolli startap loyihasi bilan respublika bosqichida faxrli 2-o'rinni egalladi."
+  },
+  {
+   "id": "winner-2",
+   "name": "Alisher Axmedov",
+   "photo": "assets/images/winner_1.jpg",
+   "initiativeId": 3,
+   "faculty": "Texnika va raqamli texnologiyalar",
+   "place": "1-o'rin",
+   "contest": "Talabalar IT-Challenge hakatoni",
+   "text": "Sun'iy intellekt asosidagi startap loyihasi bilan mutlaq g'olib bo'ldi.",
+   "quote": "UrDU IT-klubida o'rgangan bilimlarim bilan jamoamiz birinchi startapini boshladi."
+  },
+  {
+   "id": "winner-3",
+   "name": "Dilnoza Karimova",
+   "photo": "assets/images/winner_2.jpg",
+   "initiativeId": 5,
+   "faculty": "Pedagogika va san'at fakulteti",
+   "place": "Davlat mukofoti",
+   "contest": "\"Zulfiya\" nomidagi davlat mukofoti",
+   "text": "Milliy liboslar dizayni yo'nalishida yuksak mahorat ko'rsatib, davlat mukofotiga sazovor bo'ldi.",
+   "quote": "Milliy meros va zamonaviy san'at uyg'unligi — yoshlarning eng katta kuchi."
+  }
+ ],
+ "faculties": [
+  {
+   "id": "fak-1",
+   "name": "Fizika-matematika fakulteti",
+   "points": 98.6,
+   "students": 1840,
+   "note": "Mutlaq yetakchi"
+  },
+  {
+   "id": "fak-2",
+   "name": "Texnika va raqamli texnologiyalar fakulteti",
+   "points": 96.2,
+   "students": 1720,
+   "note": "IT yo'nalishida yetakchi"
+  },
+  {
+   "id": "fak-3",
+   "name": "Filologiya fakulteti",
+   "points": 95.4,
+   "students": 1910,
+   "note": "Kitobxonlikda yetakchi"
+  },
+  {
+   "id": "fak-4",
+   "name": "Jismoniy madaniyat fakulteti",
+   "points": 94.8,
+   "students": 1530,
+   "note": "Sport chempioni"
+  },
+  {
+   "id": "fak-5",
+   "name": "Pedagogika va san'at fakulteti",
+   "points": 92.5,
+   "students": 1640,
+   "note": "San'atda yetakchi"
+  },
+  {
+   "id": "fak-6",
+   "name": "Tabiiy fanlar fakulteti",
+   "points": 91,
+   "students": 1480,
+   "note": "Faol ishtirokchi"
+  },
+  {
+   "id": "fak-7",
+   "name": "Tarix fakulteti",
+   "points": 89.7,
+   "students": 1290,
+   "note": "Faol ishtirokchi"
+  },
+  {
+   "id": "fak-8",
+   "name": "Xorijiy filologiya fakulteti",
+   "points": 88.3,
+   "students": 1380,
+   "note": "Faol ishtirokchi"
+  }
+ ],
+ "books": [
+  {
+   "id": "kitob-1",
+   "title": "O'tkan kunlar",
+   "author": "Abdulla Qodiriy",
+   "category": "O'zbek adabiyoti",
+   "pages": 360,
+   "cover": "assets/images/books/book_otkan_kunlar.jpg",
+   "desc": "O'zbek romanchiligining gultoji: Otabek va Kumushning muhabbati, xonliklar davridagi millat taqdiri."
+  },
+  {
+   "id": "kitob-2",
+   "title": "Boburnoma",
+   "author": "Zahiriddin Muhammad Bobur",
+   "category": "Tarix",
+   "pages": 480,
+   "cover": "assets/images/books/book_boburnoma.jpg",
+   "desc": "Tarix, geografiya va etnografiyaga oid jahonga mashhur memuar, Boburiylar saltanatining vujudga kelishi."
+  },
+  {
+   "id": "kitob-3",
+   "title": "Yulduzli tunlar",
+   "author": "Pirimqul Qodirov",
+   "category": "Tarix",
+   "pages": 520,
+   "cover": "assets/images/books/book_yulduzli_tunlar.jpg",
+   "desc": "Bobur Mirzoning murakkab hayot yo'li, shohlik va shoirlik haqidagi tarixiy roman."
+  },
+  {
+   "id": "kitob-4",
+   "title": "Atom odatlar",
+   "author": "Jeyms Klir",
+   "category": "Shaxsiy rivojlanish",
+   "pages": 320,
+   "cover": "assets/images/books/book_atom_odatlar.jpg",
+   "desc": "Kichik kundalik odatlar orqali o'qish va ishda katta natijalarga erishish usullari."
+  },
+  {
+   "id": "kitob-5",
+   "title": "Raqamli qal'a",
+   "author": "Den Braun",
+   "category": "Jahon adabiyoti",
+   "pages": 440,
+   "cover": "assets/images/books/book_raqamli_qala.jpg",
+   "desc": "Kriptografiya, kiberxavfsizlik va buzib bo'lmas kodlar haqidagi intellektual triller."
+  },
+  {
+   "id": "kitob-6",
+   "title": "Alkimyogar",
+   "author": "Paulo Koelo",
+   "category": "Jahon adabiyoti",
+   "pages": 224,
+   "cover": "assets/images/books/book_alkimyogar.jpg",
+   "desc": "O'z orzusi ortidan yo'lga chiqqan yosh cho'pon Santyago haqidagi falsafiy asar."
+  }
+ ],
+ "faqs": [
+  {
+   "id": "savol-1",
+   "q": "To'garaklar pullikmi?",
+   "a": "Yo'q. 5 tashabbus doirasidagi barcha to'garaklar, sport seksiyalari va kasb-hunar kurslari UrDU talabalari uchun bepul."
+  },
+  {
+   "id": "savol-2",
+   "q": "Bir nechta to'garakka a'zo bo'lsam bo'ladimi?",
+   "a": "Ha. Dars jadvalingizga xalaqit bermasa, bir vaqtning o'zida bir nechta to'garakka qatnashishingiz mumkin."
+  },
+  {
+   "id": "savol-3",
+   "q": "Mashg'ulotlar qachon bo'ladi?",
+   "a": "Asosiy darslardan keyin, odatda 14:30 dan 18:30 gacha. Har bir to'garak jadvali uning kartochkasida ko'rsatilgan."
+  },
+  {
+   "id": "savol-4",
+   "q": "Faol qatnashganlarga qanday imtiyozlar bor?",
+   "a": "Faol talabalar va tanlov sovrindorlari rag'batlantiriladi, respublika tanlovlariga yo'llanma oladi va fakultet reytingiga ball qo'shiladi."
+  },
+  {
+   "id": "savol-5",
+   "q": "Yangi to'garak ochishni taklif qilsam bo'ladimi?",
+   "a": "Ha. Taklifingizni Aloqa sahifasidagi shakl orqali yoki markazga to'g'ridan-to'g'ri yuboring."
   }
  ]
 }

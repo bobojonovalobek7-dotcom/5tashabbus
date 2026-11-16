@@ -523,22 +523,73 @@ SITE.recompute = function () {
   SITE.totals = {
     clubs: SITE.clubs.length,
     students: SITE.clubs.reduce((s, c) => s + (c.students || 0), 0),
-    awards: SITE.initiatives.reduce((s, i) => s + i.awards, 0),
+    awards: SITE.initiatives.reduce((s, i) => s + (i.awards || 0), 0),
     activeContests: SITE.contests.filter((c) => c.status === "active" && new Date(c.deadline + "T23:59:59") >= new Date()).length
   };
 };
 SITE.recompute();
 
-/* Serverda dashboard bo'lsa, to'garaklar va tanlovlar u yerdan olinadi.
-   Server javob bermasa, shu fayldagi ro'yxat ishlatiladi. */
+/* Bosh sahifadagi statistika plitkalari. value bo'sh bo'lsa, raqam avtomatik hisoblanadi (source bo'yicha). */
+SITE.stats = [
+  { id: "students", label: "To'garak a'zolari", icon: "fa-users", value: "" },
+  { id: "clubs", label: "To'garaklar", icon: "fa-people-group", value: "" },
+  { id: "contests", label: "Tanlovlar", icon: "fa-trophy", value: "" },
+  { id: "group5", label: "Kasb-hunar to'garaklari", icon: "fa-layer-group", value: "" },
+  { id: "group6", label: "Ilmiy to'garaklar", icon: "fa-flask", value: "" },
+  { id: "awards", label: "Yutuqlar", icon: "fa-award", value: "" }
+];
+SITE.university.hours = "Dushanba–Juma, 14:00–17:30";
+
+/* Dashboard (api/all) javobini saytga qo'llaydi. Obyektlar o'rnida yangilanadi,
+   shuning uchun boshqa fayllardagi havolalar (SITE.university va h.k.) eskirmaydi. */
+SITE.apply = function (d) {
+  if (!d || typeof d !== "object") return;
+  const list = (k) => Array.isArray(d[k]) && d[k].length ? d[k] : null;
+
+  const s = list("settings") && d.settings[0];
+  if (s) {
+    const U = SITE.university;
+    ["name", "center", "address", "office", "hours", "phone", "youthPhone", "email", "centerEmail", "website", "hemis", "library"]
+      .forEach((k) => { if (s[k] !== undefined) U[k] = s[k]; });
+    const icons = { telegram: "fa-telegram", instagram: "fa-instagram", facebook: "fa-facebook", youtube: "fa-youtube" };
+    U.socials = Object.keys(icons).filter((k) => s[k]).map((k) => ({
+      name: k[0].toUpperCase() + k.slice(1), icon: "fa-brands " + icons[k], url: s[k]
+    }));
+  }
+
+  if (list("groups")) d.groups.forEach((g) => {
+    const target = SITE.groups.find((x) => x.id === Number(g.id));
+    if (target) Object.assign(target, g, { id: target.id });
+  });
+
+  if (list("staff")) {
+    const staff = d.staff.map((p) => ({ ...p, initiativeId: Number(p.initiativeId) || 0 }));
+    const head = staff.find((p) => p.initiativeId === 0);
+    if (head) SITE.head = { ...head, role: head.role || "Markaz rahbari" };
+    SITE.leaders = staff.filter((p) => p.initiativeId > 0);
+  }
+
+  ["clubs", "contests", "news", "winners", "faculties", "books", "faqs", "stats"].forEach((k) => {
+    if (Array.isArray(d[k]) && (d[k].length || k === "contests" || k === "news")) SITE[k] = d[k];
+  });
+  SITE.recompute();
+};
+
+/* Oxirgi javob brauzerda saqlanadi: sahifa darhol yangi ma'lumot bilan chiziladi,
+   keyin serverdan eng so'nggisi olinadi. */
+const SITE_CACHE_KEY = "urdu5t-data-v1";
+try { SITE.apply(JSON.parse(localStorage.getItem(SITE_CACHE_KEY))); } catch (e) { /* kesh yo'q */ }
+
+/* Serverda dashboard bo'lsa, barcha bo'limlar u yerdan olinadi.
+   Server javob bermasa, shu fayldagi ma'lumot ishlatiladi. */
 SITE.load = async function () {
   try {
-    const get = (k) => fetch(`api/${k}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
-    const [clubs, contests] = await Promise.all([get("clubs"), get("contests")]);
-    if (Array.isArray(clubs)) SITE.clubs = clubs;
-    if (Array.isArray(contests)) SITE.contests = contests;
-    SITE.recompute();
+    const r = await fetch("api/all", { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    SITE.apply(d);
+    try { localStorage.setItem(SITE_CACHE_KEY, JSON.stringify(d)); } catch (e) { /* saqlab bo'lmasa ham ishlaydi */ }
   } catch (e) {
-    /* API yo'q (masalan, oddiy statik server) — data.js dagi ro'yxat qoladi */
+    /* API yo'q (masalan, oddiy statik server) — data.js dagi ma'lumot qoladi */
   }
 };

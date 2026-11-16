@@ -3,7 +3,7 @@
 UrDU 5 tashabbus — dashboard backend.
 
 Faqat Python standart kutubxonasi (qo'shimcha paket o'rnatish shart emas).
-To'garaklar va tanlovlarni SQLite bazada saqlaydi, admin panel uchun API beradi.
+Saytning barcha bo'limlarini SQLite bazada saqlaydi, admin panel uchun API beradi.
 
 Ishga tushirish:
     python3 server.py                       # API: 127.0.0.1:8090
@@ -39,7 +39,125 @@ UPLOAD_DIR = os.path.join(DATA_DIR, "uploads")
 SEED_FILE = os.path.join(HERE, "seed.json")
 PORT = int(os.environ.get("URDU5T_PORT", "8090"))
 
-KINDS = ("clubs", "contests")
+# ------------------------------------------------------------------ bo'limlar sxemasi
+# Admin panel shakllarni shu sxemadan quradi, server ham shu bo'yicha tekshiradi.
+# mode: "list" — qo'shish/o'chirish mumkin; "fixed" — faqat tahrirlash; "single" — bitta yozuv.
+GROUPS_1_6 = [{"value": i, "label": t} for i, t in enumerate(
+    ["Madaniyat va san'at", "Sport", "Axborot texnologiyalari", "Kitobxonlik",
+     "Xotin-qizlar bandligi", "Ilmiy to'garaklar"], 1)]
+GROUPS_1_5 = GROUPS_1_6[:5]
+
+
+def F(key, label, type="text", **kw):
+    return {"key": key, "label": label, "type": type, **kw}
+
+
+SCHEMA = {
+    "clubs": {"label": "To'garaklar", "one": "To'garak", "mode": "list", "title": "name", "fields": [
+        F("name", "Nomi", required=True),
+        F("initiativeId", "Yo'nalish", "select", options=GROUPS_1_6, half=True),
+        F("students", "O'quvchilar soni", "int", half=True),
+        F("schedule", "Kunlari va vaqti", half=True, placeholder="Dushanba, Chorshanba · 15:00–17:00"),
+        F("place", "Joyi (xona)", half=True),
+        F("mentors", "Rahbar(lar)", "lines", half=True, hint="Har bir rahbar alohida qatorda"),
+        F("phones", "Telefon(lar)", "phones", half=True, hint="Har bir raqam alohida qatorda, masalan 93-123-45-67"),
+    ]},
+    "contests": {"label": "Tanlovlar", "one": "Tanlov", "mode": "list", "title": "title", "fields": [
+        F("title", "Nomi", required=True),
+        F("initiativeId", "Tashabbus", "select", options=GROUPS_1_5, half=True),
+        F("status", "Holati", "select", half=True, options=[
+            {"value": "active", "label": "Faol (qabul ochiq)"}, {"value": "completed", "label": "Yakunlangan"}]),
+        F("start", "Boshlanish sanasi", "date", half=True),
+        F("deadline", "Tugash sanasi", "date", half=True, required=True),
+        F("place", "Joyi", half=True),
+        F("organizer", "Tashkilotchi", half=True),
+        F("prize", "Mukofot", placeholder="1-o'rin: 5 mln so'm"),
+        F("desc", "Qisqa izoh", "textarea"),
+        F("image", "Rasm", "image", hint="Tanlanmasa, universitet binosi rasmi qo'yiladi."),
+        F("rules.purpose", "Nizom: maqsad", "textarea"),
+        F("rules.requirements", "Nizom: talablar", "lines", half=True, hint="Har bir band alohida qatorda"),
+        F("rules.stages", "Nizom: bosqichlar", "lines", half=True, hint="Har bir band alohida qatorda"),
+        F("rules.criteria", "Nizom: baholash", "lines", half=True, hint="Har bir band alohida qatorda"),
+        F("rules.awards", "Nizom: mukofotlar", "textarea", half=True),
+    ]},
+    "news": {"label": "Yangiliklar", "one": "Yangilik", "mode": "list", "title": "title", "fields": [
+        F("title", "Sarlavha", required=True),
+        F("initiativeId", "Tashabbus", "select", options=GROUPS_1_5, half=True),
+        F("date", "Sana", "date", half=True, required=True),
+        F("image", "Rasm", "image", required=True),
+        F("excerpt", "Qisqa matn", "textarea", limit=600),
+        F("body", "To'liq matn", "textarea", limit=5000, rows=6),
+    ]},
+    "staff": {"label": "Xodimlar", "one": "Xodim", "mode": "list", "title": "name", "fields": [
+        F("name", "Ism-familiya", required=True),
+        F("initiativeId", "Vazifasi", "select", half=True, options=[{"value": 0, "label": "Markaz rahbari"}] + [
+            {"value": g["value"], "label": f"{g['value']}-tashabbus sardori ({g['label']})"} for g in GROUPS_1_5]),
+        F("phone", "Telefon", half=True),
+        F("role", "Lavozim (ixtiyoriy)", hint="Bo'sh qolsa: «Markaz rahbari» yoki «… yo'nalishi sardori» yoziladi"),
+        F("photo", "Rasm", "image"),
+        F("showOnPage", "Rahbariyat sahifasida ko'rsatilsin", "bool"),
+    ]},
+    "stats": {"label": "Statistika", "one": "Ko'rsatkich", "mode": "fixed", "title": "label",
+              "note": "Qiymat bo'sh qolsa, raqam to'garaklar va tanlovlar ro'yxatidan avtomatik hisoblanadi.", "fields": [
+        F("label", "Nomi", required=True, half=True),
+        F("value", "Qiymat (bo'sh = avtomatik)", half=True, limit=30),
+    ]},
+    "groups": {"label": "Tashabbuslar", "one": "Tashabbus", "mode": "fixed", "title": "title", "fields": [
+        F("title", "Nomi", required=True),
+        F("lead", "Qisqa tavsif (bosh sahifa)", "textarea", limit=400),
+        F("about", "Batafsil (Markaz haqida sahifasi)", "textarea", limit=1500),
+        F("awards", "Sovrinli o'rinlar soni", "int", half=True),
+        F("image", "Rasm", "image"),
+    ]},
+    "winners": {"label": "G'oliblar", "one": "G'olib", "mode": "list", "title": "name",
+                "note": "G'oliblar rasmlari bosh sahifadagi slayderda ham chiqadi.", "fields": [
+        F("name", "Ism-familiya", required=True),
+        F("initiativeId", "Tashabbus", "select", options=GROUPS_1_5, half=True),
+        F("place", "O'rin / mukofot", half=True, placeholder="1-o'rin"),
+        F("contest", "Tanlov nomi", half=True),
+        F("faculty", "Fakultet", half=True),
+        F("photo", "Rasm", "image", required=True),
+        F("text", "Yutuq haqida", "textarea"),
+        F("quote", "Iqtibos (ixtiyoriy)", "textarea"),
+    ]},
+    "faculties": {"label": "Reyting", "one": "Fakultet", "mode": "list", "title": "name", "fields": [
+        F("name", "Fakultet", required=True),
+        F("points", "Ball", "number", half=True, required=True),
+        F("students", "Faol talabalar", "int", half=True),
+        F("note", "Izoh", placeholder="Sport chempioni"),
+    ]},
+    "books": {"label": "Kutubxona", "one": "Kitob", "mode": "list", "title": "title", "fields": [
+        F("title", "Kitob nomi", required=True),
+        F("author", "Muallif", half=True),
+        F("category", "Turkum", half=True, placeholder="O'zbek adabiyoti"),
+        F("pages", "Sahifalar soni", "int", half=True),
+        F("cover", "Muqova", "image", half=True),
+        F("desc", "Qisqa izoh", "textarea"),
+    ]},
+    "faqs": {"label": "Savol-javob", "one": "Savol", "mode": "list", "title": "q", "fields": [
+        F("q", "Savol", required=True),
+        F("a", "Javob", "textarea", limit=2000, required=True),
+    ]},
+    "settings": {"label": "Aloqa", "one": "Aloqa ma'lumotlari", "mode": "single", "title": "center", "fields": [
+        F("name", "Universitet nomi", limit=300),
+        F("center", "Markaz nomi", half=True),
+        F("hours", "Qabul vaqti", half=True),
+        F("address", "Manzil", half=True),
+        F("office", "Xona", half=True),
+        F("phone", "Asosiy telefon", half=True),
+        F("youthPhone", "Qo'shimcha telefon", half=True),
+        F("centerEmail", "Markaz pochtasi", "email", half=True),
+        F("email", "Universitet pochtasi", "email", half=True),
+        F("telegram", "Telegram havolasi", "url", half=True),
+        F("instagram", "Instagram havolasi", "url", half=True),
+        F("facebook", "Facebook havolasi", "url", half=True),
+        F("youtube", "YouTube havolasi", "url", half=True),
+        F("hemis", "HEMIS havolasi", "url", half=True),
+        F("library", "Elektron kutubxona havolasi", "url", half=True),
+        F("website", "Universitet sayti", "url", half=True),
+    ]},
+}
+KINDS = tuple(SCHEMA)
 SESSION_TTL = 12 * 3600          # 12 soat
 MAX_BODY = 6 * 1024 * 1024       # 6 MB (rasm base64 bilan)
 MAX_IMAGE = 4 * 1024 * 1024      # 4 MB
@@ -71,17 +189,23 @@ def init_db():
                    updated_at INTEGER NOT NULL,
                    PRIMARY KEY (kind, id))"""
         )
-        empty = conn.execute("SELECT COUNT(*) FROM items").fetchone()[0] == 0
-        if empty and os.path.exists(SEED_FILE):
-            seed = json.load(open(SEED_FILE, encoding="utf-8"))
-            now = int(time.time())
-            for kind in KINDS:
+        conn.execute("CREATE TABLE IF NOT EXISTS seeded (kind TEXT PRIMARY KEY)")
+        seed = json.load(open(SEED_FILE, encoding="utf-8")) if os.path.exists(SEED_FILE) else {}
+        done = {r[0] for r in conn.execute("SELECT kind FROM seeded")}
+        now = int(time.time())
+        for kind in KINDS:
+            if kind in done:
+                continue
+            # Har bo'lim bir marta to'ldiriladi: keyin admin hammasini o'chirsa ham qayta tiklanmaydi
+            if not conn.execute("SELECT 1 FROM items WHERE kind=? LIMIT 1", (kind,)).fetchone():
                 for pos, item in enumerate(seed.get(kind, [])):
                     conn.execute(
                         "INSERT INTO items(kind, id, position, data, updated_at) VALUES (?,?,?,?,?)",
-                        (kind, item["id"], pos, json.dumps(item, ensure_ascii=False), now),
+                        (kind, str(item["id"]), pos, json.dumps(item, ensure_ascii=False), now),
                     )
-            print(f"Boshlang'ich ma'lumot yuklandi: {SEED_FILE}")
+                if seed.get(kind):
+                    print(f"Boshlang'ich ma'lumot yuklandi: {kind}")
+            conn.execute("INSERT INTO seeded(kind) VALUES (?)", (kind,))
 
 
 def list_items(kind):
@@ -104,14 +228,29 @@ def save_item(kind, item, item_id=None):
                 (kind, item_id, pos, json.dumps(item, ensure_ascii=False), now),
             )
         else:
-            item["id"] = item_id
-            cur = conn.execute(
+            row = conn.execute("SELECT data FROM items WHERE kind=? AND id=?", (kind, item_id)).fetchone()
+            if row is None:
+                return None
+            # Shaklda yo'q maydonlar (rang, belgi va h.k.) saqlanib qoladi
+            merged = json.loads(row["data"])
+            merged.update(item)
+            merged["id"] = item_id
+            item = merged
+            conn.execute(
                 "UPDATE items SET data=?, updated_at=? WHERE kind=? AND id=?",
                 (json.dumps(item, ensure_ascii=False), now, kind, item_id),
             )
-            if cur.rowcount == 0:
-                return None
     return item
+
+
+def all_items():
+    with db() as conn:
+        rows = conn.execute("SELECT kind, data FROM items ORDER BY position, updated_at").fetchall()
+    out = {k: [] for k in KINDS}
+    for r in rows:
+        if r["kind"] in out:
+            out[r["kind"]].append(json.loads(r["data"]))
+    return out
 
 
 def delete_item(kind, item_id):
@@ -221,7 +360,64 @@ def clean_contest(d):
     }
 
 
+IMAGE_RE = re.compile(r"(assets/images/|uploads/)[\w.\-/]+")
+
+
+def clean_field(f, v):
+    t, label = f["type"], f["label"]
+    if t in ("text", "textarea", "email", "url"):
+        v = text(v, f.get("limit", 2000 if t == "textarea" else 300))
+        if v and t == "url" and not re.match(r"https?://", v):
+            raise ValueError(f"{label}: havola http:// yoki https:// bilan boshlanishi kerak")
+        if v and t == "email" and not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", v):
+            raise ValueError(f"{label}: pochta manzili noto'g'ri")
+        return v
+    if t in ("int", "number"):
+        if str(v if v is not None else "").strip() == "":
+            return None
+        try:
+            n = int(v) if t == "int" else round(float(str(v).replace(",", ".")), 2)
+        except ValueError:
+            raise ValueError(f"{label}: raqam bo'lishi kerak")
+        if n < 0:
+            raise ValueError(f"{label}: manfiy bo'lmasin")
+        return n
+    if t == "date":
+        return valid_date(v)
+    if t == "lines":
+        return lines(v)
+    if t == "bool":
+        return v is True or v in ("1", "true", "on")
+    if t == "select":
+        for o in f["options"]:
+            if str(o["value"]) == str(v):
+                return o["value"]
+        raise ValueError(f"{label}: noto'g'ri tanlangan")
+    if t == "image":
+        v = text(v, 300)
+        if v and (not IMAGE_RE.fullmatch(v) or ".." in v):
+            raise ValueError(f"{label}: rasm manzili noto'g'ri")
+        return v
+    raise ValueError(f"Noma'lum maydon turi: {t}")
+
+
+def clean_generic(kind, d):
+    out = {}
+    for f in SCHEMA[kind]["fields"]:
+        v = clean_field(f, d.get(f["key"]))
+        if f.get("required") and v in ("", None, []):
+            raise ValueError(f"{f['label']} kiritilmagan")
+        out[f["key"]] = v
+    return out
+
+
 CLEANERS = {"clubs": clean_club, "contests": clean_contest}
+
+
+def clean(kind, d):
+    if not isinstance(d, dict):
+        raise ValueError("Ma'lumot noto'g'ri")
+    return CLEANERS[kind](d) if kind in CLEANERS else clean_generic(kind, d)
 
 
 # ------------------------------------------------------------------ parol va sessiya
@@ -360,6 +556,10 @@ class Handler(BaseHTTPRequestHandler):
         if parts[:1] == ["api"]:
             if len(parts) == 2 and parts[1] in KINDS:
                 return self.send_json(list_items(parts[1]))
+            if parts[1:] == ["all"]:
+                return self.send_json(all_items())
+            if parts[1:] == ["schema"]:
+                return self.send_json(SCHEMA)
             if parts[1:] == ["me"]:
                 return self.send_json({"admin": self.authed()})
             return self.error(404, "Topilmadi")
@@ -407,8 +607,9 @@ class Handler(BaseHTTPRequestHandler):
             if parts == ["api", "upload"]:
                 return self.send_json({"path": save_upload(self.read_json().get("data"))})
             if len(parts) == 2 and parts[1] in KINDS:
-                item = CLEANERS[parts[1]](self.read_json())
-                return self.send_json(save_item(parts[1], item), 201)
+                if SCHEMA[parts[1]]["mode"] != "list":
+                    return self.error(405, "Bu bo'limga yangi yozuv qo'shilmaydi")
+                return self.send_json(save_item(parts[1], clean(parts[1], self.read_json())), 201)
             return self.error(404, "Topilmadi")
         except ValueError as e:
             return self.error(400, str(e))
@@ -419,7 +620,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.error(401, "Avval tizimga kiring")
         if len(parts) == 3 and parts[0] == "api" and parts[1] in KINDS:
             try:
-                item = save_item(parts[1], CLEANERS[parts[1]](self.read_json()), parts[2])
+                item = save_item(parts[1], clean(parts[1], self.read_json()), parts[2])
             except ValueError as e:
                 return self.error(400, str(e))
             return self.send_json(item) if item else self.error(404, "Topilmadi")
@@ -430,6 +631,8 @@ class Handler(BaseHTTPRequestHandler):
         if not self.authed():
             return self.error(401, "Avval tizimga kiring")
         if len(parts) == 3 and parts[0] == "api" and parts[1] in KINDS:
+            if SCHEMA[parts[1]]["mode"] != "list":
+                return self.error(405, "Bu bo'limdan yozuv o'chirilmaydi")
             return self.send_json({"ok": True}) if delete_item(parts[1], parts[2]) else self.error(404, "Topilmadi")
         self.error(404, "Topilmadi")
 

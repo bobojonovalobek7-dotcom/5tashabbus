@@ -58,9 +58,12 @@ Umumiy raqamlar (to'garaklar soni, talabalar soni, sovrinlar) tashabbuslar ma'lu
 
 ## Admin panel (dashboard)
 
-`/admin.html` — to'garak va tanlovlarni qo'shish, tahrirlash, o'chirish (parol bilan).
+`/admin.html` — saytning barcha bo'limlarini boshqarish (parol bilan): statistika, xodimlar,
+to'garaklar, tanlovlar, yangiliklar, g'oliblar, tashabbuslar, reyting, kutubxona, savol-javob va aloqa.
 Ma'lumotlar serverdagi SQLite bazada saqlanadi (`backend/server.py`, faqat Python standart kutubxonasi).
-Sayt to'garak va tanlovlarni `/api/` dan oladi; API bo'lmasa, `js/data.js` dagi ro'yxat ko'rsatiladi.
+Bo'limlar va ularning maydonlari `server.py` dagi `SCHEMA` da yozilgan: admin panel shakllarni shundan quradi.
+Sayt hamma ma'lumotni `/api/all` dan oladi; API bo'lmasa, `js/data.js` dagi ma'lumot ko'rsatiladi.
+Bazada yo'q bo'lim birinchi ishga tushishda `backend/seed.json` dan bir marta to'ldiriladi.
 
 ## Ishga tushirish
 

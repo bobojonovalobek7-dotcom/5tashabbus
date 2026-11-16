@@ -50,7 +50,7 @@
   function home() {
     // Yutuqlar slayderi
     const slider = $("#slider");
-    if (slider) {
+    if (slider && SITE.winners.length) {
       const W = SITE.winners;
       slider.innerHTML = W.map((w, idx) => `
         <div class="slide${idx === 0 ? " active" : ""}" aria-hidden="${idx !== 0}">
@@ -86,29 +86,28 @@
     if (extra) featured.push(extra);
     $("#featured-clubs").innerHTML = featured.slice(0, 6).map(clubCard).join("");
 
-    // Statistika plitkalari — raqamlar data.js dan hisoblanadi
-    const vocational = SITE.groups.find((i) => i.id === 5);
-    const science = SITE.groups.find((i) => i.id === 6);
-    const tiles = [
-      ["fa-users", fmt(SITE.totals.students), "To'garak a'zolari"],
-      ["fa-people-group", SITE.totals.clubs, "To'garaklar"],
-      ["fa-trophy", SITE.contests.length, "Tanlovlar"],
-      ["fa-layer-group", vocational ? vocational.clubsCount : 0, "Kasb-hunar to'garaklari"],
-      ["fa-flask", science ? science.clubsCount : 0, "Ilmiy to'garaklar"],
-      ["fa-award", SITE.totals.awards, "Yutuqlar"]
-    ];
-    $("#home-stats").innerHTML = tiles.map(([icon, num, label]) => `
+    // Statistika plitkalari: dashboardda qiymat yozilmagan bo'lsa, ro'yxatlardan hisoblanadi
+    const groupClubs = (id) => (SITE.groups.find((i) => i.id === id) || {}).clubsCount || 0;
+    const auto = {
+      students: fmt(SITE.totals.students),
+      clubs: SITE.totals.clubs,
+      contests: SITE.contests.length,
+      group5: groupClubs(5),
+      group6: groupClubs(6),
+      awards: SITE.totals.awards
+    };
+    $("#home-stats").innerHTML = SITE.stats.map((s) => `
       <div class="tile">
-        <i class="fa-solid ${icon}"></i>
-        <strong>${num}</strong>
-        <span>${label}</span>
+        <i class="fa-solid ${esc(s.icon)}"></i>
+        <strong>${esc(s.value !== "" && s.value != null ? s.value : auto[s.id] ?? 0)}</strong>
+        <span>${esc(s.label)}</span>
       </div>`).join("");
 
     // Tanlovlar ro'yxati: avval qabul ochiqlari (muddati yaqinroq), keyin yakunlanganlar
     const contests = [...SITE.contests]
       .sort((a, b) => Number(isOpen(b)) - Number(isOpen(a)) || a.deadline.localeCompare(b.deadline))
       .slice(0, 5);
-    const dmy = (iso) => iso.split("-").reverse().join(".");
+    const { dmy } = window.UI;
     $("#home-contests").innerHTML = contests.map((c) => `
       <a class="contest-row" href="tanlovlar.html#${c.id}">
         <img src="${c.image}" alt="" loading="lazy">
@@ -118,7 +117,11 @@
         </span>
       </a>`).join("");
 
-    $("#home-news").innerHTML = SITE.news.map(newsCard).join("");
+    // Yangiliklar: eng so'nggisi birinchi
+    const isoDate = (d) => (/^\d{2}\.\d{2}\.\d{4}$/.test(d || "") ? d.split(".").reverse().join("-") : d || "");
+    $("#home-news").innerHTML = [...SITE.news]
+      .sort((a, b) => isoDate(b.date).localeCompare(isoDate(a.date)))
+      .slice(0, 6).map(newsCard).join("");
   }
 
   /* ---------- Markaz haqida ---------- */
@@ -138,7 +141,7 @@
             <div class="mini-stats">
               <div><strong>${i.clubsCount}</strong><span>to'garak</span></div>
               <div><strong>${fmt(i.students)}</strong><span>o'quvchi</span></div>
-              <div><strong>${i.awards}</strong><span>sovrin</span></div>
+              <div><strong>${i.awards || 0}</strong><span>sovrin</span></div>
             </div>
             ${l ? `<div class="mentor">${avatar(l.name, l.photo)}<div><strong>${esc(l.name)}</strong><span>Yo'nalish sardori</span></div></div>` : ""}
             <a class="link-arrow" href="togaraklar.html?t=${i.id}" style="color:${i.color}">To'garaklarni ko'rish <i class="fa-solid fa-arrow-right"></i></a>
@@ -149,34 +152,26 @@
 
   /* ---------- Rahbariyat ---------- */
   function rahbariyat() {
-    const h = SITE.head;
-    $("#head-card").innerHTML = `
-      <div class="person-photo"><img src="${h.photo}" alt="${esc(h.name)}"></div>
+    const card = (p, role) => `
+      <div class="person-photo">${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">` : avatar(p.name)}</div>
       <div class="person-body">
-        <h3>${esc(h.name)}</h3>
-        <div class="person-role">${esc(h.role)}</div>
-        <div class="meta">
-          <div><i class="fa-solid fa-phone"></i><a href="${tel(h.phone)}">${esc(h.phone)}</a></div>
-        </div>
+        <h3>${esc(p.name)}</h3>
+        <div class="person-role">${esc(role)}</div>
+        ${p.phone ? `<div class="meta"><div><i class="fa-solid fa-phone"></i><a href="${tel(p.phone)}">${esc(p.phone)}</a></div></div>` : ""}
       </div>`;
 
-    // Sahifada 1–3-tashabbus sardorlari ko'rsatiladi (rahbar kartasi bilan bir xil uslubda)
-    $("#leaders").innerHTML = SITE.leaders.filter((l) => l.initiativeId <= 3).map((l) => {
-      const i = initiative(l.initiativeId);
-      return `
-        <article class="card head-card leader-card reveal" style="--c:${i.color}">
-          <div class="person-photo">
-            <img src="${l.photo}" alt="${esc(l.name)}" loading="lazy">
-          </div>
-          <div class="person-body">
-            <h3>${esc(l.name)}</h3>
-            <div class="person-role">${esc(i.title)} yo'nalishi sardori</div>
-            <div class="meta">
-              <div><i class="fa-solid fa-phone"></i><a href="${tel(l.phone)}">${esc(l.phone)}</a></div>
-            </div>
-          </div>
-        </article>`;
-    }).join("");
+    const h = SITE.head;
+    const headEl = $("#head-card");
+    if (h && h.showOnPage !== false) headEl.innerHTML = card(h, h.role || "Markaz rahbari");
+    else headEl.remove();
+
+    // Dashboardda "Rahbariyat sahifasida ko'rsatilsin" belgilangan sardorlar
+    $("#leaders").innerHTML = SITE.leaders
+      .filter((l) => (l.showOnPage === undefined ? l.initiativeId <= 3 : l.showOnPage))
+      .map((l) => {
+        const i = initiative(l.initiativeId);
+        return `<article class="card head-card leader-card reveal" style="--c:${i.color}">${card(l, l.role || `${i.title} yo'nalishi sardori`)}</article>`;
+      }).join("");
   }
 
   /* ---------- To'garaklar ---------- */
@@ -290,7 +285,7 @@
             <h3>${esc(b.title)}</h3>
             <div class="book-author">${esc(b.author)}</div>
             <p>${esc(b.desc)}</p>
-            <div class="book-foot"><span><i class="fa-regular fa-file-lines"></i> ${b.pages} bet</span></div>
+            ${b.pages ? `<div class="book-foot"><span><i class="fa-regular fa-file-lines"></i> ${b.pages} bet</span></div>` : ""}
           </div>
         </article>`).join("");
     };
@@ -321,6 +316,16 @@
 
   /* ---------- Aloqa ---------- */
   function aloqa() {
+    const item = (icon, title, body) => body ? `
+      <div class="contact-item"><span class="stat-icon"><i class="${icon}"></i></span><div><strong>${title}</strong>${body}</div></div>` : "";
+    const phones = [U.phone, U.youthPhone].filter(Boolean).map((p) => `<a href="${tel(p)}">${esc(p)}</a>`).join("<br>");
+    const mails = [U.centerEmail, U.email].filter(Boolean).map((m) => `<a href="mailto:${esc(m)}">${esc(m)}</a>`).join("<br>");
+    $("#contact-info").innerHTML =
+      item("fa-solid fa-location-dot", "Manzil", U.address ? `<span>${esc([U.address, U.office].filter(Boolean).join(". "))}</span>` : "") +
+      item("fa-solid fa-phone", "Telefonlar", phones) +
+      item("fa-solid fa-envelope", "Elektron pochta", mails) +
+      item("fa-regular fa-clock", "Qabul vaqti", U.hours ? `<span>${esc(U.hours)}</span>` : "");
+
     $("#contact-leaders").innerHTML = SITE.leaders.map((l) => {
       const i = initiative(l.initiativeId);
       return `
@@ -343,6 +348,7 @@
 
   const routes = { home, markaz, rahbariyat, togaraklar, tanlovlar, reyting, kutubxona, aloqa };
   SITE.load().then(() => {
+    window.UI.refreshShell();
     const fn = routes[document.body.dataset.page];
     if (fn) fn();
     faq($("#faq"));

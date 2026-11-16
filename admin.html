@@ -19,23 +19,28 @@
     .login-box { max-width: 420px; margin: 10vh auto; padding: 32px; }
     .login-box h1 { font-size: 1.4rem; margin-bottom: 6px; }
     .login-error { color: var(--red); font-size: .9rem; min-height: 1.2em; }
-    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    .kind-note { margin: 0 0 12px; font-size: .88rem; color: var(--text-3); }
     .rows { display: grid; gap: 10px; }
-    .row { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; padding: 14px 18px; }
+    .row { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 12px 16px; }
+    .row .thumb { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: var(--surface-2, #eef1f7); }
+    .row .thumb.none { display: grid; place-items: center; color: var(--text-3); }
     .row strong { display: block; font-size: .98rem; }
     .row small { color: var(--text-3); font-size: .84rem; }
     .row .actions { display: flex; gap: 6px; }
     .row .icon-btn.danger:hover { color: var(--red); border-color: var(--red); }
     .modal-box.wide { max-width: 760px; }
-    .img-preview { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; margin-top: 10px; display: none; }
+    .img-field { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .img-preview { width: 120px; height: 90px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
     .hint { font-size: .8rem; color: var(--text-3); margin-top: 4px; }
-    fieldset { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin: 0; display: grid; gap: 14px; }
-    legend { padding: 0 6px; font-weight: 700; font-size: .9rem; }
+    .check { display: flex; gap: 10px; align-items: center; font-weight: 600; }
+    .check input { width: 18px; height: 18px; }
+    textarea.lines { min-height: 90px; }
     [hidden] { display: none !important; }
+    @media (max-width: 600px) { .row { grid-template-columns: 1fr auto; } .row .thumb { display: none; } }
   </style>
 </head>
 <body data-page="admin">
-
   <header class="admin-bar">
     <div class="container">
       <a href="index.html"><img src="assets/images/urdu_5t_logo.png" alt="UrDU 5 muhim tashabbus"></a>
@@ -52,7 +57,7 @@
       <form class="card login-box form" id="login-form">
         <div>
           <h1>Admin panel</h1>
-          <p class="form-hint">To'garak va tanlovlarni boshqarish uchun parolni kiriting.</p>
+          <p class="form-hint">Sayt ma'lumotlarini boshqarish uchun parolni kiriting.</p>
         </div>
         <div class="field">
           <label for="password">Parol</label>
@@ -73,12 +78,9 @@
 
     <!-- Boshqaruv -->
     <section id="admin-view" class="container" hidden>
-      <div class="page-title" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div class="page-title">
         <h1 class="section-title">Boshqaruv</h1>
-        <div class="tabs" id="tabs">
-          <button type="button" class="chip active" data-kind="clubs">To'garaklar <span class="count" id="count-clubs"></span></button>
-          <button type="button" class="chip" data-kind="contests">Tanlovlar <span class="count" id="count-contests"></span></button>
-        </div>
+        <div class="tabs" id="tabs"></div>
       </div>
       <div class="toolbar" style="margin-top:20px">
         <label class="search-input">
@@ -86,81 +88,21 @@
           <i class="fa-solid fa-magnifying-glass"></i>
           <input type="search" id="admin-search" placeholder="Qidirish...">
         </label>
-        <button type="button" class="btn btn-primary" id="add-btn"><i class="fa-solid fa-plus"></i> <span id="add-label">To'garak qo'shish</span></button>
+        <button type="button" class="btn btn-primary" id="add-btn"><i class="fa-solid fa-plus"></i> <span id="add-label">Qo'shish</span></button>
       </div>
+      <p class="kind-note" id="kind-note" hidden></p>
       <div class="rows" id="rows"></div>
     </section>
   </main>
 
-  <!-- To'garak shakli -->
-  <div class="modal" id="club-modal" role="dialog" aria-modal="true" aria-labelledby="club-title">
+  <!-- Umumiy tahrirlash shakli (maydonlar server sxemasidan quriladi) -->
+  <div class="modal" id="edit-modal" role="dialog" aria-modal="true" aria-labelledby="edit-title">
     <div class="modal-box wide">
       <button type="button" class="icon-btn modal-close" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
-      <h2 id="club-title">To'garak</h2>
-      <form class="form" id="club-form">
-        <div class="field"><label for="cl-name">Nomi</label><input id="cl-name" name="name" required></div>
-        <div class="form-row">
-          <div class="field"><label for="cl-group">Yo'nalish</label><select id="cl-group" name="initiativeId"></select></div>
-          <div class="field"><label for="cl-students">O'quvchilar soni</label><input id="cl-students" name="students" type="number" min="0"></div>
-        </div>
-        <div class="form-row">
-          <div class="field"><label for="cl-schedule">Kunlari va vaqti</label><input id="cl-schedule" name="schedule" placeholder="Dushanba, Chorshanba · 15:00–17:00"></div>
-          <div class="field"><label for="cl-place">Joyi (xona)</label><input id="cl-place" name="place" placeholder="UrDU sport zali"></div>
-        </div>
-        <div class="form-row">
-          <div class="field"><label for="cl-mentors">Rahbar(lar)</label><textarea id="cl-mentors" name="mentors" rows="3" style="min-height:90px"></textarea><p class="hint">Har bir rahbar alohida qatorda</p></div>
-          <div class="field"><label for="cl-phones">Telefon(lar)</label><textarea id="cl-phones" name="phones" rows="3" style="min-height:90px"></textarea><p class="hint">Har bir raqam alohida qatorda, masalan 93-123-45-67</p></div>
-        </div>
-        <p class="login-error" id="club-error" role="alert"></p>
-        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Tanlov shakli -->
-  <div class="modal" id="contest-modal" role="dialog" aria-modal="true" aria-labelledby="contest-title">
-    <div class="modal-box wide">
-      <button type="button" class="icon-btn modal-close" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
-      <h2 id="contest-title">Tanlov</h2>
-      <form class="form" id="contest-form">
-        <div class="field"><label for="ct-title">Nomi</label><input id="ct-title" name="title" required></div>
-        <div class="form-row">
-          <div class="field"><label for="ct-group">Tashabbus</label><select id="ct-group" name="initiativeId"></select></div>
-          <div class="field"><label for="ct-status">Holati</label>
-            <select id="ct-status" name="status"><option value="active">Faol (qabul ochiq)</option><option value="completed">Yakunlangan</option></select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="field"><label for="ct-start">Boshlanish sanasi</label><input id="ct-start" name="start" type="date"></div>
-          <div class="field"><label for="ct-deadline">Tugash sanasi</label><input id="ct-deadline" name="deadline" type="date" required></div>
-        </div>
-        <div class="form-row">
-          <div class="field"><label for="ct-place">Joyi</label><input id="ct-place" name="place"></div>
-          <div class="field"><label for="ct-organizer">Tashkilotchi</label><input id="ct-organizer" name="organizer"></div>
-        </div>
-        <div class="field"><label for="ct-prize">Mukofot</label><input id="ct-prize" name="prize" placeholder="1-o'rin: 5 mln so'm"></div>
-        <div class="field"><label for="ct-desc">Qisqa izoh</label><textarea id="ct-desc" name="desc" rows="2" style="min-height:70px"></textarea></div>
-        <div class="field">
-          <label for="ct-file">Rasm</label>
-          <input id="ct-file" type="file" accept="image/jpeg,image/png,image/webp">
-          <input type="hidden" name="image" id="ct-image">
-          <img class="img-preview" id="ct-preview" alt="">
-          <p class="hint">JPG, PNG yoki WEBP, 4 MB gacha. Tanlanmasa, universitet binosi rasmi qo'yiladi.</p>
-        </div>
-        <fieldset>
-          <legend>Nizomi (ixtiyoriy)</legend>
-          <div class="field"><label for="ct-purpose">Maqsad</label><textarea id="ct-purpose" name="purpose" rows="2" style="min-height:70px"></textarea></div>
-          <div class="form-row">
-            <div class="field"><label for="ct-req">Talablar</label><textarea id="ct-req" name="requirements" rows="3" style="min-height:90px"></textarea></div>
-            <div class="field"><label for="ct-stages">Bosqichlar</label><textarea id="ct-stages" name="stages" rows="3" style="min-height:90px"></textarea></div>
-          </div>
-          <div class="form-row">
-            <div class="field"><label for="ct-criteria">Baholash</label><textarea id="ct-criteria" name="criteria" rows="3" style="min-height:90px"></textarea></div>
-            <div class="field"><label for="ct-awards">Mukofotlar</label><textarea id="ct-awards" name="awards" rows="3" style="min-height:90px"></textarea></div>
-          </div>
-          <p class="hint">Talablar, bosqichlar va baholash: har bir band alohida qatorda.</p>
-        </fieldset>
-        <p class="login-error" id="contest-error" role="alert"></p>
+      <h2 id="edit-title">Tahrirlash</h2>
+      <form class="form" id="edit-form" novalidate>
+        <div id="edit-fields" class="form"></div>
+        <p class="login-error" id="edit-error" role="alert"></p>
         <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
       </form>
     </div>

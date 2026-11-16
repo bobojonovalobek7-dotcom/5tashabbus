@@ -12,7 +12,9 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const tel = (p) => "tel:" + p.replace(/[^\d+]/g, "");
+  const tel = (p) => "tel:" + String(p || "").replace(/[^\d+]/g, "");
+  // 2026-10-14 → 14.10.2026 (eski ko'rinishdagi sanalar o'zgarishsiz qoladi)
+  const dmy = (d) => (/^\d{4}-\d{2}-\d{2}$/.test(d || "") ? d.split("-").reverse().join(".") : d || "");
   const fmt = (n) => Number(n).toLocaleString("ru-RU").replace(/,/g, " ");
   // 1–5 tashabbuslar va qo'shimcha guruhlar (6 — ilmiy to'garaklar)
   const initiative = (id) => SITE.groups.find((i) => i.id === Number(id));
@@ -68,17 +70,7 @@
     }).join("");
 
     const html = `
-      <div class="topbar">
-        <div class="container">
-          <div class="topbar-info">
-            <span class="hide-sm"><i class="fa-solid fa-location-dot"></i>${esc(U.address)}</span>
-            <a href="${tel(U.phone)}"><i class="fa-solid fa-phone"></i>${esc(U.phone)}</a>
-          </div>
-          <div class="topbar-social">
-            ${U.socials.map((s) => `<a href="${s.url}" target="_blank" rel="noopener" aria-label="${s.name}"><i class="${s.icon}"></i></a>`).join("")}
-          </div>
-        </div>
-      </div>
+      ${topbarHtml()}
       <header class="header" id="header">
         <div class="container">
           <a href="index.html" class="brand" aria-label="Bosh sahifa">
@@ -89,13 +81,29 @@
           <div class="header-actions">
             <button type="button" class="icon-btn" id="search-open" aria-label="Qidiruv (Ctrl+K)"><i class="fa-solid fa-magnifying-glass"></i></button>
             <button type="button" class="icon-btn" id="theme-toggle" aria-label="Yorug'/qorong'i rejim"><i class="fa-solid fa-moon"></i></button>
-            <a href="${U.hemis}" class="btn btn-primary btn-sm header-cta" target="_blank" rel="noopener" title="HEMIS orqali kirish"><i class="fa-solid fa-right-to-bracket"></i><span>Kirish</span></a>
+            <a href="${esc(U.hemis)}" class="btn btn-primary btn-sm header-cta" target="_blank" rel="noopener" title="HEMIS orqali kirish"><i class="fa-solid fa-right-to-bracket"></i><span>Kirish</span></a>
             <button type="button" class="icon-btn burger" id="burger" aria-label="Menyu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
           </div>
         </div>
       </header>`;
     document.body.insertAdjacentHTML("afterbegin", html);
     applyTheme(document.documentElement.dataset.theme);
+  }
+
+  const socialLinks = () => U.socials.map((s) =>
+    `<a href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="${esc(s.name)}"><i class="${esc(s.icon)}"></i></a>`).join("");
+
+  function topbarHtml() {
+    return `
+      <div class="topbar">
+        <div class="container">
+          <div class="topbar-info">
+            <span class="hide-sm"><i class="fa-solid fa-location-dot"></i>${esc(U.address)}</span>
+            ${U.phone ? `<a href="${tel(U.phone)}"><i class="fa-solid fa-phone"></i>${esc(U.phone)}</a>` : ""}
+          </div>
+          <div class="topbar-social">${socialLinks()}</div>
+        </div>
+      </div>`;
   }
 
   function renderFooter() {
@@ -106,9 +114,7 @@
             <div class="footer-brand">
               <img src="assets/images/urdu_5t_logo_white.png" alt="UrDU 5 muhim tashabbus markazi" width="928" height="482">
               <p>${esc(U.name)} qoshidagi 5 muhim tashabbus markazining rasmiy portali.</p>
-              <div class="socials">
-                ${U.socials.map((s) => `<a href="${s.url}" target="_blank" rel="noopener" aria-label="${s.name}"><i class="${s.icon}"></i></a>`).join("")}
-              </div>
+              <div class="socials">${socialLinks()}</div>
             </div>
             <div>
               <h4>Tashabbuslar</h4>
@@ -123,27 +129,39 @@
                 <li><a href="rahbariyat.html">Rahbariyat</a></li>
                 <li><a href="nizom.html">Nizom</a></li>
                 <li><a href="yoriqnoma.html">Yo'riqnoma</a></li>
-                <li><a href="${U.hemis}" target="_blank" rel="noopener">HEMIS tizimi</a></li>
+                <li><a href="${esc(U.hemis)}" target="_blank" rel="noopener">HEMIS tizimi</a></li>
               </ul>
             </div>
             <div>
               <h4>Bog'lanish</h4>
               <ul>
                 <li class="contact-row"><i class="fa-solid fa-location-dot"></i><span>${esc(U.address)}</span></li>
-                <li class="contact-row"><i class="fa-solid fa-phone"></i><a href="${tel(U.phone)}">${esc(U.phone)}</a></li>
-                <li class="contact-row"><i class="fa-solid fa-phone"></i><a href="${tel(U.youthPhone)}">${esc(U.youthPhone)}</a></li>
-                <li class="contact-row"><i class="fa-solid fa-envelope"></i><a href="mailto:${U.centerEmail}">${esc(U.centerEmail)}</a></li>
+                ${[U.phone, U.youthPhone].filter(Boolean).map((p) => `<li class="contact-row"><i class="fa-solid fa-phone"></i><a href="${tel(p)}">${esc(p)}</a></li>`).join("")}
+                ${U.centerEmail ? `<li class="contact-row"><i class="fa-solid fa-envelope"></i><a href="mailto:${esc(U.centerEmail)}">${esc(U.centerEmail)}</a></li>` : ""}
               </ul>
             </div>
           </div>
           <div class="footer-bottom">
             <span>© ${new Date().getFullYear()} ${esc(U.name)}</span>
-            <a href="${U.website}" target="_blank" rel="noopener">urdu.uz</a>
+            <a href="${esc(U.website)}" target="_blank" rel="noopener">urdu.uz</a>
           </div>
           <p class="footer-credit">Sayt muallifi: Bobojonov Alobek</p>
         </div>
       </footer>`;
-    document.body.insertAdjacentHTML("beforeend", html);
+    const old = $(".footer");
+    if (old) old.outerHTML = html;
+    else document.body.insertAdjacentHTML("beforeend", html);
+  }
+
+  /* Dashboard'dan yangi ma'lumot kelgach: aloqa, ijtimoiy tarmoqlar va yo'nalishlar yangilanadi */
+  function refreshShell() {
+    const bar = $(".topbar");
+    if (bar) bar.outerHTML = topbarHtml();
+    const cta = $(".header-cta");
+    if (cta) cta.href = U.hemis;
+    renderFooter();
+    const sel = $("#j-init");
+    if (sel) sel.innerHTML = SITE.groups.map((i) => `<option value="${i.id}">${i.id <= 5 ? i.id + ". " : ""}${esc(i.title)}</option>`).join("");
   }
 
   /* ---------- Modal oynalar ---------- */
@@ -452,7 +470,7 @@
           <div class="prize"><i class="fa-solid fa-trophy"></i><span>${esc(c.prize)}</span></div>
           <div class="contest-foot">
             <button type="button" class="btn btn-outline btn-sm" data-rules="${c.id}">Nizomi</button>
-            ${open ? `<a class="btn btn-primary btn-sm" href="mailto:${U.centerEmail}?subject=${encodeURIComponent("Tanlovga ariza: " + c.title)}">Qatnashish</a>` : ""}
+            ${open ? `<a class="btn btn-primary btn-sm" href="mailto:${esc(U.centerEmail)}?subject=${encodeURIComponent("Tanlovga ariza: " + c.title)}">Qatnashish</a>` : ""}
           </div>
         </div>
       </article>`;
@@ -479,7 +497,7 @@
       <button type="button" class="card card-hover news-card" data-news="${n.id}" style="--c:${i.color}">
         <img src="${n.image}" alt="" loading="lazy">
         <div class="news-body">
-          <div class="news-meta"><span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span><span>${esc(n.date)}</span></div>
+          <div class="news-meta"><span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span><span>${esc(dmy(n.date))}</span></div>
           <h3>${esc(n.title)}</h3>
           <p>${esc(n.excerpt)}</p>
           <span class="link-arrow">Batafsil <i class="fa-solid fa-arrow-right"></i></span>
@@ -493,7 +511,7 @@
     showInfo(`
       <img class="modal-img" src="${n.image}" alt="">
       <h2>${esc(n.title)}</h2>
-      <p class="lead">${esc(n.date)} · ${esc(initiative(n.initiativeId).title)}</p>
+      <p class="lead">${esc(dmy(n.date))} ·${esc(initiative(n.initiativeId).title)}</p>
       <p>${esc(n.excerpt)}</p><br><p>${esc(n.body)}</p>`);
   }
 
@@ -522,5 +540,5 @@
   renderModals();
   bindEvents();
 
-  window.UI = { $, $$, esc, tel, fmt, initiative, groupLabel, initials, avatar, clubCard, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
+  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, clubCard, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
 })();
