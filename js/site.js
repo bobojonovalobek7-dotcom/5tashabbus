@@ -188,6 +188,13 @@
 
   function renderModals() {
     const html = `
+      <div class="modal modal-detail" id="detail-modal" role="dialog" aria-modal="true" aria-label="Batafsil" data-static="1">
+        <div class="modal-box">
+          <button type="button" class="icon-btn modal-close" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
+          <div id="detail-content"></div>
+        </div>
+      </div>
+
       <div class="modal" id="info-modal" role="dialog" aria-modal="true">
         <div class="modal-box">
           <button type="button" class="icon-btn modal-close" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
@@ -355,6 +362,8 @@
     // Mobil menyu
     const burger = $("#burger");
     burger.addEventListener("click", () => {
+      // Menyu sarlavhaning haqiqiy pastidan boshlanadi (tepadagi ko'k qator ko'rinib tursa ham)
+      document.documentElement.style.setProperty("--nav-top", Math.max(0, Math.round(header.getBoundingClientRect().bottom)) + "px");
       const open = document.body.classList.toggle("nav-open");
       burger.setAttribute("aria-expanded", open);
       burger.innerHTML = `<i class="fa-solid ${open ? "fa-xmark" : "fa-bars"}"></i>`;
@@ -393,13 +402,14 @@
     // Modal yopish
     $$(".modal").forEach((m) => {
       m.addEventListener("click", (e) => {
-        if (e.target === m || e.target.closest(".modal-close")) closeModal(m);
+        // Batafsil oyna faqat × tugmasi bilan yopiladi
+        if (e.target.closest(".modal-close") || (e.target === m && !m.dataset.static)) closeModal(m);
       });
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         const m = $(".modal.open");
-        if (m) closeModal(m);
+        if (m && !m.dataset.static) closeModal(m);
         else if (document.body.classList.contains("nav-open")) burger.click();
       }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openSearch(); }
@@ -442,7 +452,7 @@
         <div class="cc-body">
           <span class="cc-chip"><i class="${i.icon}"></i>${esc(i.title)}</span>
           <h3>${esc(c.name)}</h3>
-          ${c.desc ? `<p class="cc-desc">${esc(c.desc)}</p>` : ""}
+          ${c.desc ? `<p class="cc-desc">${esc(richText(c.desc))}</p>` : ""}
           <ul class="cc-info">
             ${row("fa-regular fa-user", who, mentors.join(", "))}
             ${c.schedule ? row("fa-regular fa-clock", c.schedule) : ""}
@@ -460,30 +470,30 @@
   }
 
   /* Kasbga o'qitish kursi kartasi (to'garak kartasi bilan bir uslubda) */
-  const COURSE_COLOR = "#0891B2";
-  const COURSE_STATUS = { open: "Qabul ochiq", running: "O'qish davom etmoqda", planned: "Rejalashtirilgan", finished: "Yakunlangan" };
+  // Kurslar yo'nalishlardan alohida: o'z rangi va ikonkasi bor
+  const COURSE_COLOR = "#475569";
+  const COURSE_ICON = "fa-solid fa-screwdriver-wrench";
   function courseCard(c) {
     const row = (icon, txt) => `<li title="${esc(txt)}"><i class="${icon}"></i><span>${esc(txt)}</span></li>`;
-    const when = [dmy(c.start), dmy(c.end)].filter(Boolean).join(" — ") || c.duration || "";
     const phone = (c.phone || "").replace(/[^\d+]/g, "");
     return `
       <article class="card cc" style="--c:${COURSE_COLOR}">
         <div class="cc-body">
-          <span class="cc-chip"><i class="fa-solid fa-briefcase"></i>Kasbga o'qitish kursi</span>
+          <span class="cc-chip"><i class="${COURSE_ICON}"></i>Kasbga o'qitish kursi</span>
           <h3>${esc(c.name)}</h3>
-          ${c.desc ? `<p class="cc-desc">${esc(c.desc)}</p>` : ""}
+          ${c.desc ? `<p class="cc-desc">${esc(richText(c.desc))}</p>` : ""}
           <ul class="cc-info">
             ${c.teacher ? row("fa-regular fa-user", c.teacher) : ""}
             ${c.schedule ? row("fa-regular fa-clock", c.schedule) : ""}
             ${c.place ? row("fa-regular fa-map", c.place) : ""}
-            ${when ? row("fa-regular fa-calendar", when) : ""}
+            ${c.audience ? row("fa-solid fa-users", c.audience) : ""}
           </ul>
         </div>
         <div class="cc-foot">
-          <span class="cc-count">${c.enrolled != null && c.enrolled !== "" ? `<b>${c.enrolled}</b> o'qimoqda` : esc(c.price || "")}</span>
+          <span class="cc-count">${c.duration ? `<b>${esc(c.duration)}</b>` : ""}</span>
           <span class="cc-actions">
             ${phone ? `<a class="cc-call" href="tel:${esc(phone)}" title="${esc(c.phone)}" aria-label="Qo'ng'iroq: ${esc(c.phone)}"><i class="fa-solid fa-phone"></i></a>` : ""}
-            ${COURSE_STATUS[c.status] ? `<span class="cc-status">${COURSE_STATUS[c.status]}</span>` : ""}
+            ${c.certificate ? `<span class="cc-status"><i class="fa-solid fa-award"></i> Sertifikat</span>` : ""}
           </span>
         </div>
       </article>`;
@@ -556,8 +566,8 @@
           </div>
           ${c.prize ? `<div class="prize"><i class="fa-solid fa-trophy"></i><span>${esc(c.prize)}</span></div>` : ""}
           <div class="contest-foot">
-            ${doc}
-            ${open ? `<a class="btn btn-primary btn-sm" href="mailto:${esc(U.centerEmail)}?subject=${encodeURIComponent("Tanlovga ariza: " + c.title)}">Qatnashish</a>` : ""}
+            <button type="button" class="btn btn-outline btn-sm" data-contest="${esc(c.id)}">Batafsil</button>
+            ${open ? `<a class="btn btn-primary btn-sm" href="mailto:${esc(U.centerEmail)}?subject=${encodeURIComponent("Tanlovga ariza: " + c.title)}">Qatnashish</a>` : doc}
           </div>
         </div>
       </article>`;
@@ -593,16 +603,84 @@
       </button>`;
   }
 
+  function showDetail(html) {
+    $("#detail-content").innerHTML = html;
+    openModal("detail-modal");
+    $("#detail-modal .modal-box").scrollTop = 0;
+  }
+
+  // Galereya: asosiy rasm, ← → tugmalari, kichik rasmlar, surib almashtirish
+  function galleryHtml(images, alt) {
+    const list = [...new Set(images.filter(Boolean))];
+    if (!list.length) return "";
+    return `
+      <div class="dt-gallery" data-gallery data-i="0">
+        <div class="dt-stage">
+          ${list.map((src, k) => `<img src="${esc(src)}" alt="${esc(alt)}"${k ? ' loading="lazy"' : ""} class="${k ? "" : "on"}">`).join("")}
+          ${list.length > 1 ? `
+            <button type="button" class="dt-nav prev" data-gal="-1" aria-label="Oldingi rasm"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" class="dt-nav next" data-gal="1" aria-label="Keyingi rasm"><i class="fa-solid fa-chevron-right"></i></button>
+            <span class="dt-count">1 / ${list.length}</span>` : ""}
+        </div>
+        ${list.length > 1 ? `<div class="dt-thumbs">${list.map((src, k) => `<button type="button" data-gal-to="${k}" class="${k ? "" : "on"}" aria-label="${k + 1}-rasm"><img src="${esc(src)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
+      </div>`;
+  }
+  function galleryGo(g, i) {
+    const imgs = $$(".dt-stage img", g), thumbs = $$(".dt-thumbs button", g);
+    const n = imgs.length;
+    if (n < 2) return;
+    i = (i + n) % n;
+    g.dataset.i = i;
+    imgs.forEach((im, k) => im.classList.toggle("on", k === i));
+    thumbs.forEach((t, k) => t.classList.toggle("on", k === i));
+    const c = $(".dt-count", g);
+    if (c) c.textContent = `${i + 1} / ${n}`;
+    if (thumbs[i]) thumbs[i].scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+  }
+
   function showNews(id) {
     const n = SITE.news.find((x) => x.id === id);
     if (!n) return;
-    const i = initiative(n.initiativeId);
-    showInfo(`
-      <img class="modal-img" src="${n.image}" alt="">
-      <h2>${esc(n.title)}</h2>
-      <p class="lead">${esc(dmy(n.date))}${i.id ? ` · ${esc(i.title)}` : ""}</p>
-      ${n.excerpt ? `<div class="rich rich-lead">${richHtml(n.excerpt)}</div>` : ""}
-      ${n.body ? `<div class="rich">${richHtml(n.body)}</div>` : ""}`);
+    showDetail(`
+      <article class="dt">
+        ${galleryHtml([n.image].concat(n.gallery || []), n.title)}
+        <div class="dt-body">
+          <div class="dt-meta"><span class="dt-tag"><i class="fa-regular fa-newspaper"></i> Yangilik</span><span><i class="fa-regular fa-calendar"></i> ${esc(dmy(n.date))}</span></div>
+          <h2>${esc(n.title)}</h2>
+          ${n.excerpt ? `<div class="rich rich-lead">${richHtml(n.excerpt)}</div>` : ""}
+          ${n.body ? `<div class="rich">${richHtml(n.body)}</div>` : ""}
+        </div>
+      </article>`);
+  }
+
+  // Tanlov: kartada qisqa ma'lumot, oynada to'liq
+  function showContest(id) {
+    const c = SITE.contests.find((x) => String(x.id) === String(id));
+    if (!c) return;
+    const open = contestOpen(c);
+    const d = daysLeft(c.deadline);
+    const hasRules = c.rules && (c.rules.purpose || (c.rules.requirements || []).length);
+    showDetail(`
+      <article class="dt">
+        ${galleryHtml([c.image], c.title)}
+        <div class="dt-body">
+          <div class="dt-meta">
+            ${open ? `<span class="dt-tag ok"><i class="fa-solid fa-circle"></i> Qabul ochiq</span>` : `<span class="dt-tag muted"><i class="fa-solid fa-flag-checkered"></i> Yakunlangan</span>`}
+            ${open ? `<span class="dt-left">${d === 0 ? "Bugun oxirgi kun" : `${d} kun qoldi`}</span>` : ""}
+          </div>
+          <h2>${esc(c.title)}</h2>
+          <div class="dt-facts">
+            <div><i class="fa-regular fa-calendar"></i><span><small>Tugash sanasi</small>${esc(dmy(c.deadline))}</span></div>
+            ${c.prize ? `<div><i class="fa-solid fa-trophy"></i><span><small>Mukofot</small>${esc(c.prize)}</span></div>` : ""}
+          </div>
+          ${c.desc ? `<div class="rich rich-lead">${richHtml(c.desc)}</div>` : ""}
+          ${c.body ? `<div class="rich">${richHtml(c.body)}</div>` : ""}
+          <div class="dt-actions">
+            ${c.doc ? `<a class="btn btn-outline" href="${esc(c.doc)}" target="_blank" rel="noopener"><i class="fa-regular fa-file-lines"></i> Nizomi</a>` : hasRules ? `<button type="button" class="btn btn-outline" data-rules="${esc(c.id)}">Nizomi</button>` : ""}
+            ${open ? `<a class="btn btn-primary" href="mailto:${esc(U.centerEmail)}?subject=${encodeURIComponent("Tanlovga ariza: " + c.title)}"><i class="fa-solid fa-paper-plane"></i> Qatnashish</a>` : ""}
+          </div>
+        </div>
+      </article>`);
   }
 
   function initiativeCard(i) {
@@ -622,6 +700,26 @@
     if (r) showRules(r.dataset.rules);
     const n = e.target.closest("[data-news]");
     if (n) showNews(n.dataset.news);
+    const ct = e.target.closest("[data-contest]");
+    if (ct) showContest(ct.dataset.contest);
+    // Galereya tugmalari
+    const g = e.target.closest("[data-gallery]");
+    if (g) {
+      const step = e.target.closest("[data-gal]");
+      const to = e.target.closest("[data-gal-to]");
+      if (step) galleryGo(g, Number(g.dataset.i) + Number(step.dataset.gal));
+      if (to) galleryGo(g, Number(to.dataset.galTo));
+    }
+  });
+  // Galereyada barmoq bilan surish
+  let galX = null;
+  document.addEventListener("touchstart", (e) => { galX = e.target.closest(".dt-stage") && e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
+  document.addEventListener("touchend", (e) => {
+    if (galX === null) return;
+    const g = e.target.closest("[data-gallery]");
+    const dx = e.changedTouches[0].clientX - galX;
+    galX = null;
+    if (g && Math.abs(dx) > 40) galleryGo(g, Number(g.dataset.i) + (dx < 0 ? 1 : -1));
   });
 
   /* ---------- Ishga tushirish ---------- */
@@ -630,5 +728,5 @@
   renderModals();
   bindEvents();
 
-  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, sendRequest, richHtml, richText, contestOpen, clubCard, courseCard, COURSE_COLOR, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
+  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, sendRequest, richHtml, richText, contestOpen, clubCard, courseCard, COURSE_COLOR, COURSE_ICON, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
 })();
