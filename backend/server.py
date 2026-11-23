@@ -48,6 +48,11 @@ GROUPS_1_6 = [{"value": i, "label": t} for i, t in enumerate(
 GROUPS_1_5 = GROUPS_1_6[:5]
 
 
+RATING_OPTIONS = [{"value": "", "label": "Baholanmagan"}, {"value": "green", "label": "🟢 Yashil — a'lo"},
+                  {"value": "yellow", "label": "🟡 Sariq — qoniqarli"}, {"value": "red", "label": "🔴 Qizil — qoniqarsiz"}]
+RATINGS = ("green", "yellow", "red")
+
+
 def F(key, label, type="text", **kw):
     return {"key": key, "label": label, "type": type, **kw}
 
@@ -61,6 +66,33 @@ SCHEMA = {
         F("place", "Joyi (xona)", half=True),
         F("mentors", "Rahbar(lar)", "lines", half=True, hint="Har bir rahbar alohida qatorda"),
         F("phones", "Telefon(lar)", "phones", half=True, hint="Har bir raqam alohida qatorda, masalan 93-123-45-67"),
+        F("rating", "Baho (faqat admin ko'radi)", "select", half=True, private=True, options=RATING_OPTIONS),
+        F("ratingNote", "Baho izohi", half=True, private=True, placeholder="Masalan: davomat past"),
+    ]},
+    "courses": {"label": "Kasb-hunar kurslari", "one": "Kurs", "mode": "list", "title": "name",
+                "note": "Xotin-qizlar va yoshlarni kasb-hunarga o'qitish kurslari: o'rinlar, o'qiyotganlar, bitirganlar va bandlik hisobi.",
+                "fields": [
+        F("name", "Kurs nomi", required=True),
+        F("initiativeId", "Yo'nalish", "select", options=GROUPS_1_6, half=True, default=5),
+        F("status", "Holati", "select", half=True, options=[
+            {"value": "open", "label": "Qabul ochiq"}, {"value": "running", "label": "O'qish davom etmoqda"},
+            {"value": "planned", "label": "Rejalashtirilgan"}, {"value": "finished", "label": "Yakunlangan"}]),
+        F("start", "Boshlanish sanasi", "date", half=True),
+        F("end", "Tugash sanasi", "date", half=True),
+        F("duration", "Davomiyligi", half=True, placeholder="3 oy, 72 soat"),
+        F("price", "Narxi", half=True, placeholder="Bepul"),
+        F("schedule", "Dars jadvali", half=True, placeholder="Dushanba, Chorshanba · 14:00–16:00"),
+        F("place", "O'qitiladigan joy", half=True),
+        F("teacher", "Usta / o'qituvchi", half=True),
+        F("phone", "Aloqa telefoni", half=True),
+        F("audience", "Kimlar uchun", placeholder="Talaba-qizlar va mahalla yoshlari"),
+        F("capacity", "O'rinlar soni", "int", half=True),
+        F("enrolled", "O'qiyotganlar", "int", half=True),
+        F("graduates", "Bitirganlar", "int", half=True),
+        F("employed", "Ishga joylashganlar", "int", half=True, hint="Bitirganlardan ish yoki daromad topganlar"),
+        F("certificate", "Sertifikat beriladi", "bool"),
+        F("image", "Rasm", "image"),
+        F("desc", "Kurs haqida", "textarea", limit=1500),
     ]},
     "contests": {"label": "Tanlovlar", "one": "Tanlov", "mode": "list", "title": "title", "fields": [
         F("title", "Nomi", required=True),
@@ -159,6 +191,14 @@ SCHEMA = {
     ]},
 }
 KINDS = tuple(SCHEMA)
+# Faqat admin ko'radigan maydonlar: tizimga kirmagan foydalanuvchiga API ularni bermaydi
+PRIVATE = {k: {f["key"] for f in v["fields"] if f.get("private")} | ({"ratedAt", "ratingAuto"} if k == "clubs" else set())
+           for k, v in SCHEMA.items()}
+
+
+def public(kind, item):
+    hidden = PRIVATE.get(kind)
+    return {k: v for k, v in item.items() if k not in hidden} if hidden else item
 SESSION_TTL = 12 * 3600          # 12 soat
 MAX_BODY = 6 * 1024 * 1024       # 6 MB (rasm base64 bilan)
 MAX_IMAGE = 4 * 1024 * 1024      # 4 MB
@@ -236,6 +276,9 @@ def save_item(kind, item, item_id=None):
                 return None
             # Shaklda yo'q maydonlar (rang, belgi va h.k.) saqlanib qoladi
             merged = json.loads(row["data"])
+            if "rating" in item and item["rating"] != merged.get("rating", ""):
+                item["ratedAt"] = time.strftime("%Y-%m-%d") if item["rating"] else ""
+                item["ratingAuto"] = False
             merged.update(item)
             merged["id"] = item_id
             item = merged
@@ -254,6 +297,26 @@ def all_items():
         if r["kind"] in out:
             out[r["kind"]].append(json.loads(r["data"]))
     return out
+
+
+def rate_clubs(ratings, auto=False):
+    """ratings: {to'garak id: "green" | "yellow" | "red" | ""} — faqat baho o'zgaradi."""
+    if not isinstance(ratings, dict) or not all(v in RATINGS + ("",) for v in ratings.values()):
+        raise ValueError("Baho noto'g'ri")
+    today = time.strftime("%Y-%m-%d")
+    now = int(time.time())
+    with db() as conn:
+        for item_id, rating in ratings.items():
+            row = conn.execute("SELECT data FROM items WHERE kind='clubs' AND id=?", (str(item_id),)).fetchone()
+            if row is None:
+                continue
+            club = json.loads(row["data"])
+            club.update({"rating": rating, "ratedAt": today if rating else "", "ratingAuto": bool(auto and rating)})
+            if not rating:
+                club["ratingNote"] = ""
+            conn.execute("UPDATE items SET data=?, updated_at=? WHERE kind='clubs' AND id=?",
+                         (json.dumps(club, ensure_ascii=False), now, str(item_id)))
+    return list_items("clubs")
 
 
 def reorder_items(kind, ids):
@@ -333,6 +396,8 @@ def clean_club(d):
         "mentors": lines(d.get("mentors"), 10),
         "phones": [phone(p) for p in lines(d.get("phones") if not isinstance(d.get("phones"), list)
                                            else [x.get("text", "") if isinstance(x, dict) else x for x in d.get("phones")], 10)],
+        "rating": d.get("rating") if d.get("rating") in RATINGS else "",
+        "ratingNote": text(d.get("ratingNote"), 300),
     }
 
 
@@ -577,10 +642,15 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path, parts = self.route()
         if parts[:1] == ["api"]:
+            admin = self.authed()
             if len(parts) == 2 and parts[1] in KINDS:
-                return self.send_json(list_items(parts[1]))
+                items = list_items(parts[1])
+                return self.send_json(items if admin else [public(parts[1], x) for x in items])
             if parts[1:] == ["all"]:
-                return self.send_json(all_items())
+                data = all_items()
+                if not admin:
+                    data = {k: [public(k, x) for x in v] for k, v in data.items()}
+                return self.send_json(data)
             if parts[1:] == ["schema"]:
                 return self.send_json(SCHEMA)
             if parts[1:] == ["me"]:
@@ -629,6 +699,9 @@ class Handler(BaseHTTPRequestHandler):
                 return self.error(401, "Avval tizimga kiring")
             if parts == ["api", "upload"]:
                 return self.send_json({"path": save_upload(self.read_json().get("data"))})
+            if parts == ["api", "clubs", "rating"]:
+                body = self.read_json()
+                return self.send_json(rate_clubs(body.get("ratings"), body.get("auto") is True))
             if len(parts) == 3 and parts[1] in KINDS and parts[2] == "order":
                 if not SCHEMA[parts[1]].get("sortable"):
                     return self.error(405, "Bu bo'lim tartiblanmaydi")

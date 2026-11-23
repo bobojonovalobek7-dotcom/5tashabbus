@@ -38,8 +38,35 @@
     textarea.lines { min-height: 90px; }
     .img-field.loading { opacity: .55; pointer-events: none; }
     .row .icon-btn:disabled { opacity: .35; cursor: default; }
+    .tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    #kind-extra:empty { display: none; }
+    /* Svetofor baholash */
+    .lights { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--border); border-radius: 999px; margin-right: 6px; }
+    .light { --c: var(--text-3); width: 30px; height: 30px; border-radius: 50%; border: 0; background: transparent; color: var(--border); cursor: pointer; display: grid; place-items: center; font-size: 1.05rem; transition: color .15s, background .15s; }
+    .light.green { --c: var(--green); } .light.yellow { --c: #E2A30B; } .light.red { --c: var(--red); }
+    .light:hover { color: var(--c); }
+    .light.on { color: #fff; background: var(--c); }
+    .row.rated-green { box-shadow: inset 4px 0 0 var(--green); }
+    .row.rated-yellow { box-shadow: inset 4px 0 0 #E2A30B; }
+    .row.rated-red { box-shadow: inset 4px 0 0 var(--red); }
+    .rate-chip.green { --c: var(--green); } .rate-chip.yellow { --c: #E2A30B; } .rate-chip.red { --c: var(--red); } .rate-chip.none { --c: var(--text-3); }
+    /* Kurslar xulosasi */
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .kpi { padding: 16px 18px; }
+    .kpi strong { display: block; font-family: var(--font-head); font-size: 1.6rem; color: var(--brand); }
+    .kpi span { font-size: .85rem; color: var(--text-3); }
+    /* Nazorat */
+    .issue { --c: var(--brand); display: grid; grid-template-columns: auto 1fr; gap: 14px; padding: 16px 18px; border-left: 4px solid var(--c); }
+    .issue.bad { --c: var(--red); } .issue.warn { --c: #E2A30B; } .issue.info { --c: var(--brand); }
+    .issue-ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
+    .issue-lv { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--c); }
+    .issue strong { display: block; margin: 2px 0; }
+    .issue small { color: var(--text-3); font-size: .86rem; }
+    .issue-items { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .link-chip { font: inherit; font-size: .8rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); cursor: pointer; }
+    .link-chip:hover { border-color: var(--c); color: var(--c); }
     [hidden] { display: none !important; }
-    @media (max-width: 600px) { .row { grid-template-columns: 1fr auto; } .row .thumb { display: none; } }
+    @media (max-width: 600px) { .row { grid-template-columns: 1fr auto; } .row .thumb { display: none; } .row .actions { flex-wrap: wrap; justify-content: flex-end; } }
   </style>
 </head>
 <body data-page="admin">
@@ -84,16 +111,20 @@
         <h1 class="section-title">Boshqaruv</h1>
         <div class="tabs" id="tabs"></div>
       </div>
-      <div class="toolbar" style="margin-top:20px">
+      <div class="toolbar" id="toolbar" style="margin-top:20px">
         <label class="search-input">
           <span class="sr-only">Qidirish</span>
           <i class="fa-solid fa-magnifying-glass"></i>
           <input type="search" id="admin-search" placeholder="Qidirish...">
         </label>
-        <button type="button" class="btn btn-primary" id="add-btn"><i class="fa-solid fa-plus"></i> <span id="add-label">Qo'shish</span></button>
+        <div class="tools">
+          <span class="tools" id="kind-tools"></span>
+          <button type="button" class="btn btn-primary" id="add-btn"><i class="fa-solid fa-plus"></i> <span id="add-label">Qo'shish</span></button>
+        </div>
       </div>
       <p class="kind-note" id="kind-note" hidden></p>
-      <div class="rows" id="rows"></div>
+      <div id="kind-extra"></div>
+      <div class="rows" id="rows" style="margin-top:20px"></div>
     </section>
   </main>
 
@@ -112,7 +143,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/data.js?v=20261117"></script>
-<script src="js/admin.js?v=20261117"></script>
+<script src="js/data.js?v=20261123"></script>
+<script src="js/admin.js?v=20261123"></script>
 </body>
 </html>

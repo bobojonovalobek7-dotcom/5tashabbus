@@ -65,6 +65,13 @@ Bo'limlar va ularning maydonlari `server.py` dagi `SCHEMA` da yozilgan: admin pa
 Sayt hamma ma'lumotni `/api/all` dan oladi; API bo'lmasa, `js/data.js` dagi ma'lumot ko'rsatiladi.
 Bazada yo'q bo'lim birinchi ishga tushishda `backend/seed.json` dan bir marta to'ldiriladi.
 
+Qo'shimcha imkoniyatlar:
+
+- **Nazorat** — saytdagi kamchiliklar (joy, jadval yoki telefon yo'q to'garaklar, muddati o'tgan tanlovlar va h.k.) avtomatik topiladi.
+- **To'garaklarni baholash** — yashil / sariq / qizil, "Avtomatik baholash" va Excelga yuklash. Baho va izoh
+  faqat adminga ko'rinadi: tizimga kirmaganlarga API bu maydonlarni bermaydi (`server.py` dagi `private` maydonlar).
+- **Kasb-hunar kurslari** — o'rinlar, o'qiyotganlar, bitirganlar, bandlik foizi va Excelga yuklash.
+
 ## Ishga tushirish
 
 Kompyuterda (sayt + admin panel):
