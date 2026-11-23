@@ -12,17 +12,31 @@
   const group = (id) => SITE.groups.find((g) => g.id === Number(id));
   const dmy = (d) => (/^\d{4}-\d{2}-\d{2}$/.test(d || "") ? d.split("-").reverse().join(".") : d || "");
 
-  // Tablar tartibi (sxemada bor, lekin bu ro'yxatda yo'q bo'limlar oxiriga qo'shiladi)
-  const ORDER = ["control", "stats", "staff", "clubs", "courses", "contests", "news", "winners", "groups", "faculties", "books", "faqs", "settings"];
+  // Chap menyu bo'limlari (sxemada bor, lekin bu ro'yxatda yo'q bo'limlar "Sahifalar" oxiriga qo'shiladi)
+  const NAV = [
+    ["Asosiy", ["dashboard", "control"]],
+    ["Kontent", ["clubs", "courses", "contests", "news", "groups"]],
+    ["Natijalar", ["faculties", "winners", "stats"]],
+    ["Sahifalar", ["staff", "books", "faqs", "settings"]]
+  ];
+  const ORDER = NAV.flatMap((s) => s[1]);
   const ICONS = {
-    stats: "fa-chart-simple", staff: "fa-user-tie", clubs: "fa-people-group", contests: "fa-trophy", news: "fa-newspaper",
-    control: "fa-clipboard-check", courses: "fa-briefcase", winners: "fa-medal", groups: "fa-flag", faculties: "fa-ranking-star", books: "fa-book", faqs: "fa-circle-question", settings: "fa-address-book"
+    dashboard: "fa-gauge-high", control: "fa-shield-halved",
+    clubs: "fa-people-group", courses: "fa-briefcase", contests: "fa-trophy", news: "fa-newspaper", groups: "fa-layer-group",
+    faculties: "fa-ranking-star", winners: "fa-medal", stats: "fa-chart-simple",
+    staff: "fa-user-tie", books: "fa-book", faqs: "fa-circle-question", settings: "fa-address-book"
   };
+  // Menyudagi qisqa nomlar (bo'sh bo'lsa sxemadagi nom olinadi)
+  const NAV_LABEL = { groups: "Yo'nalishlar", winners: "Shon-sharaf", staff: "Rahbariyat" };
 
-  const state = { schema: {}, kinds: [], kind: "stats", items: {}, editing: null, query: "", rating: "all" };
-  // "Nazorat" serverda bo'lim emas: kamchiliklar shu yerda, mavjud ma'lumotdan hisoblanadi
+  const state = { schema: {}, kinds: [], kind: "dashboard", items: {}, editing: null, query: "", rating: "all", metric: "students" };
+  // "Bosh panel" va "Nazorat" serverda bo'lim emas: mavjud ma'lumotdan shu yerda hisoblanadi
+  const DASH = { label: "Bosh panel", mode: "view", fields: [] };
   const CONTROL = { label: "Nazorat", mode: "view", fields: [] };
-  const S = () => (state.kind === "control" ? CONTROL : state.schema[state.kind]);
+  const VIRTUAL = { dashboard: DASH, control: CONTROL };
+  const schemaOf = (k) => VIRTUAL[k] || state.schema[k];
+  const S = () => schemaOf(state.kind);
+  const navLabel = (k) => NAV_LABEL[k] || schemaOf(k).label;
 
   /* ---------- API ---------- */
   async function api(method, path, body) {
@@ -45,7 +59,6 @@
   /* ---------- Ko'rinishlar ---------- */
   function show(view) {
     ["login-view", "admin-view", "offline-view"].forEach((id) => { $("#" + id).hidden = id !== view; });
-    $("#admin-nav").hidden = view !== "admin-view";
   }
   function showLogin() { show("login-view"); setTimeout(() => $("#password").focus(), 50); }
 
@@ -91,15 +104,186 @@
     return f ? (it[f.key] || "") : null;
   }
 
+  const issueCount = (issues) => issues.filter((i) => i.lv !== "info").length;
+  const initials = (name) => String(name || "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+
+  /* ---------- Chap menyu va yuqori panel ---------- */
+  function renderNav(issues) {
+    const extra = state.kinds.filter((k) => !ORDER.includes(k));
+    $("#side-nav").innerHTML = NAV.map(([title, keys], i) => {
+      const list = keys.filter((k) => state.kinds.includes(k)).concat(i === NAV.length - 1 ? extra : []);
+      if (!list.length) return "";
+      return `<div class="nav-sec">${title}</div>` + list.map((k) => {
+        const s = schemaOf(k);
+        const n = k === "control" ? issueCount(issues) : (state.items[k] || []).length;
+        const badge = k === "control" ? (n ? `<span class="badge gold">${n}</span>` : "") : s.mode === "list" ? `<span class="badge">${n}</span>` : "";
+        const on = k === state.kind;
+        return `<button type="button" class="nav-item${on ? " active" : ""}${k === "control" && n ? " alert" : ""}" data-kind="${k}"${on ? ' aria-current="page"' : ""}>
+          <i class="fa-solid ${ICONS[k] || "fa-folder"}"></i><span>${esc(navLabel(k))}</span>${badge}</button>`;
+      }).join("");
+    }).join("");
+  }
+
+  function renderHeader() {
+    const k = state.kind, s = S();
+    const title = k === "dashboard" ? "Bosh panel" : navLabel(k);
+    let sub = `${location.host || "5tashabbus"} · boshqaruv`;
+    if (k === "control") sub = "Saytdagi ma'lumotlarning avtomatik tekshiruvi";
+    else if (k !== "dashboard") sub = s.mode === "list" ? `${(state.items[k] || []).length} ta yozuv · ${s.label}` : s.label;
+    $("#page-title").textContent = title;
+    $("#page-sub").textContent = sub;
+    document.title = `${title} — 5 muhim tashabbus boshqaruvi`;
+
+    const staff = state.items.staff || [];
+    const head = staff.find((p) => !Number(p.initiativeId)) || staff[0];
+    $("#user-box").innerHTML = head
+      ? `${head.photo ? `<img class="avatar" src="${esc(head.photo)}" alt="">` : `<span class="avatar">${esc(initials(head.name))}</span>`}
+         <div><strong>${esc(head.name)}</strong><small>${esc(head.role || "Markaz rahbari")}</small></div>`
+      : `<span class="avatar"><i class="fa-solid fa-user-shield"></i></span><div><strong>Administrator</strong><small>Boshqaruv paneli</small></div>`;
+  }
+
+  /* ---------- Bosh panel ---------- */
+  function contestPill(c) {
+    const d = daysTo(c.deadline);
+    if (d === null) return `<span class="pill muted">muddatsiz</span>`;
+    if (d < 0) return `<span class="pill late">muddati o'tgan</span>`;
+    if (d === 0) return `<span class="pill soon">bugun</span>`;
+    return `<span class="pill${d <= 7 ? " soon" : ""}">${d} kun</span>`;
+  }
+  const thumbHtml = (src) => (src ? `<img src="${esc(src)}" alt="" loading="lazy">` : `<span class="ph"><i class="fa-regular fa-image"></i></span>`);
+
+  function dashHtml(issues) {
+    const it = state.items;
+    const clubs = it.clubs || [], contests = it.contests || [], staff = it.staff || [], news = it.news || [];
+    const groups = SITE.groups.map((g) => {
+      const cl = clubs.filter((c) => Number(c.initiativeId) === g.id);
+      return { ...g, clubs: cl.length, members: sum(cl, "students") };
+    }).filter((g) => g.clubs || g.id <= 5);
+
+    const members = sum(clubs, "students");
+    const dirs = new Set(clubs.map((c) => Number(c.initiativeId)).filter(Boolean)).size;
+    const open = contests.filter((c) => c.status !== "completed")
+      .sort((a, b) => (daysTo(a.deadline) ?? 1e9) - (daysTo(b.deadline) ?? 1e9));
+    const active = open.filter((c) => daysTo(c.deadline) === null || daysTo(c.deadline) >= 0);
+    const nearest = active.map((c) => daysTo(c.deadline)).find((d) => d !== null);
+    const awards = sum(SITE.groups, "awards");
+    const mentors = new Set(clubs.flatMap((c) => c.mentors || []).map((m) => String(m).trim().toLowerCase()).filter(Boolean)).size;
+    const complete = clubs.length ? pct(clubs.filter((c) => !clubProblems(c).length).length, clubs.length) : 100;
+    const nIssues = issueCount(issues), bad = issues.filter((i) => i.lv === "bad").length;
+
+    const notice = nIssues
+      ? `<div class="notice"><i class="fa-solid fa-circle-info"></i>
+          <span>Ma'lumotlar <b>${dmy(today())}</b> holatiga. Nazoratda <b>${bad} ta muhim</b> va <b>${nIssues - bad} ta e'tibor talab qiladigan</b> kamchilik bor.</span>
+          <button type="button" class="btn btn-outline btn-sm" data-xls="clubs"><i class="fa-solid fa-file-excel"></i> Excel hisobot</button>
+          <button type="button" class="btn btn-outline btn-sm" data-go="control"><i class="fa-solid fa-shield-halved"></i> Nazoratga o'tish</button></div>`
+      : `<div class="notice ok"><i class="fa-solid fa-circle-check"></i>
+          <span>Ma'lumotlar <b>${dmy(today())}</b> holatiga. Muhim kamchilik topilmadi.</span>
+          <button type="button" class="btn btn-outline btn-sm" data-xls="clubs"><i class="fa-solid fa-file-excel"></i> Excel hisobot</button></div>`;
+
+    const stat = (go, ic, val, label, sub, primary) => `
+      <button type="button" class="stat${primary ? " primary" : ""}" data-go="${go}">
+        <span class="ic"><i class="fa-solid ${ic}"></i></span><b>${val}</b><span class="lbl">${label}</span><small>${sub}</small>
+      </button>`;
+    const stats = `<div class="stat-grid">
+      ${stat("clubs", "fa-people-group", fmtN(clubs.length), "To'garaklar", `${dirs} ta yo'nalish bo'yicha`, true)}
+      ${stat("clubs", "fa-users", fmtN(members), "To'garak a'zolari", `o'rtacha ${clubs.length ? Math.round(members / clubs.length) : 0} nafar / to'garak`)}
+      ${stat("contests", "fa-trophy", active.length, "Faol tanlovlar", nearest !== undefined ? `eng yaqin muddat: ${nearest} kun` : "muddati yaqin tanlov yo'q")}
+      ${stat("winners", "fa-award", fmtN(awards), "Yutuqlar", `${(it.winners || []).length} ta shon-sharaf egasi`)}
+      ${stat("staff", "fa-chalkboard-user", fmtN(mentors), "To'garak rahbarlari", `${staff.length} ta markaz xodimi`)}
+      ${stat("control", "fa-shield-halved", `${complete}%`, "Ma'lumotlar to'liqligi", `${nIssues} ta muammo nazoratda`)}
+    </div>`;
+
+    const m = state.metric;
+    const val = (g) => (m === "clubs" ? g.clubs : g.members);
+    const max = Math.max(1, ...groups.map(val));
+    const bars = groups.slice().sort((a, b) => val(b) - val(a)).map((g) => `
+      <button type="button" class="bar-row" style="--c:${esc(g.color || "var(--brand)")}" data-go="groups" data-id="${g.id}" title="${esc(g.title)}: tahrirlash">
+        <span class="bar-name"><span class="bar-ic"><i class="${esc(g.icon || "fa-solid fa-layer-group")}"></i></span><span class="bar-title">${esc(g.title)}</span></span>
+        <span class="bar-track"><span class="bar-fill" style="width:${((val(g) / max) * 100).toFixed(1)}%"></span></span>
+        <span class="bar-val"><b>${fmtN(val(g))}</b><small>${m === "clubs" ? `${fmtN(g.members)} a'zo` : `${g.clubs} to'garak`}</small></span>
+      </button>`).join("");
+    const chart = `<div class="panel">
+      <div class="panel-head">
+        <div><h2>${m === "clubs" ? "To'garaklar soni" : "A'zolar soni"} — yo'nalishlar kesimida</h2><p>Har bir tashabbus bo'yicha qamrov</p></div>
+        <div class="seg" role="group" aria-label="Ko'rsatkich">
+          <button type="button" class="${m === "students" ? "on" : ""}" data-metric="students" aria-pressed="${m === "students"}">A'zolar</button>
+          <button type="button" class="${m === "clubs" ? "on" : ""}" data-metric="clubs" aria-pressed="${m === "clubs"}">To'garaklar</button>
+        </div>
+      </div>
+      ${bars || `<div class="empty"><i class="fa-regular fa-folder-open"></i>To'garaklar hali kiritilmagan</div>`}
+    </div>`;
+
+    const deadlines = `<div class="panel">
+      <div class="panel-head"><div><h2>Tanlovlar muddati</h2><p>Faol tanlovlar, muddati bo'yicha</p></div><button type="button" class="more" data-go="contests">Barchasi →</button></div>
+      ${open.slice(0, 5).map((c) => `
+        <button type="button" class="li" data-go="contests" data-id="${esc(c.id)}">
+          ${thumbHtml(thumbOf("contests", c))}
+          <span><strong>${esc(c.title || "—")}</strong><small>${esc([gTitle(c.initiativeId), c.deadline ? `${dmy(c.deadline)} gacha` : c.period].filter(Boolean).join(" · "))}</small></span>
+          ${contestPill(c)}
+        </button>`).join("") || `<div class="empty"><i class="fa-solid fa-trophy"></i>Faol tanlov yo'q</div>`}
+    </div>`;
+
+    const latest = news.slice().sort((a, b) => (toIso(a.date) < toIso(b.date) ? 1 : -1)).slice(0, 4);
+    const newsPanel = `<div class="panel">
+      <div class="panel-head"><div><h2>Oxirgi yangiliklar</h2><p>Saytda e'lon qilingan</p></div><button type="button" class="more" data-go="news">Barchasi →</button></div>
+      ${latest.map((n) => `
+        <button type="button" class="li" data-go="news" data-id="${esc(n.id)}">
+          ${thumbHtml(thumbOf("news", n))}
+          <span><strong>${esc(n.title || "—")}</strong><small>${esc([dmy(n.date), gTitle(n.initiativeId)].filter(Boolean).join(" · "))}</small></span>
+          <span></span>
+        </button>`).join("") || `<div class="empty"><i class="fa-regular fa-newspaper"></i>Yangilik yo'q</div>`}
+    </div>`;
+
+    const rc = ratingCounts(clubs);
+    const COLORS = { green: "var(--green)", yellow: "#E2A30B", red: "var(--red)", none: "var(--border)" };
+    const NAMES = { green: "Yashil — a'lo", yellow: "Sariq — qoniqarli", red: "Qizil — qoniqarsiz", none: "Baholanmagan" };
+    const ratingPanel = `<div class="panel">
+      <div class="panel-head"><div><h2>To'garaklar bahosi</h2><p>Svetofor tizimi bo'yicha</p></div><button type="button" class="more" data-go="clubs">Baholash →</button></div>
+      <div class="stack">${Object.keys(COLORS).map((k) => (rc[k] ? `<i style="width:${pct(rc[k], clubs.length)}%;background:${COLORS[k]}" title="${NAMES[k]}: ${rc[k]}"></i>` : "")).join("")}</div>
+      <div class="legend">${Object.keys(COLORS).map((k) => `
+        <button type="button" data-go="clubs" data-rating="${k}"><span class="dot" style="background:${COLORS[k]}"></span><span>${NAMES[k]}</span><b>${rc[k]}</b></button>`).join("")}
+      </div>
+    </div>`;
+
+    const issuesPanel = `<div class="panel">
+      <div class="panel-head"><div><h2>Nazorat</h2><p>Birinchi navbatda hal qilish kerak</p></div><button type="button" class="more" data-go="control">Barchasi →</button></div>
+      ${issues.slice(0, 4).map((i) => `
+        <button type="button" class="mini-issue ${i.lv}" data-go="control"><i class="fa-solid ${i.ic}"></i><span><strong>${esc(i.t)}</strong><small>${esc(i.sub)}</small></span></button>`).join("")
+        || `<div class="empty"><i class="fa-solid fa-circle-check" style="color:var(--green)"></i>Kamchilik topilmadi</div>`}
+    </div>`;
+
+    return `${notice}${stats}<div class="dash-grid">${chart}${deadlines}</div><div class="dash-grid three">${newsPanel}${ratingPanel}${issuesPanel}</div>`;
+  }
+
+  /* ---------- Butun panel bo'ylab qidiruv ---------- */
+  function searchAll(q) {
+    q = q.trim().toLowerCase();
+    if (!q) return [];
+    const out = [];
+    state.kinds.forEach((k) => {
+      if (VIRTUAL[k]) return;
+      const s = state.schema[k];
+      (state.items[k] || []).forEach((it) => {
+        const title = String(it[s.title] || it.name || it.title || "");
+        const sub = subtitle(k, it).filter(Boolean).join(" · ");
+        const t = title.toLowerCase();
+        if (t.includes(q) || sub.toLowerCase().includes(q)) out.push({ k, it, title, sub, score: t.startsWith(q) ? 0 : t.includes(q) ? 1 : 2 });
+      });
+    });
+    return out.sort((a, b) => a.score - b.score).slice(0, 12);
+  }
+
   function render() {
     const issues = computeIssues();
-    $("#tabs").innerHTML = state.kinds.map((k) => {
-      const s = k === "control" ? CONTROL : state.schema[k];
-      const n = k === "control" ? issues.filter((i) => i.lv !== "info").length : (state.items[k] || []).length;
-      const count = s.mode === "list" || (k === "control" && n) ? ` <span class="count">${n}</span>` : "";
-      return `<button type="button" class="chip${k === state.kind ? " active" : ""}" data-kind="${k}">
-        <i class="fa-solid ${ICONS[k] || "fa-folder"}"></i> ${esc(s.label)}${count}</button>`;
-    }).join("");
+    renderNav(issues);
+    renderHeader();
+    const isDash = state.kind === "dashboard";
+    $("#dash-view").hidden = !isDash;
+    $("#list-view").hidden = isDash;
+    if (isDash) {
+      $("#dash-view").innerHTML = dashHtml(issues);
+      return;
+    }
 
     const s = S();
     const isControl = state.kind === "control";
@@ -591,16 +775,113 @@
       showLogin();
     });
 
+    const shell = $("#admin-view");
     const switchTo = (kind) => {
+      if (state.kind !== kind) window.scrollTo({ top: 0, behavior: "instant" });
       state.kind = kind;
       state.query = "";
       $("#admin-search").value = "";
+      shell.classList.remove("nav-open");
       try { localStorage.setItem("urdu5t-admin-tab", state.kind); } catch (ex) { /* muhim emas */ }
       render();
     };
-    $("#tabs").addEventListener("click", (e) => {
-      const b = e.target.closest(".chip");
+    const openItem = (kind, id) => {
+      const item = (state.items[kind] || []).find((x) => String(x.id) === String(id));
+      if (item) openEdit(item);
+    };
+
+    $("#side-nav").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-kind]");
       if (b) switchTo(b.dataset.kind);
+    });
+    $("#burger").addEventListener("click", () => shell.classList.toggle("nav-open"));
+    $("#side-shade").addEventListener("click", () => shell.classList.remove("nav-open"));
+
+    // Tema
+    const applyTheme = (t) => {
+      document.documentElement.dataset.theme = t;
+      $("#theme-toggle i").className = t === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    };
+    applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+    $("#theme-toggle").addEventListener("click", () => {
+      const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      applyTheme(next);
+      try { localStorage.setItem("urdu5t-theme", next); } catch (ex) { /* muhim emas */ }
+    });
+
+    // Istalgan joydagi havola: bo'limga o'tish va kerak bo'lsa yozuvni ochish
+    shell.addEventListener("click", (e) => {
+      const go = e.target.closest("[data-go]");
+      if (!go) return;
+      if (go.dataset.rating) state.rating = go.dataset.rating;
+      switchTo(go.dataset.go);
+      if (go.hasAttribute("data-add")) openEdit(null);
+      else if (go.dataset.id) openItem(go.dataset.go, go.dataset.id);
+    });
+
+    // Bosh panel: ko'rsatkichni almashtirish, Excel
+    $("#dash-view").addEventListener("click", async (e) => {
+      const m = e.target.closest("[data-metric]");
+      if (m) { state.metric = m.dataset.metric; render(); return; }
+      const x = e.target.closest("[data-xls]");
+      if (x && !x.disabled) {
+        x.disabled = true;
+        try { await exportClubs(); } catch (err) { alert(err.message); }
+        x.disabled = false;
+      }
+    });
+
+    // Butun panel bo'ylab qidiruv (Ctrl + K)
+    const gs = $("#global-search"), gr = $("#global-results");
+    let results = [], sel = 0;
+    const closeResults = () => { gr.hidden = true; };
+    const paintResults = () => {
+      if (!gs.value.trim()) { closeResults(); return; }
+      gr.innerHTML = results.length ? results.map((r, i) => `
+        <button type="button" data-res="${i}" class="${i === sel ? "sel" : ""}">
+          <i class="fa-solid ${ICONS[r.k] || "fa-folder"}"></i>
+          <span><strong>${esc(r.title || "—")}</strong><small>${esc([navLabel(r.k), r.sub].filter(Boolean).join(" · "))}</small></span>
+        </button>`).join("") : `<div class="none">Hech narsa topilmadi</div>`;
+      gr.hidden = false;
+    };
+    const pick = (i) => {
+      const r = results[i];
+      if (!r) return;
+      gs.value = "";
+      closeResults();
+      gs.blur();
+      switchTo(r.k);
+      openEdit(r.it);
+    };
+    gs.addEventListener("input", () => { results = searchAll(gs.value); sel = 0; paintResults(); });
+    gs.addEventListener("focus", () => { if (gs.value.trim()) paintResults(); });
+    gs.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        if (!results.length) return;
+        sel = (sel + (e.key === "ArrowDown" ? 1 : -1) + results.length) % results.length;
+        paintResults();
+        const b = gr.querySelector(".sel");
+        if (b) b.scrollIntoView({ block: "nearest" });
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        pick(sel);
+      } else if (e.key === "Escape") {
+        closeResults();
+        gs.blur();
+      }
+    });
+    gr.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-res]");
+      if (b) pick(Number(b.dataset.res));
+    });
+    document.addEventListener("click", (e) => { if (!e.target.closest(".gsearch")) closeResults(); });
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && !$("#admin-view").hidden) {
+        e.preventDefault();
+        gs.focus();
+        gs.select();
+      }
     });
     $("#admin-search").addEventListener("input", (e) => { state.query = e.target.value; render(); });
     $("#add-btn").addEventListener("click", () => openEdit(null));
@@ -640,17 +921,8 @@
     });
 
     $("#rows").addEventListener("click", async (e) => {
-      // Nazorat: yozuvga o'tish
-      const go = e.target.closest("[data-go]");
-      if (go) {
-        switchTo(go.dataset.go);
-        if (go.hasAttribute("data-add")) openEdit(null);
-        else if (go.dataset.id) {
-          const item = (state.items[go.dataset.go] || []).find((x) => String(x.id) === go.dataset.id);
-          if (item) openEdit(item);
-        }
-        return;
-      }
+      // Nazorat havolalari ([data-go]) umumiy ishlovchida
+      if (e.target.closest("[data-go]")) return;
       // Svetofor: bir bosish bilan baho, qayta bosish bilan olib tashlash
       const light = e.target.closest("[data-rate]");
       if (light) {
@@ -732,7 +1004,7 @@
     bind();
     try {
       state.schema = await api("GET", "schema");
-      state.kinds = ORDER.filter((k) => k === "control" || state.schema[k]).concat(Object.keys(state.schema).filter((k) => !ORDER.includes(k)));
+      state.kinds = ORDER.filter((k) => VIRTUAL[k] || state.schema[k]).concat(Object.keys(state.schema).filter((k) => !ORDER.includes(k)));
       let saved = null;
       try { saved = localStorage.getItem("urdu5t-admin-tab"); } catch (e) { /* muhim emas */ }
       state.kind = state.kinds.includes(saved) ? saved : state.kinds[0];
