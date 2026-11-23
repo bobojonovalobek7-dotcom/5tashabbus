@@ -48,13 +48,15 @@
 
   /* ---------- Bosh sahifa ---------- */
   function home() {
-    // Yutuqlar slayderi
+    // Slayder: admin paneldagi «Slayder» bo'limi; u bo'sh bo'lsa — g'oliblar rasmlari
     const slider = $("#slider");
-    if (slider && SITE.winners.length) {
-      const W = SITE.winners;
+    const W = (SITE.slides || []).filter((s) => s.image).length
+      ? SITE.slides.filter((s) => s.image).map((s) => ({ photo: s.image, alt: s.caption || "" }))
+      : SITE.winners.filter((w) => w.photo).map((w) => ({ photo: w.photo, alt: `${w.name} — ${w.contest}` }));
+    if (slider && W.length) {
       slider.innerHTML = W.map((w, idx) => `
         <div class="slide${idx === 0 ? " active" : ""}" aria-hidden="${idx !== 0}">
-          <img src="${w.photo}" alt="${esc(w.name)} — ${esc(w.contest)}">
+          <img src="${esc(w.photo)}" alt="${esc(w.alt)}"${idx ? ' loading="lazy"' : ""}>
         </div>`).join("") + `
         <div class="slider-controls">
           <button type="button" class="icon-btn" data-dir="-1" aria-label="Oldingi"><i class="fa-solid fa-chevron-left"></i></button>
@@ -102,19 +104,35 @@
     };
     const given = (v) => v !== "" && v != null;
     const num = (v) => (/^\d+$/.test(String(v).replace(/\s/g, "")) ? fmt(String(v).replace(/\s/g, "")) : v);
-    $("#home-stats").innerHTML = SITE.stats.map((s) => {
+    const rows = SITE.stats.map((s) => {
       const a = auto[s.id] || {};
-      const value = given(s.value) ? s.value : a.value ?? 0;
-      const sub = given(s.sub) ? s.sub : a.sub;
-      const subHtml = sub ? `<em>${esc(num(sub))} ${esc(a.subLabel || "")}</em>` : a.subText ? `<em class="muted">${esc(a.subText)}</em>` : "";
-      return `
-      <div class="tile${s.id === "students" ? " tile-wide" : ""}">
-        <i class="fa-solid ${esc(s.icon)}"></i>
-        <strong>${esc(num(value))}${s.unit ? ` <small>${esc(s.unit)}</small>` : ""}</strong>
-        <span>${esc(s.label)}</span>
-        ${subHtml}
+      return { ...s, shown: given(s.value) ? s.value : a.value ?? 0, subN: given(s.sub) ? s.sub : a.sub, subLabel: a.subLabel || "" };
+    });
+    // Birinchi ko'rsatkich (Jami talabalar) — katta raqam va qamrov halqasi, qolganlari ostida
+    const head = rows.find((r) => r.id === "students") || rows[0];
+    const rest = rows.filter((r) => r !== head);
+    const toN = (v) => Number(String(v ?? "").replace(/\s/g, "")) || 0;
+    const total = toN(head && head.shown);
+    const active = SITE.totals.students + (courses.length ? sum(courses, "enrolled") : 0);
+    const share = total ? Math.min(100, Math.round((active / total) * 100)) : 0;
+    $("#home-stats").innerHTML = (head ? `
+      <div class="sb-hero">
+        <div class="sb-main">
+          <span class="sb-kicker"><i class="fa-solid ${esc(head.icon)}"></i> ${esc(head.label)}</span>
+          <strong class="sb-big">${esc(num(head.shown))}${head.unit ? `<small>${esc(head.unit)}</small>` : ""}</strong>
+          ${share ? `<p class="sb-note"><b>${fmt(active)}</b> nafari to'garak va kurslarda shug'ullanadi</p>` : ""}
+        </div>
+        ${share ? `<div class="sb-ring" style="--p:${share}" role="img" aria-label="Talabalarning ${share} foizi faol">
+          <span><b>${share}%</b><small>faol</small></span></div>` : ""}
+      </div>` : "") + `
+      <div class="sb-grid">${rest.map((r) => `
+        <div class="sb-cell">
+          <span class="sb-ic"><i class="fa-solid ${esc(r.icon)}"></i></span>
+          <strong>${esc(num(r.shown))}${r.unit ? `<small>${esc(r.unit)}</small>` : ""}</strong>
+          <span class="sb-label">${esc(r.label)}</span>
+          ${r.subN ? `<em>${esc(num(r.subN))} ${esc(r.subLabel)}</em>` : ""}
+        </div>`).join("")}
       </div>`;
-    }).join("");
 
     // Tanlovlar ro'yxati: avval qabul ochiqlari (muddati yaqinroq), keyin yakunlanganlar
     const contests = [...SITE.contests]
