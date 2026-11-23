@@ -44,7 +44,7 @@ PORT = int(os.environ.get("URDU5T_PORT", "8090"))
 # mode: "list" — qo'shish/o'chirish mumkin; "fixed" — faqat tahrirlash; "single" — bitta yozuv.
 GROUPS_1_6 = [{"value": i, "label": t} for i, t in enumerate(
     ["Madaniyat va san'at", "Sport", "Axborot texnologiyalari", "Kitobxonlik",
-     "Xotin-qizlar bandligi", "Ilmiy to'garaklar"], 1)]
+     "Xotin-qizlar bandligi", "Boshqa turdagi to'garaklar"], 1)]
 GROUPS_1_5 = GROUPS_1_6[:5]
 
 
@@ -170,6 +170,7 @@ SCHEMA = {
         F("category", "Turkum", half=True, placeholder="O'zbek adabiyoti"),
         F("pages", "Sahifalar soni", "int", half=True),
         F("cover", "Muqova", "image", half=True),
+        F("pdf", "Kitob fayli (PDF)", "pdf", hint="Yuklansa, saytda «Mutolaa qilish» tugmasi chiqadi va kitob sayt ichida o'qiladi. 40 MB gacha."),
         F("desc", "Qisqa izoh", "textarea"),
     ]},
     "faqs": {"label": "Savol-javob", "one": "Savol", "mode": "list", "title": "q", "fields": [
@@ -222,11 +223,14 @@ def public(kind, item):
 SESSION_TTL = 12 * 3600          # 12 soat
 MAX_BODY = 6 * 1024 * 1024       # 6 MB (rasm base64 bilan)
 MAX_IMAGE = 4 * 1024 * 1024      # 4 MB
+MAX_PDF = 40 * 1024 * 1024       # 40 MB (kitob fayli)
+READ_GAP = 6 * 3600              # bir kishining bir kitobni qayta ochishi 6 soatda bir marta sanaladi
 LOGIN_LIMIT = 8                  # 15 daqiqada IP bo'yicha urinishlar soni
 
 _lock = threading.Lock()
 _sessions = {}                   # token -> muddati
 _login_attempts = {}             # ip -> [vaqtlar]
+_reads = {}                      # (ip, kitob id) -> oxirgi sanalgan vaqt
 STATIC_ROOT = None
 
 
@@ -285,6 +289,17 @@ def init_db():
                 )
             conn.execute("INSERT INTO seeded(kind) VALUES ('stats_v2')")
             print("Statistika yangi ko'rsatkichlarga o'tkazildi")
+        # 6-yo'nalish endi «Boshqa turdagi to'garaklar» (admin nomini o'zi o'zgartirgan bo'lsa, tegilmaydi)
+        if not conn.execute("SELECT 1 FROM seeded WHERE kind='groups_v2'").fetchone():
+            row = conn.execute("SELECT data FROM items WHERE kind='groups' AND id='6'").fetchone()
+            if row:
+                g = json.loads(row[0])
+                if g.get("title") == "Ilmiy to'garaklar":
+                    g["title"] = "Boshqa turdagi to'garaklar"
+                    conn.execute("UPDATE items SET data=?, updated_at=? WHERE kind='groups' AND id='6'",
+                                 (json.dumps(g, ensure_ascii=False), now))
+                    print("6-yo'nalish nomi yangilandi")
+            conn.execute("INSERT INTO seeded(kind) VALUES ('groups_v2')")
 
 
 def list_items(kind):
@@ -367,6 +382,27 @@ def reorder_items(kind, ids):
         for pos, item_id in enumerate(ids):
             conn.execute("UPDATE items SET position=? WHERE kind=? AND id=?", (pos, kind, item_id))
     return list_items(kind)
+
+
+def count_read(book_id, ip):
+    """Kitob o'qilganini sanaydi (bir IP — 6 soatda bir marta). Yangi sonni qaytaradi."""
+    now = time.time()
+    key = (ip, str(book_id))
+    # Butun o'qish-yozish qulf ostida: bir vaqtda kelgan so'rovlar sonni yo'qotmaydi
+    with _lock, db() as conn:
+        row = conn.execute("SELECT data FROM items WHERE kind='books' AND id=?", (str(book_id),)).fetchone()
+        if row is None:
+            return None
+        book = json.loads(row["data"])
+        if now - _reads.get(key, 0) > READ_GAP:
+            _reads[key] = now
+            if len(_reads) > 50000:  # xotira cheksiz o'smasin
+                for k in [k for k, t in _reads.items() if now - t > READ_GAP]:
+                    _reads.pop(k, None)
+            book["reads"] = int(book.get("reads") or 0) + 1
+            conn.execute("UPDATE items SET data=? WHERE kind='books' AND id=?",
+                         (json.dumps(book, ensure_ascii=False), str(book_id)))
+    return book.get("reads", 0)
 
 
 def delete_item(kind, item_id):
@@ -526,6 +562,11 @@ def clean_field(f, v):
         if v and (not IMAGE_RE.fullmatch(v) or ".." in v):
             raise ValueError(f"{label}: rasm manzili noto'g'ri")
         return v
+    if t == "pdf":
+        v = text(v, 300)
+        if v and not re.fullmatch(r"uploads/[\w.\-]+\.pdf", v):
+            raise ValueError(f"{label}: fayl manzili noto'g'ri")
+        return v
     raise ValueError(f"Noma'lum maydon turi: {t}")
 
 
@@ -610,6 +651,32 @@ def login_allowed(ip):
 
 # ------------------------------------------------------------------ rasm yuklash
 IMAGE_TYPES = {b"\xff\xd8\xff": ".jpg", b"\x89PNG\r\n\x1a\n": ".png", b"RIFF": ".webp"}
+
+
+def save_pdf(stream, length):
+    """Kitob faylini (PDF) qismlab diskka yozadi: butun fayl xotiraga olinmaydi."""
+    if length <= 0:
+        raise ValueError("Fayl bo'sh")
+    if length > MAX_PDF:
+        raise ValueError("PDF 40 MB dan katta")
+    head = stream.read(min(5, length))
+    if head != b"%PDF-":
+        raise ValueError("Fayl PDF emas")
+    name = f"{time.strftime('%Y%m%d')}-{secrets.token_hex(6)}.pdf"
+    path = os.path.join(UPLOAD_DIR, name)
+    left = length - len(head)
+    with open(path, "wb") as f:
+        f.write(head)
+        while left > 0:
+            chunk = stream.read(min(1 << 20, left))
+            if not chunk:
+                break
+            f.write(chunk)
+            left -= len(chunk)
+    if left:
+        os.remove(path)
+        raise ValueError("Fayl to'liq yuklanmadi")
+    return "uploads/" + name
 
 
 def save_upload(data_url):
@@ -735,8 +802,16 @@ class Handler(BaseHTTPRequestHandler):
                 with _lock:
                     _sessions.pop(self.cookie_token() or "", None)
                 return self.send_json({"ok": True}, headers={"Set-Cookie": "urdu5t_session=; Path=/; Max-Age=0"})
+            # Kitob o'qildi (ochiq): bir kishi 6 soatda bir marta sanaladi
+            if len(parts) == 4 and parts[1] == "books" and parts[3] == "read":
+                n = count_read(parts[2], self.client_ip())
+                return self.send_json({"reads": n}) if n is not None else self.error(404, "Topilmadi")
             if not self.authed():
                 return self.error(401, "Avval tizimga kiring")
+            if parts == ["api", "upload-pdf"]:
+                if (self.headers.get("Content-Type") or "").split(";")[0].strip() != "application/pdf":
+                    return self.error(400, "Faqat PDF fayl yuklash mumkin")
+                return self.send_json({"path": save_pdf(self.rfile, int(self.headers.get("Content-Length") or 0))})
             if parts == ["api", "upload"]:
                 return self.send_json({"path": save_upload(self.read_json().get("data"))})
             if parts == ["api", "clubs", "rating"]:

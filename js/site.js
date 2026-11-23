@@ -44,7 +44,7 @@
         { href: "yoriqnoma.html", label: "Yo'riqnoma", icon: "fa-circle-question", key: "yoriqnoma" }
       ]
     },
-    { href: "togaraklar.html", label: "To'garaklar", key: "togaraklar" },
+    { href: "togaraklar.html", label: "To'garak va kurslar", key: "togaraklar" },
     { href: "tanlovlar.html", label: "Tanlovlar", key: "tanlovlar" },
     { href: "reyting.html", label: "Reyting", key: "reyting" },
     { href: "kutubxona.html", label: "Kutubxona", key: "kutubxona" },
@@ -126,10 +126,11 @@
               <h4>Sahifalar</h4>
               <ul>
                 <li><a href="markaz.html">Markaz haqida</a></li>
-                <li><a href="rahbariyat.html">Rahbariyat</a></li>
                 <li><a href="nizom.html">Nizom</a></li>
-                <li><a href="yoriqnoma.html">Yo'riqnoma</a></li>
-                <li><a href="${esc(U.hemis)}" target="_blank" rel="noopener">HEMIS tizimi</a></li>
+                <li><a href="togaraklar.html">To'garak va kurslar</a></li>
+                <li><a href="reyting.html">Reyting</a></li>
+                <li><a href="kutubxona.html">Kutubxona</a></li>
+                <li><a href="aloqa.html">Aloqa</a></li>
               </ul>
             </div>
             <div>
@@ -143,7 +144,6 @@
           </div>
           <div class="footer-bottom">
             <span>© ${new Date().getFullYear()} ${esc(U.name)}</span>
-            <a href="${esc(U.website)}" target="_blank" rel="noopener">urdu.uz</a>
           </div>
         </div>
       </footer>`;
@@ -443,6 +443,36 @@
       </article>`;
   }
 
+  /* Kasbga o'qitish kursi kartasi (to'garak kartasi bilan bir uslubda) */
+  const COURSE_COLOR = "#0891B2";
+  const COURSE_STATUS = { open: "Qabul ochiq", running: "O'qish davom etmoqda", planned: "Rejalashtirilgan", finished: "Yakunlangan" };
+  function courseCard(c) {
+    const row = (icon, txt) => `<li title="${esc(txt)}"><i class="${icon}"></i><span>${esc(txt)}</span></li>`;
+    const when = [dmy(c.start), dmy(c.end)].filter(Boolean).join(" — ") || c.duration || "";
+    const phone = (c.phone || "").replace(/[^\d+]/g, "");
+    return `
+      <article class="card cc" style="--c:${COURSE_COLOR}">
+        <div class="cc-body">
+          <span class="cc-chip"><i class="fa-solid fa-briefcase"></i>Kasbga o'qitish kursi</span>
+          <h3>${esc(c.name)}</h3>
+          ${c.desc ? `<p class="cc-desc">${esc(c.desc)}</p>` : ""}
+          <ul class="cc-info">
+            ${c.teacher ? row("fa-regular fa-user", c.teacher) : ""}
+            ${c.schedule ? row("fa-regular fa-clock", c.schedule) : ""}
+            ${c.place ? row("fa-regular fa-map", c.place) : ""}
+            ${when ? row("fa-regular fa-calendar", when) : ""}
+          </ul>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-count">${c.enrolled != null && c.enrolled !== "" ? `<b>${c.enrolled}</b> o'qimoqda` : esc(c.price || "")}</span>
+          <span class="cc-actions">
+            ${phone ? `<a class="cc-call" href="tel:${esc(phone)}" title="${esc(c.phone)}" aria-label="Qo'ng'iroq: ${esc(c.phone)}"><i class="fa-solid fa-phone"></i></a>` : ""}
+            ${COURSE_STATUS[c.status] ? `<span class="cc-status">${COURSE_STATUS[c.status]}</span>` : ""}
+          </span>
+        </div>
+      </article>`;
+  }
+
   function daysLeft(deadline) {
     const d = Math.ceil((new Date(deadline + "T23:59:59") - new Date()) / 86400000);
     return d;
@@ -544,5 +574,5 @@
   renderModals();
   bindEvents();
 
-  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, clubCard, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
+  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, clubCard, courseCard, COURSE_COLOR, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
 })();

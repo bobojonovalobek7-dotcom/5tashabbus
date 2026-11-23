@@ -92,7 +92,7 @@
       case "groups": return [Number(it.id) <= 5 ? `${it.id}-tashabbus` : "Qo'shimcha yo'nalish", it.awards ? `${it.awards} sovrin` : ""];
       case "winners": return [it.place, it.contest];
       case "faculties": return [`${it.points} ball`, it.students ? `${it.students} talaba` : "", it.note];
-      case "books": return [it.author, it.category];
+      case "books": return [it.author, it.category, it.pdf ? "PDF yuklangan" : "PDF yo'q", it.reads ? `${it.reads} marta o'qilgan` : ""];
       case "faqs": return [String(it.a || "").slice(0, 90)];
       case "slides": return [it.caption ? "Bosh sahifa slayderi" : "Izohsiz slayd"];
       case "settings": return [it.phone, it.centerEmail, it.address];
@@ -658,6 +658,17 @@
           </div>`;
         return `<div class="field" data-img="${f.key}"><label>${esc(f.label)}${f.required ? " *" : ""}</label>${input}
           <p class="hint">${f.hint ? esc(f.hint) + " " : ""}JPG, PNG yoki WEBP. Katta rasm avtomatik kichraytiriladi.</p></div>`;
+      case "pdf":
+        return `<div class="field" data-pdf="${f.key}"><label>${esc(f.label)}</label>
+          <div class="img-field">
+            <input type="hidden" name="${f.key}" value="${esc(v || "")}">
+            <a class="pdf-link" href="${esc(v || "#")}" target="_blank" rel="noopener"${v ? "" : " hidden"}><i class="fa-regular fa-file-pdf"></i> <span>${esc((v || "").split("/").pop())}</span></a>
+            <label class="btn btn-outline btn-sm"><i class="fa-solid fa-upload"></i> ${v ? "Boshqa PDF" : "PDF tanlash"}
+              <input type="file" accept="application/pdf,.pdf" data-upload-pdf="${f.key}" hidden></label>
+            <button type="button" class="btn btn-outline btn-sm" data-clear-pdf="${f.key}"${v ? "" : " hidden"}>Olib tashlash</button>
+            <span class="pdf-progress" hidden></span>
+          </div>
+          ${hint || `<p class="hint">Faqat PDF, 40 MB gacha.</p>`}</div>`;
       default: {
         const type = { int: "number", number: "number", date: "date", email: "email", url: "url" }[f.type] || "text";
         const step = f.type === "number" ? ' step="0.1"' : f.type === "int" ? ' step="1" min="0"' : "";
@@ -770,6 +781,16 @@
     img.src = path;
     img.hidden = !path;
     box.querySelector("[data-clear]").hidden = !path;
+  }
+
+  function setPdf(key, path) {
+    const box = $(`[data-pdf="${key}"]`);
+    box.querySelector("input[type=hidden]").value = path;
+    const a = box.querySelector(".pdf-link");
+    a.hidden = !path;
+    a.href = path || "#";
+    a.querySelector("span").textContent = path ? path.split("/").pop() : "";
+    box.querySelector("[data-clear-pdf]").hidden = !path;
   }
 
   /* ---------- Hodisalar ---------- */
@@ -1008,6 +1029,40 @@
     $("#edit-fields").addEventListener("click", (e) => {
       const c = e.target.closest("[data-clear]");
       if (c) setImage(c.dataset.clear, "");
+      const p = e.target.closest("[data-clear-pdf]");
+      if (p) setPdf(p.dataset.clearPdf, "");
+    });
+
+    // Kitob PDF fayli: xom holda yuboriladi (base64'siz), yuklanish foizi ko'rsatiladi
+    $("#edit-fields").addEventListener("change", (e) => {
+      const input = e.target.closest("[data-upload-pdf]");
+      if (!input || !input.files[0]) return;
+      const file = input.files[0];
+      const err = $("#edit-error");
+      const box = input.closest(".img-field");
+      const prog = box.querySelector(".pdf-progress");
+      err.textContent = "";
+      if (!/\.pdf$/i.test(file.name) && file.type !== "application/pdf") { err.textContent = "Faqat PDF fayl yuklash mumkin"; input.value = ""; return; }
+      if (file.size > 40 * 1024 * 1024) { err.textContent = "PDF 40 MB dan katta"; input.value = ""; return; }
+      const save = $("#edit-form button[type=submit]");
+      save.disabled = true;
+      box.classList.add("loading");
+      prog.hidden = false;
+      prog.textContent = "Yuklanmoqda… 0%";
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "api/upload-pdf");
+      xhr.setRequestHeader("Content-Type", "application/pdf");
+      xhr.upload.onprogress = (ev) => { if (ev.lengthComputable) prog.textContent = `Yuklanmoqda… ${Math.round((ev.loaded / ev.total) * 100)}%`; };
+      const done = () => { box.classList.remove("loading"); prog.hidden = true; save.disabled = false; input.value = ""; };
+      xhr.onload = () => {
+        let d = null;
+        try { d = JSON.parse(xhr.responseText); } catch (ex) { /* bo'sh javob */ }
+        if (xhr.status === 200 && d && d.path) setPdf(input.dataset.uploadPdf, d.path);
+        else err.textContent = (d && d.error) || `Yuklab bo'lmadi (${xhr.status})`;
+        done();
+      };
+      xhr.onerror = () => { err.textContent = "Tarmoq xatosi: PDF yuklanmadi"; done(); };
+      xhr.send(file);
     });
 
     $$(".modal").forEach((m) => m.addEventListener("click", (e) => {

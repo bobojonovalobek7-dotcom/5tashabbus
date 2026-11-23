@@ -290,6 +290,7 @@ main > .section:last-child { padding-bottom: 0; }
 .cc-join i { font-size: .78rem; transition: transform .2s; }
 .cc-join:hover { filter: brightness(1.08); }
 .cc-join:hover i { transform: translateX(3px); }
+.cc-status { padding: 6px 12px; border-radius: 999px; font-size: .76rem; font-weight: 700; color: var(--c); background: color-mix(in srgb, var(--c) 10%, transparent); white-space: nowrap; }
 .club-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .mentor { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--surface-2); }
 .avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
@@ -363,9 +364,66 @@ main > .section:last-child { padding-bottom: 0; }
 .book-author { color: var(--text-3); font-size: .86rem; }
 .book-body p { color: var(--text-2); font-size: .86rem; flex: 1; }
 .book-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: .82rem; color: var(--text-3); }
+.book-foot { gap: 10px; flex-wrap: wrap; }
+.book-foot span { display: inline-flex; align-items: center; gap: 6px; }
+.book-read { width: 100%; margin-top: 12px; border-radius: 12px; }
+.book-read:disabled { background: var(--surface-2); color: var(--text-3); cursor: default; transform: none; }
+
+/* ---------- Kitob o'quvchi ---------- */
+.rd {
+  position: fixed; inset: 0; z-index: 200; display: grid; grid-template-rows: auto 1fr auto;
+  background: radial-gradient(120% 90% at 50% 0%, #1B2547 0%, #0A0F22 70%); color: #E6EAF3;
+  opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s;
+}
+.rd.open { opacity: 1; visibility: visible; }
+.rd-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 20px; }
+.rd-title { min-width: 0; }
+.rd-title strong { display: block; font-family: var(--font-head); font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rd-title span { font-size: .82rem; color: rgba(230, 234, 243, .6); }
+.rd-tools { display: flex; align-items: center; gap: 8px; flex: none; }
+.rd-zoom { min-width: 48px; text-align: center; font-size: .82rem; font-weight: 600; color: rgba(230, 234, 243, .75); }
+.rd-btn { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: #E6EAF3; background: rgba(255, 255, 255, .08); transition: background .15s; }
+.rd-btn:hover { background: rgba(255, 255, 255, .16); }
+.rd-close { margin-left: 6px; }
+.rd-stage { position: relative; overflow: hidden; display: grid; place-items: center; padding: 12px; }
+.rd-stage.zoomed { overflow: auto; place-items: start center; }
+.rd-book { display: flex; justify-content: center; filter: drop-shadow(0 24px 50px rgba(0, 0, 0, .55)); }
+.rd-page { position: relative; background: #fff; line-height: 0; }
+.rd-page canvas { display: block; }
+.rd-book:not(.two) .rd-page { border-radius: 4px; overflow: hidden; }
+.rd-page.left { border-radius: 6px 0 0 6px; overflow: hidden; }
+.rd-page.right { border-radius: 0 6px 6px 0; overflow: hidden; }
+/* Kitob o'rtasidagi bukilish soyasi */
+.rd-page.left::after, .rd-page.right::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40px; pointer-events: none; }
+.rd-page.left::after { right: 0; background: linear-gradient(90deg, transparent, rgba(0, 0, 0, .16)); }
+.rd-page.right::after { left: 0; background: linear-gradient(270deg, transparent, rgba(0, 0, 0, .2)); }
+.rd-load { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; text-align: center; }
+.rd-load[hidden] { display: none; }
+.rd-load small { color: rgba(230, 234, 243, .6); }
+.rd-spin { width: 40px; height: 40px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, .15); border-top-color: var(--gold); animation: rd-spin 1s linear infinite; }
+.rd-spin[hidden] { display: none; }
+@keyframes rd-spin { to { transform: rotate(360deg); } }
+.rd-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
+  color: #fff; background: rgba(255, 255, 255, .1); backdrop-filter: blur(6px); transition: background .15s, opacity .15s;
+}
+.rd-nav:hover { background: rgba(255, 255, 255, .2); }
+.rd-nav:disabled { opacity: .25; cursor: default; }
+.rd-prev { left: 18px; }
+.rd-next { right: 18px; }
+.rd-bottom { display: flex; align-items: center; gap: 16px; padding: 12px 24px 18px; max-width: 760px; width: 100%; margin: 0 auto; }
+.rd-pages { flex: none; min-width: 84px; font-size: .85rem; font-weight: 600; color: rgba(230, 234, 243, .8); }
+.rd-range { flex: 1; accent-color: var(--gold); }
+@media (max-width: 720px) {
+  .rd-top { padding: 10px 12px; }
+  .rd-zoom, [data-act="zoom-out"], [data-act="zoom-in"] { display: none; }
+  .rd-nav { width: 42px; height: 42px; top: auto; bottom: 64px; transform: none; }
+  .rd-prev { left: 12px; } .rd-next { right: 12px; }
+  .rd-bottom { padding: 10px 70px 16px; }
+}
 
 /* Bosh sahifa: statistika + tanlovlar paneli */
-.dash { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+.dash { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
 .panel { display: flex; flex-direction: column; overflow: hidden; }
 .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 24px; border-bottom: 1px solid var(--border); }
 .panel-head h2 { font-size: 1.12rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
@@ -381,7 +439,7 @@ main > .section:last-child { padding-bottom: 0; }
 
 /* Bosh sahifa: Statistika (bitta katta raqam + halqa, ostida ingichka chiziqli to'r) */
 .stats-board { display: flex; flex-direction: column; flex: 1; }
-.sb-hero { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 28px; }
+.sb-hero { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 26px; }
 .sb-kicker { display: inline-flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
 .sb-kicker i { color: var(--brand); }
 .sb-big { display: flex; align-items: baseline; gap: 10px; margin-top: 6px; font-family: var(--font-head); font-weight: 800; font-size: clamp(2.4rem, 4.4vw, 3.4rem); line-height: 1; letter-spacing: -.02em; color: var(--text); }
@@ -398,8 +456,8 @@ main > .section:last-child { padding-bottom: 0; }
 .sb-ring span { position: relative; display: grid; line-height: 1.1; }
 .sb-ring b { font-family: var(--font-head); font-size: 1.35rem; font-weight: 800; color: var(--brand); }
 .sb-ring small { font-size: .72rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
-.sb-grid { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 1fr; border-top: 1px solid var(--border); }
-.sb-cell { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; column-gap: 14px; align-content: center; padding: 16px 24px; }
+.sb-grid { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--border); }
+.sb-cell { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; column-gap: 14px; align-content: start; padding: 14px 24px; }
 .sb-cell:nth-child(odd) { border-right: 1px solid var(--border); }
 .sb-cell:nth-child(n+3) { border-top: 1px solid var(--border); }
 .sb-ic { grid-row: 1 / 4; width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: .9rem; color: var(--brand); background: var(--brand-50); }
@@ -507,7 +565,39 @@ main > .section:last-child { padding-bottom: 0; }
 .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-50); }
 .form-hint { font-size: .82rem; color: var(--text-3); }
 
-.map { border: 0; width: 100%; height: 320px; border-radius: var(--radius); display: block; }
+/* Aloqa: xarita */
+.map-card { position: relative; overflow: hidden; border-radius: 24px; }
+.map-canvas { height: 460px; background: var(--surface-2); isolation: isolate; z-index: 0; }
+.map-fallback { border: 0; width: 100%; height: 100%; display: block; }
+.map-info {
+  position: absolute; left: 24px; top: 24px; z-index: 2; width: min(340px, calc(100% - 48px)); padding: 22px;
+  border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+  background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.map-kicker { display: inline-flex; align-items: center; gap: 8px; font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--brand); }
+.map-info strong { display: block; margin-top: 8px; font-family: var(--font-head); font-size: 1.15rem; line-height: 1.3; }
+.map-info p { margin-top: 6px; font-size: .88rem; color: var(--text-2); }
+.map-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.map-marker { background: none; border: 0; }
+.map-pin {
+  position: absolute; left: 4px; top: 0; width: 48px; height: 48px; display: grid; place-items: center;
+  border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--brand);
+  box-shadow: 0 10px 24px rgba(11, 44, 143, .45);
+}
+.map-pin img { width: 34px; height: 34px; padding: 3px; border-radius: 50%; background: #fff; transform: rotate(45deg); }
+.map-pulse { position: absolute; left: 16px; bottom: -6px; width: 24px; height: 12px; border-radius: 50%; background: rgba(11, 44, 143, .35); animation: map-pulse 2s ease-out infinite; }
+@keyframes map-pulse { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(2.6); opacity: 0; } }
+.leaflet-container { font-family: var(--font-body); }
+/* Fon xarita: yumshoq, kam rangli (yorug' rejim) va teskari qorong'i tus (qorong'i rejim) */
+.map-canvas .leaflet-tile-pane { filter: grayscale(.9) contrast(.95) brightness(1.04); }
+:root[data-theme="dark"] .map-canvas .leaflet-tile-pane { filter: invert(1) hue-rotate(200deg) grayscale(.75) brightness(.85) contrast(.9); }
+.map-canvas.leaflet-container { background: var(--surface-2); }
+.leaflet-control-zoom a { border-radius: 10px !important; }
+:root[data-theme="dark"] .map-pin { background: #3B5BDB; }
+@media (max-width: 720px) {
+  .map-canvas { height: 320px; }
+  .map-info { position: static; width: auto; border: 0; border-top: 1px solid var(--border); border-radius: 0; box-shadow: none; backdrop-filter: none; background: var(--surface); }
+}
 
 /* ---------- 14. CTA ---------- */
 .cta {
