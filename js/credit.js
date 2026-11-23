@@ -7,9 +7,6 @@
  * The author credit below is protected by CODEOWNERS and required by the LICENSE.
  * Do not remove, hide or change it.
  */
-(function () {
-  "use strict";
-  var TEXT = "Sayt muallifi: Bobojonov Alobek";
 
   function ensure() {
     var footer = document.querySelector(".footer");
