@@ -68,6 +68,8 @@ SCHEMA = {
         F("phones", "Telefon(lar)", "phones", half=True, hint="Har bir raqam alohida qatorda, masalan 93-123-45-67"),
         F("rating", "Baho (faqat admin ko'radi)", "select", half=True, private=True, options=RATING_OPTIONS),
         F("ratingNote", "Baho izohi", half=True, private=True, placeholder="Masalan: davomat past"),
+        F("desc", "Qisqa izoh", "textarea", limit=400, rows=2, placeholder="Kartochkada nomning ostida chiqadi"),
+        F("image", "Rasm", "image", hint="Tanlanmasa, yo'nalishga mos rasm avtomatik qo'yiladi."),
     ]},
     "courses": {"label": "Kasb-hunar kurslari", "one": "Kurs", "mode": "list", "title": "name",
                 "note": "Xotin-qizlar va yoshlarni kasb-hunarga o'qitish kurslari: o'rinlar, o'qiyotganlar, bitirganlar va bandlik hisobi.",
@@ -103,7 +105,8 @@ SCHEMA = {
         F("deadline", "Tugash sanasi", "date", half=True, required=True),
         F("place", "Joyi", half=True),
         F("organizer", "Tashkilotchi", half=True),
-        F("prize", "Mukofot", placeholder="1-o'rin: 5 mln so'm"),
+        F("prize", "Mukofot", half=True, placeholder="1-o'rin: 5 mln so'm"),
+        F("participants", "Ishtirokchilar soni", "int", half=True, hint="Bosh sahifa statistikasida jamlanadi"),
         F("desc", "Qisqa izoh", "textarea"),
         F("image", "Rasm", "image", hint="Tanlanmasa, universitet binosi rasmi qo'yiladi."),
         F("rules.purpose", "Nizom: maqsad", "textarea"),
@@ -131,9 +134,12 @@ SCHEMA = {
         F("showOnPage", "Rahbariyat sahifasida ko'rsatilsin", "bool"),
     ]},
     "stats": {"label": "Statistika", "one": "Ko'rsatkich", "mode": "fixed", "title": "label",
-              "note": "Qiymat bo'sh qolsa, raqam to'garaklar va tanlovlar ro'yxatidan avtomatik hisoblanadi.", "fields": [
+              "note": "Bosh sahifadagi «Statistika» bloki. Qiymat bo'sh qolsa, raqam to'garaklar, kurslar, "
+                      "tanlovlar va kitoblar ro'yxatidan avtomatik hisoblanadi.", "fields": [
         F("label", "Nomi", required=True, half=True),
-        F("value", "Qiymat (bo'sh = avtomatik)", half=True, limit=30),
+        F("value", "Asosiy raqam (bo'sh = avtomatik)", half=True, limit=30),
+        F("sub", "Pastki raqam (bo'sh = avtomatik)", half=True, limit=30,
+          hint="To'garak/kurs a'zolari yoki tanlov ishtirokchilari soni"),
     ]},
     "groups": {"label": "Tashabbuslar", "one": "Tashabbus", "mode": "fixed", "title": "title", "fields": [
         F("title", "Nomi", required=True),
@@ -191,6 +197,15 @@ SCHEMA = {
     ]},
 }
 KINDS = tuple(SCHEMA)
+
+# Bosh sahifadagi «Statistika» plitkalari. value/sub bo'sh bo'lsa, sayt ro'yxatlardan hisoblaydi.
+STATS_V2 = [
+    {"id": "students", "label": "Jami talabalar", "icon": "fa-user-graduate", "value": "25 602", "sub": "", "unit": "nafar"},
+    {"id": "clubs", "label": "Jami to'garaklar", "icon": "fa-people-group", "value": "", "sub": ""},
+    {"id": "courses", "label": "Kasbga o'qitish kurslari", "icon": "fa-briefcase", "value": "", "sub": ""},
+    {"id": "contests", "label": "Tanlovlar", "icon": "fa-trophy", "value": "", "sub": ""},
+    {"id": "books", "label": "Kitoblar", "icon": "fa-book", "value": "", "sub": ""},
+]
 # Faqat admin ko'radigan maydonlar: tizimga kirmagan foydalanuvchiga API ularni bermaydi
 PRIVATE = {k: {f["key"] for f in v["fields"] if f.get("private")} | ({"ratedAt", "ratingAuto"} if k == "clubs" else set())
            for k, v in SCHEMA.items()}
@@ -247,6 +262,16 @@ def init_db():
                 if seed.get(kind):
                     print(f"Boshlang'ich ma'lumot yuklandi: {kind}")
             conn.execute("INSERT INTO seeded(kind) VALUES (?)", (kind,))
+        # Bosh sahifa statistikasi yangi ko'rsatkichlarga o'tdi: eski plitkalar bir marta almashtiriladi
+        if not conn.execute("SELECT 1 FROM seeded WHERE kind='stats_v2'").fetchone():
+            conn.execute("DELETE FROM items WHERE kind='stats'")
+            for pos, item in enumerate(STATS_V2):
+                conn.execute(
+                    "INSERT INTO items(kind, id, position, data, updated_at) VALUES (?,?,?,?,?)",
+                    ("stats", item["id"], pos, json.dumps(item, ensure_ascii=False), now),
+                )
+            conn.execute("INSERT INTO seeded(kind) VALUES ('stats_v2')")
+            print("Statistika yangi ko'rsatkichlarga o'tkazildi")
 
 
 def list_items(kind):
@@ -398,6 +423,8 @@ def clean_club(d):
                                            else [x.get("text", "") if isinstance(x, dict) else x for x in d.get("phones")], 10)],
         "rating": d.get("rating") if d.get("rating") in RATINGS else "",
         "ratingNote": text(d.get("ratingNote"), 300),
+        "desc": text(d.get("desc"), 400),
+        "image": clean_field(F("image", "Rasm", "image"), d.get("image")),
     }
 
 
@@ -429,6 +456,7 @@ def clean_contest(d):
         "organizer": text(d.get("organizer"), 300),
         "image": image or "assets/images/urdu_main_building.jpg",
         "prize": text(d.get("prize"), 300),
+        "participants": clean_field(F("participants", "Ishtirokchilar soni", "int"), d.get("participants")),
         "desc": text(d.get("desc"), 1000),
         "rules": {
             "purpose": text(rules.get("purpose"), 1500),

@@ -531,13 +531,13 @@ SITE.recompute();
 
 /* Bosh sahifadagi statistika plitkalari. value bo'sh bo'lsa, raqam avtomatik hisoblanadi (source bo'yicha). */
 SITE.stats = [
-  { id: "students", label: "To'garak a'zolari", icon: "fa-users", value: "" },
-  { id: "clubs", label: "To'garaklar", icon: "fa-people-group", value: "" },
-  { id: "contests", label: "Tanlovlar", icon: "fa-trophy", value: "" },
-  { id: "group5", label: "Kasb-hunar to'garaklari", icon: "fa-layer-group", value: "" },
-  { id: "group6", label: "Ilmiy to'garaklar", icon: "fa-flask", value: "" },
-  { id: "awards", label: "Yutuqlar", icon: "fa-award", value: "" }
+  { id: "students", label: "Jami talabalar", icon: "fa-user-graduate", value: "25 602", sub: "", unit: "nafar" },
+  { id: "clubs", label: "Jami to'garaklar", icon: "fa-people-group", value: "", sub: "" },
+  { id: "courses", label: "Kasbga o'qitish kurslari", icon: "fa-briefcase", value: "", sub: "" },
+  { id: "contests", label: "Tanlovlar", icon: "fa-trophy", value: "", sub: "" },
+  { id: "books", label: "Kitoblar", icon: "fa-book", value: "", sub: "" }
 ];
+SITE.courses = SITE.courses || [];
 SITE.university.hours = "Dushanba–Juma, 14:00–17:30";
 
 /* Dashboard (api/all) javobini saytga qo'llaydi. Obyektlar o'rnida yangilanadi,
@@ -570,8 +570,8 @@ SITE.apply = function (d) {
     SITE.leaders = staff.filter((p) => p.initiativeId > 0);
   }
 
-  ["clubs", "contests", "news", "winners", "faculties", "books", "faqs", "stats"].forEach((k) => {
-    if (Array.isArray(d[k]) && (d[k].length || k === "contests" || k === "news")) SITE[k] = d[k];
+  ["clubs", "courses", "contests", "news", "winners", "faculties", "books", "faqs", "stats"].forEach((k) => {
+    if (Array.isArray(d[k]) && (d[k].length || k === "contests" || k === "news" || k === "courses")) SITE[k] = d[k];
   });
   SITE.recompute();
 };
