@@ -1,0 +1,7 @@
+# Bu fayllarga tegadigan har qanday o'zgarish muallif tasdig'isiz main'ga qo'shilmaydi.
+# Qolgan barcha fayllarni hamkorlar erkin o'zgartira oladi.
+# Ishlashi uchun GitHub'da main branch himoyasida "Require review from Code Owners" yoqilgan bo'lishi kerak.
+
+/js/credit.js   @bobojonovalobek7-dotcom
+/LICENSE        @bobojonovalobek7-dotcom
+/.github/       @bobojonovalobek7-dotcom

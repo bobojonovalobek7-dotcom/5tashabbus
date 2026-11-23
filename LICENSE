@@ -1,0 +1,29 @@
+Copyright (c) 2026 Bobojonov Alobek. Barcha huquqlar himoyalangan.
+
+UrDU 5 muhim tashabbus markazi veb-portali
+
+Ushbu dasturiy ta'minot (kod, dizayn va admin panel) muallifi — Bobojonov Alobek.
+
+Abu Rayhon Beruniy nomidagi Urganch davlat universitetining 5 muhim tashabbus
+markaziga ushbu saytdan foydalanish, uni o'zgartirish va o'z serverida joylashtirish
+huquqi quyidagi shart bilan beriladi:
+
+  1. Saytning har bir sahifasi pastidagi "Sayt muallifi: Bobojonov Alobek" yozuvi
+     (js/credit.js) saqlanib qolishi shart. Uni o'chirish, yashirish, o'zgartirish
+     yoki boshqa shaxs nomi bilan almashtirish taqiqlanadi.
+  2. Ushbu LICENSE fayli va kod ichidagi mualliflik izohlari o'chirilmaydi.
+  3. Kodni yoki uning qismlarini boshqa loyihalarda ishlatish, sotish yoki
+     uchinchi shaxslarga berish uchun muallifning yozma roziligi kerak.
+
+Shartlar buzilsa, ushbu ruxsat o'z-o'zidan bekor bo'ladi.
+
+---
+
+Copyright (c) 2026 Bobojonov Alobek. All rights reserved.
+
+The 5 Important Initiatives Center of Urgench State University is permitted to use,
+modify and host this software, provided that the "Sayt muallifi: Bobojonov Alobek"
+credit at the bottom of every page (js/credit.js), this LICENSE file and the author
+notices in the source code are kept unchanged and visible. Any other use, resale or
+redistribution requires the author's written permission. This permission ends
+automatically if these conditions are not met.
