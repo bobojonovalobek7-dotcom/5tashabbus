@@ -155,7 +155,7 @@ const SITE = {
   extraGroups: [
     {
       id: 6,
-      title: "Ilmiy to'garaklar",
+      title: "Boshqa turdagi to'garaklar",
       lead: "Fan, tadqiqot, til va tafakkurga oid ilmiy to'garaklar.",
       color: "#0D9488",
       icon: "fa-solid fa-flask"

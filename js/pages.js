@@ -214,41 +214,53 @@
 
   /* ---------- To'garaklar ---------- */
   function togaraklar() {
+    // Yo'nalishlar (1–5), kasbga o'qitish kurslari va boshqa turdagi to'garaklar (6).
+    // Tanlangan yorliqni qayta bossangiz, filtr olib tashlanadi va hammasi ko'rinadi.
     let filter = params.get("t") || "all";
-    let query = params.get("q") || "";
+    const query = params.get("q") || "";  // sayt qidiruvidan kelgan havola uchun
     const chips = $("#club-filters");
-    const input = $("#club-search");
-    input.value = query;
-
-    chips.innerHTML = chip("Barchasi", "all", filter === "all", null, SITE.clubs.length) +
-      SITE.groups.map((i) => chip(i.title, String(i.id), filter === String(i.id), i.color, SITE.clubs.filter((c) => c.initiativeId === i.id).length)).join("");
+    const { courseCard, COURSE_COLOR } = window.UI;
+    const courses = SITE.courses || [];
+    // Kurslar hali kiritilmagan bo'lsa, kasb-hunar (5-yo'nalish) to'garaklari ko'rsatiladi — statistikadagi kabi
+    const courseItems = courses.length ? courses.map((c) => ({ c, card: courseCard })) : SITE.clubs.filter((c) => c.initiativeId === 5).map((c) => ({ c, card: clubCard }));
+    const other = SITE.groups.find((g) => g.id === 6);
+    const items = SITE.groups.filter((g) => g.id <= 5).map((g) => [g.title, String(g.id), g.color])
+      .concat([["Kasbga o'qitish kurslari", "courses", COURSE_COLOR]])
+      .concat(other ? [[other.title, "6", other.color]] : []);
+    const countOf = (v) => (v === "courses" ? courseItems.length : SITE.clubs.filter((c) => c.initiativeId === Number(v)).length);
+    chips.innerHTML = items.map(([label, v, color]) => chip(label, v, filter === v, color, countOf(v))).join("");
 
     const render = () => {
       const norm = (s) => (window.ALIFBO ? ALIFBO.norm(s) : String(s || "").toLowerCase());
       const q = norm(query.trim());
-      const list = SITE.clubs.filter((c) =>
-        (filter === "all" || c.initiativeId === Number(filter)) &&
-        (!q || [c.name, c.place, c.schedule, c.mentors.join(" ")].some((f) => norm(f || "").includes(q)))
-      );
-      $("#club-count").textContent = `${list.length} ta to'garak topildi`;
+      const list = filter === "courses"
+        ? courseItems
+        : SITE.clubs.filter((c) =>
+            (filter === "all" || c.initiativeId === Number(filter)) &&
+            (!q || [c.name, c.place, c.schedule, c.mentors.join(" ")].some((f) => norm(f || "").includes(q)))
+          ).map((c) => ({ c, card: clubCard }));
+      $("#club-count").textContent = filter === "courses" && courses.length ? `${list.length} ta kurs` : `${list.length} ta to'garak`;
       $("#club-list").innerHTML = list.length
-        ? list.map(clubCard).join("")
-        : `<div class="empty"><i class="fa-solid fa-magnifying-glass"></i>Hech narsa topilmadi. Boshqa so'z bilan qidirib ko'ring.</div>`;
+        ? list.map(({ c, card }) => card(c)).join("")
+        : `<div class="empty"><i class="fa-regular fa-folder-open"></i>Bu bo'limda hozircha hech narsa yo'q</div>`;
       const url = new URL(location.href);
       filter === "all" ? url.searchParams.delete("t") : url.searchParams.set("t", filter);
-      query ? url.searchParams.set("q", query) : url.searchParams.delete("q");
       history.replaceState(null, "", url);
     };
 
-    bindChips(chips, (v) => { filter = v; render(); });
-    input.addEventListener("input", (e) => { query = e.target.value; render(); });
+    chips.addEventListener("click", (e) => {
+      const b = e.target.closest(".chip");
+      if (!b) return;
+      filter = filter === b.dataset.value ? "all" : b.dataset.value;
+      $$(".chip", chips).forEach((x) => x.classList.toggle("active", x.dataset.value === filter));
+      render();
+    });
     render();
   }
 
   /* ---------- Tanlovlar ---------- */
   function tanlovlar() {
     let status = "all";
-    let init = "all";
     const open = SITE.contests.filter(isOpen).length;
     const done = SITE.contests.filter((c) => c.status === "completed").length;
 
@@ -256,13 +268,10 @@
       chip("Barchasi", "all", true, null, SITE.contests.length) +
       chip("Qabul ochiq", "open", false, null, open) +
       chip("Yakunlangan", "done", false, null, done);
-    $("#contest-init").innerHTML = chip("Barcha yo'nalishlar", "all", true) +
-      SITE.initiatives.map((i) => chip(i.title, String(i.id), false, i.color)).join("");
 
     const render = () => {
       const list = SITE.contests.filter((c) =>
-        (status === "all" || (status === "open" ? isOpen(c) : c.status === "completed")) &&
-        (init === "all" || c.initiativeId === Number(init))
+        (status === "all" || (status === "open" ? isOpen(c) : c.status === "completed"))
       ).sort((a, b) => Number(isOpen(b)) - Number(isOpen(a)) || a.deadline.localeCompare(b.deadline));
       $("#contest-list").innerHTML = list.length
         ? list.map(contestCard).join("")
@@ -270,7 +279,6 @@
     };
 
     bindChips($("#contest-status"), (v) => { status = v; render(); });
-    bindChips($("#contest-init"), (v) => { init = v; render(); });
     render();
 
     if (location.hash) {
@@ -324,12 +332,33 @@
             <h3>${esc(b.title)}</h3>
             <div class="book-author">${esc(b.author)}</div>
             <p>${esc(b.desc)}</p>
-            ${b.pages ? `<div class="book-foot"><span><i class="fa-regular fa-file-lines"></i> ${b.pages} bet</span></div>` : ""}
+            <div class="book-foot">
+              ${b.pages ? `<span><i class="fa-regular fa-file-lines"></i> ${b.pages} bet</span>` : ""}
+              <span data-reads="${esc(b.id)}"><i class="fa-regular fa-eye"></i> ${fmt(b.reads || 0)} marta o'qilgan</span>
+            </div>
+            ${b.pdf
+              ? `<button type="button" class="btn btn-primary book-read" data-read="${esc(b.id)}"><i class="fa-solid fa-book-open"></i> Mutolaa qilish</button>`
+              : `<button type="button" class="btn book-read" disabled title="Kitob fayli hali yuklanmagan"><i class="fa-regular fa-clock"></i> Tez orada</button>`}
           </div>
         </article>`).join("");
     };
     bindChips(chips, render);
     render("all");
+
+    // Kitobni sayt ichida ochish
+    $("#book-list").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-read]");
+      if (!btn || !window.Reader) return;
+      const b = SITE.books.find((x) => String(x.id) === btn.dataset.read);
+      if (!b || !b.pdf) return;
+      window.Reader.open({
+        id: b.id, title: b.title, author: b.author, pdf: b.pdf,
+        onRead: (n) => {
+          b.reads = n;
+          $$(`[data-reads="${CSS.escape(String(b.id))}"]`).forEach((s) => { s.innerHTML = `<i class="fa-regular fa-eye"></i> ${fmt(n)} marta o'qilgan`; });
+        }
+      });
+    });
 
     const club = SITE.clubs.find((c) => c.id === "zukko-kitobxon");
     const btn = $("#book-club-join");
@@ -353,6 +382,51 @@
     });
   }
 
+  /* ---------- Aloqa: xarita (Leaflet + CARTO fon xaritasi, markaz emblemali belgi) ---------- */
+  const UNI = [41.5563137, 60.6065737];  // Hamid Olimjon ko'chasi, 14 (OpenStreetMap)
+  const LEAFLET = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/";
+  function loadLeaflet() {
+    if (window.L) return Promise.resolve(window.L);
+    return new Promise((resolve, reject) => {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = LEAFLET + "leaflet.min.css";
+      document.head.appendChild(css);
+      const s = document.createElement("script");
+      s.src = LEAFLET + "leaflet.min.js";
+      s.onload = () => resolve(window.L);
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+  function contactMap() {
+    const box = $("#map");
+    if (!box) return;
+    loadLeaflet().then((L) => {
+      const map = L.map(box, { scrollWheelZoom: false, zoomControl: false, attributionControl: true }).setView(UNI, 17);
+      L.control.zoom({ position: "bottomright" }).addTo(map);
+      // OpenStreetMap kataklari (kalit talab qilmaydi); minimal tus CSS filtr bilan beriladi (.map-canvas)
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
+
+      const icon = L.divIcon({
+        className: "map-marker",
+        html: `<span class="map-pulse"></span><span class="map-pin"><img src="assets/images/urdu_5t_emblem.png" alt=""></span>`,
+        iconSize: [56, 56], iconAnchor: [28, 56]
+      });
+      L.marker(UNI, { icon, title: "Urganch davlat universiteti" }).addTo(map);
+      // Katta ekranda belgi manzil kartochkasi ortida qolmasin
+      if (box.clientWidth > 760) map.panBy([-Math.round(box.clientWidth * 0.17), -20], { animate: false });
+      // Sahifani aylantirayotganda xarita kattalashmasin: bosilgandan keyin g'ildirak ishlaydi
+      map.on("click focus", () => map.scrollWheelZoom.enable());
+      map.on("mouseout", () => map.scrollWheelZoom.disable());
+    }).catch(() => {
+      box.innerHTML = `<iframe class="map-fallback" title="Xarita" loading="lazy" src="https://maps.google.com/maps?q=${UNI.join(",")}&z=17&hl=uz&output=embed"></iframe>`;
+    });
+  }
+
   /* ---------- Aloqa ---------- */
   function aloqa() {
     const item = (icon, title, body) => body ? `
@@ -365,16 +439,8 @@
       item("fa-solid fa-envelope", "Elektron pochta", mails) +
       item("fa-regular fa-clock", "Qabul vaqti", U.hours ? `<span>${esc(U.hours)}</span>` : "");
 
-    $("#contact-leaders").innerHTML = SITE.leaders.map((l) => {
-      const i = initiative(l.initiativeId);
-      return `
-        <div class="mentor" style="--c:${i.color}">
-          ${avatar(l.name, l.photo)}
-          <div style="flex:1"><strong>${esc(l.name)}</strong><span>${i.id}. ${esc(i.title)}</span></div>
-          ${l.telegram ? `<a class="icon-btn" href="${esc(l.telegram)}" target="_blank" rel="noopener" aria-label="${esc(l.name)} — Telegram"><i class="fa-brands fa-telegram"></i></a>` : ""}
-          ${l.phone ? `<a class="icon-btn" href="${tel(l.phone)}" aria-label="${esc(l.name)} — qo'ng'iroq"><i class="fa-solid fa-phone"></i></a>` : ""}
-        </div>`;
-    }).join("");
+    $("#map-address").textContent = [U.address, U.office].filter(Boolean).join(". ");
+    contactMap();
 
     $("#contact-form").addEventListener("submit", (e) => {
       e.preventDefault();
