@@ -266,10 +266,31 @@ main > .section:last-child { padding-bottom: 0; }
 .tag-success { --c: #16A34A; }
 
 /* To'garak kartasi */
-.club-card { --c: var(--brand); display: flex; flex-direction: column; padding: 22px; gap: 14px; }
+.club-card { --c: var(--brand); display: flex; flex-direction: column; overflow: hidden; }
+.club-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--c); }
+.club-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.club-card:hover .club-media img { transform: scale(1.05); }
+.club-media::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 18%, transparent) 0%, transparent 35%, color-mix(in srgb, var(--c) 88%, #000) 100%); }
+.club-count { position: absolute; top: 14px; left: 14px; z-index: 1; display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px;
+  background: rgba(255, 255, 255, .94); color: var(--c); font-size: .78rem; font-weight: 700; box-shadow: 0 2px 8px rgba(0, 0, 0, .12); }
+.club-group { position: absolute; left: 16px; right: 16px; bottom: 12px; z-index: 1; display: flex; align-items: center; gap: 8px;
+  color: #fff; font-weight: 700; font-size: .88rem; text-shadow: 0 1px 6px rgba(0, 0, 0, .35); }
+.club-body { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 20px; flex: 1; }
+.club-card h3 { font-size: 1.2rem; font-weight: 800; }
+.club-body > p { color: var(--text-2); font-size: .9rem; }
+.club-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: .84rem; color: var(--text-2); }
+.club-meta span { display: inline-flex; align-items: flex-start; gap: 7px; }
+.club-meta i { color: var(--text-3); font-size: .8rem; margin-top: 4px; width: 14px; text-align: center; }
+.club-meta a:hover { color: var(--c); }
+.club-join {
+  margin-top: auto; width: 100%; border-radius: 12px; color: var(--c);
+  background: color-mix(in srgb, var(--c) 10%, var(--surface));
+}
+.club-join i { transition: transform .2s; }
+.club-join:hover { background: var(--c); color: #fff; }
+.club-join:hover i { transform: translateX(4px); }
 .club-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.club-card h3 { font-size: 1.1rem; font-weight: 700; }
-.club-card > p { color: var(--text-2); font-size: .9rem; }
 .mentor { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--surface-2); }
 .avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 .avatar-initials { display: grid; place-items: center; font-weight: 700; font-size: .85rem; color: #fff; background: var(--c); }
@@ -357,6 +378,12 @@ main > .section:last-child { padding-bottom: 0; }
 .tile i { color: var(--brand); font-size: 1.3rem; margin-bottom: 6px; }
 .tile strong { font-family: var(--font-head); font-size: 1.75rem; font-weight: 800; line-height: 1.1; }
 .tile span { color: var(--text-3); font-size: .86rem; }
+.tile strong small { font-family: var(--font-body); font-size: .9rem; font-weight: 600; color: var(--text-3); }
+.tile em { margin-top: 4px; padding: 4px 10px; border-radius: 999px; font-style: normal; font-size: .76rem; font-weight: 600; line-height: 1.35;
+  color: var(--brand); background: var(--brand-50); }
+.tile em.muted { color: var(--text-3); background: var(--surface-2); }
+.tile-wide { grid-column: span 2; background: linear-gradient(135deg, var(--brand-50), transparent 70%); }
+.tile-wide strong { font-size: 2.1rem; }
 .contest-list { display: flex; flex-direction: column; padding: 8px 12px 12px; flex: 1; }
 .contest-row { display: flex; align-items: center; gap: 16px; padding: 10px 12px; border-radius: 12px; transition: background .15s; }
 .contest-row:hover { background: var(--brand-50); }

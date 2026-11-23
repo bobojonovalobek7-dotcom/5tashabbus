@@ -256,8 +256,11 @@
   }
 
   /* ---------- Butun panel bo'ylab qidiruv ---------- */
+  // Qidiruvda eski (sh, o') va yangi (ş, ö) yozuv bir xil hisoblanadi
+  const norm = (s) => (window.ALIFBO ? ALIFBO.norm(s) : String(s ?? "").toLowerCase());
+
   function searchAll(q) {
-    q = q.trim().toLowerCase();
+    q = norm(q.trim());
     if (!q) return [];
     const out = [];
     state.kinds.forEach((k) => {
@@ -266,8 +269,8 @@
       (state.items[k] || []).forEach((it) => {
         const title = String(it[s.title] || it.name || it.title || "");
         const sub = subtitle(k, it).filter(Boolean).join(" · ");
-        const t = title.toLowerCase();
-        if (t.includes(q) || sub.toLowerCase().includes(q)) out.push({ k, it, title, sub, score: t.startsWith(q) ? 0 : t.includes(q) ? 1 : 2 });
+        const t = norm(title);
+        if (t.includes(q) || norm(sub).includes(q)) out.push({ k, it, title, sub, score: t.startsWith(q) ? 0 : t.includes(q) ? 1 : 2 });
       });
     });
     return out.sort((a, b) => a.score - b.score).slice(0, 12);
@@ -299,8 +302,8 @@
       return;
     }
 
-    const q = state.query.trim().toLowerCase();
-    let list = (state.items[state.kind] || []).filter((it) => !q || JSON.stringify(it).toLowerCase().includes(q));
+    const q = norm(state.query.trim());
+    let list = (state.items[state.kind] || []).filter((it) => !q || norm(JSON.stringify(it)).includes(q));
     if (state.kind === "clubs" && state.rating !== "all") list = list.filter((c) => (RATING[c.rating] ? c.rating : "none") === state.rating);
     $("#kind-extra").innerHTML = extraHtml(state.kind);
     const sortable = s.sortable && !q;

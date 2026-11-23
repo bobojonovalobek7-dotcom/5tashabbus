@@ -86,22 +86,35 @@
     if (extra) featured.push(extra);
     $("#featured-clubs").innerHTML = featured.slice(0, 6).map(clubCard).join("");
 
-    // Statistika plitkalari: dashboardda qiymat yozilmagan bo'lsa, ro'yxatlardan hisoblanadi
-    const groupClubs = (id) => (SITE.groups.find((i) => i.id === id) || {}).clubsCount || 0;
+    // Statistika plitkalari: admin panelda qiymat yozilmagan bo'lsa, ro'yxatlardan hisoblanadi
+    const sum = (list, k) => list.reduce((a, x) => a + (Number(x[k]) || 0), 0);
+    const g5 = SITE.groups.find((i) => i.id === 5) || {};
+    const courses = SITE.courses || [];
+    // Kurslar hali kiritilmagan bo'lsa, kasb-hunar (5-yo'nalish) to'garaklari olinadi
     const auto = {
-      students: fmt(SITE.totals.students),
-      clubs: SITE.totals.clubs,
-      contests: SITE.contests.length,
-      group5: groupClubs(5),
-      group6: groupClubs(6),
-      awards: SITE.totals.awards
+      students: { value: fmt(SITE.totals.students) },
+      clubs: { value: SITE.totals.clubs, sub: SITE.totals.students, subLabel: "nafar talaba a'zo" },
+      courses: courses.length
+        ? { value: courses.length, sub: sum(courses, "enrolled"), subLabel: "nafar talaba o'qimoqda" }
+        : { value: g5.clubsCount || 0, sub: g5.students || 0, subLabel: "nafar talaba o'qimoqda" },
+      contests: { value: SITE.contests.length, sub: sum(SITE.contests, "participants"), subLabel: "nafar talaba ishtirok etmoqda" },
+      books: { value: SITE.books.length }
     };
-    $("#home-stats").innerHTML = SITE.stats.map((s) => `
-      <div class="tile">
+    const given = (v) => v !== "" && v != null;
+    const num = (v) => (/^\d+$/.test(String(v).replace(/\s/g, "")) ? fmt(String(v).replace(/\s/g, "")) : v);
+    $("#home-stats").innerHTML = SITE.stats.map((s) => {
+      const a = auto[s.id] || {};
+      const value = given(s.value) ? s.value : a.value ?? 0;
+      const sub = given(s.sub) ? s.sub : a.sub;
+      const subHtml = sub ? `<em>${esc(num(sub))} ${esc(a.subLabel || "")}</em>` : a.subText ? `<em class="muted">${esc(a.subText)}</em>` : "";
+      return `
+      <div class="tile${s.id === "students" ? " tile-wide" : ""}">
         <i class="fa-solid ${esc(s.icon)}"></i>
-        <strong>${esc(s.value !== "" && s.value != null ? s.value : auto[s.id] ?? 0)}</strong>
+        <strong>${esc(num(value))}${s.unit ? ` <small>${esc(s.unit)}</small>` : ""}</strong>
         <span>${esc(s.label)}</span>
-      </div>`).join("");
+        ${subHtml}
+      </div>`;
+    }).join("");
 
     // Tanlovlar ro'yxati: avval qabul ochiqlari (muddati yaqinroq), keyin yakunlanganlar
     const contests = [...SITE.contests]
@@ -193,10 +206,11 @@
       SITE.groups.map((i) => chip(i.title, String(i.id), filter === String(i.id), i.color, SITE.clubs.filter((c) => c.initiativeId === i.id).length)).join("");
 
     const render = () => {
-      const q = query.trim().toLowerCase();
+      const norm = (s) => (window.ALIFBO ? ALIFBO.norm(s) : String(s || "").toLowerCase());
+      const q = norm(query.trim());
       const list = SITE.clubs.filter((c) =>
         (filter === "all" || c.initiativeId === Number(filter)) &&
-        (!q || [c.name, c.place, c.schedule, c.mentors.join(" ")].some((f) => (f || "").toLowerCase().includes(q)))
+        (!q || [c.name, c.place, c.schedule, c.mentors.join(" ")].some((f) => norm(f || "").includes(q)))
       );
       $("#club-count").textContent = `${list.length} ta to'garak topildi`;
       $("#club-list").innerHTML = list.length

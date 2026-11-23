@@ -300,9 +300,11 @@
 
   function runSearch(q) {
     const out = $("#search-results");
-    const query = q.trim().toLowerCase();
+    // Eski (sh, o') va yangi (ş, ö) yozuv bir xil taqqoslanadi
+    const norm = (s) => (window.ALIFBO ? ALIFBO.norm(s) : String(s || "").toLowerCase());
+    const query = norm(q.trim());
     if (!query) { out.innerHTML = `<div class="none">Qidirish uchun yozishni boshlang</div>`; return; }
-    const has = (...fields) => fields.some((f) => String(f || "").toLowerCase().includes(query));
+    const has = (...fields) => fields.some((f) => norm(f || "").includes(query));
     const groups = [
       ["Sahifalar", PAGES.filter((p) => has(p[0])).map((p) => [p[1], p[2], p[0], ""])],
       ["Tashabbuslar", SITE.initiatives.filter((i) => has(i.title, i.lead)).map((i) => [`togaraklar.html?t=${i.id}`, "fa-flag", i.title, `${i.id}-tashabbus`])],
@@ -413,27 +415,62 @@
       : `<span class="avatar avatar-initials" aria-hidden="true">${esc(initials(name))}</span>`;
   }
 
+  /* To'garak rasmi: admin yuklagani → nomidagi kalit so'z → yo'nalish rasmlaridan biri */
+  const IMG = "assets/images/";
+  const GROUP_IMAGES = {
+    1: ["tashabbus_1_art.jpg", "news_theater_festival.jpg"],
+    2: ["tashabbus_2_sport.jpg", "contest_sport_cup.jpg"],
+    3: ["tashabbus_3_it.jpg", "news_it_hackathon.jpg"],
+    4: ["tashabbus_4_books.jpg"],
+    5: ["news_vocational_sewing.jpg", "tashabbus_5_crafts.jpg"],  // kasb-hunarga o'qitish
+    6: ["urdu_main_building.jpg", "tashabbus_4_books.jpg"]
+  };
+  const KEYWORD_IMAGES = [
+    [/teatr|sahna|drama|aktyor/i, "news_theater_festival.jpg"],
+    [/tikuv|tikish|bichish|kashta|chevar|libos|moda|dizayn/i, "news_vocational_sewing.jpg"],
+    [/hunar|kulol|yog.och|duradgor|zardo|gilam|to.qi/i, "tashabbus_5_crafts.jpg"],
+    [/futbol|kubok|chempionat/i, "contest_sport_cup.jpg"],
+    [/hakaton|hackathon|olimpiada/i, "news_it_hackathon.jpg"],
+    [/buxgalter|audit|hisob|iqtisod|biznes|moliya/i, "tashabbus_3_it.jpg"],
+    [/gid|turizm|sayohat/i, "urdu_main_building.jpg"]
+  ];
+  function clubImage(c) {
+    if (c.image) return c.image;
+    const hit = KEYWORD_IMAGES.find(([re]) => re.test(c.name || ""));
+    if (hit) return IMG + hit[1];
+    const g = initiative(c.initiativeId) || {};
+    const list = (GROUP_IMAGES[g.id] || []).map((f) => IMG + f);
+    if (g.image && !list.includes(g.image)) list.unshift(g.image);
+    if (!list.length) return IMG + "urdu_main_building.jpg";
+    // Bir yo'nalishdagi to'garaklarda rasmlar navbatma-navbat, lekin har safar bir xil chiqadi
+    let h = 2166136261;  // FNV-1a
+    for (const ch of String(c.id || c.name)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
+    return list[(h >>> 8) % list.length];
+  }
+
   function clubCard(c) {
     const i = initiative(c.initiativeId);
     const mentors = c.mentors.length ? c.mentors : ["Rahbar belgilanmagan"];
-    const phones = c.phones.map((p) => (p.tel ? `<a href="tel:${p.tel}">${esc(p.text)}</a>` : esc(p.text))).join(", ");
+    const who = mentors.length > 2 ? `${mentors.slice(0, 2).join(", ")} va yana ${mentors.length - 2} kishi` : mentors.join(", ");
+    const p = c.phones[0];
+    const phone = p ? (p.tel ? `<a href="tel:${p.tel}">${esc(p.text)}</a>` : esc(p.text)) : "";
     return `
       <article class="card card-hover club-card" style="--c:${i.color}">
-        <div class="club-top">
-          <span class="tag"><i class="${i.icon}"></i> ${esc(groupLabel(i))}</span>
-          ${c.students ? `<span class="tag tag-muted"><i class="fa-solid fa-users"></i> ${c.students} o'quvchi</span>` : ""}
+        <div class="club-media">
+          <img src="${esc(clubImage(c))}" alt="" loading="lazy">
+          ${c.students ? `<span class="club-count"><i class="fa-solid fa-users"></i> ${c.students} a'zo</span>` : ""}
+          <span class="club-group"><i class="${i.icon}"></i> ${esc(i.title)}</span>
         </div>
-        <h3>${esc(c.name)}</h3>
-        <div class="mentor">
-          ${avatar(mentors[0])}
-          <div><strong>${esc(mentors.join(", "))}</strong>${phones ? `<span>${phones}</span>` : ""}</div>
-        </div>
-        <div class="meta">
-          ${c.schedule ? `<div><i class="fa-regular fa-clock"></i><span>${esc(c.schedule)}</span></div>` : ""}
-          ${c.place ? `<div><i class="fa-solid fa-location-dot"></i><span>${esc(c.place)}</span></div>` : ""}
-        </div>
-        <div class="club-foot">
-          <button type="button" class="btn btn-primary btn-sm" data-join="${c.id}">A'zo bo'lish</button>
+        <div class="club-body">
+          <h3>${esc(c.name)}</h3>
+          ${c.desc ? `<p>${esc(c.desc)}</p>` : ""}
+          <div class="club-meta">
+            <span><i class="fa-regular fa-id-card"></i>${esc(who)}</span>
+            ${c.place ? `<span><i class="fa-solid fa-location-dot"></i>${esc(c.place)}</span>` : ""}
+            ${c.schedule ? `<span><i class="fa-regular fa-clock"></i>${esc(c.schedule)}</span>` : ""}
+            ${phone ? `<span><i class="fa-solid fa-phone"></i>${phone}</span>` : ""}
+          </div>
+          <button type="button" class="btn club-join" data-join="${c.id}">A'zo bo'lish <i class="fa-solid fa-arrow-right"></i></button>
         </div>
       </article>`;
   }
