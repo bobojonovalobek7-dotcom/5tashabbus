@@ -415,39 +415,6 @@
       : `<span class="avatar avatar-initials" aria-hidden="true">${esc(initials(name))}</span>`;
   }
 
-  /* To'garak rasmi: admin yuklagani → nomidagi kalit so'z → yo'nalish rasmlaridan biri */
-  const IMG = "assets/images/";
-  const GROUP_IMAGES = {
-    1: ["tashabbus_1_art.jpg", "news_theater_festival.jpg"],
-    2: ["tashabbus_2_sport.jpg", "contest_sport_cup.jpg"],
-    3: ["tashabbus_3_it.jpg", "news_it_hackathon.jpg"],
-    4: ["tashabbus_4_books.jpg"],
-    5: ["news_vocational_sewing.jpg", "tashabbus_5_crafts.jpg"],  // kasb-hunarga o'qitish
-    6: ["urdu_main_building.jpg", "tashabbus_4_books.jpg"]
-  };
-  const KEYWORD_IMAGES = [
-    [/teatr|sahna|drama|aktyor/i, "news_theater_festival.jpg"],
-    [/tikuv|tikish|bichish|kashta|chevar|libos|moda|dizayn/i, "news_vocational_sewing.jpg"],
-    [/hunar|kulol|yog.och|duradgor|zardo|gilam|to.qi/i, "tashabbus_5_crafts.jpg"],
-    [/futbol|kubok|chempionat/i, "contest_sport_cup.jpg"],
-    [/hakaton|hackathon|olimpiada/i, "news_it_hackathon.jpg"],
-    [/buxgalter|audit|hisob|iqtisod|biznes|moliya/i, "tashabbus_3_it.jpg"],
-    [/gid|turizm|sayohat/i, "urdu_main_building.jpg"]
-  ];
-  function clubImage(c) {
-    if (c.image) return c.image;
-    const hit = KEYWORD_IMAGES.find(([re]) => re.test(c.name || ""));
-    if (hit) return IMG + hit[1];
-    const g = initiative(c.initiativeId) || {};
-    const list = (GROUP_IMAGES[g.id] || []).map((f) => IMG + f);
-    if (g.image && !list.includes(g.image)) list.unshift(g.image);
-    if (!list.length) return IMG + "urdu_main_building.jpg";
-    // Bir yo'nalishdagi to'garaklarda rasmlar navbatma-navbat, lekin har safar bir xil chiqadi
-    let h = 2166136261;  // FNV-1a
-    for (const ch of String(c.id || c.name)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
-    return list[(h >>> 8) % list.length];
-  }
-
   function clubCard(c) {
     const i = initiative(c.initiativeId);
     const mentors = c.mentors.length ? c.mentors : ["Rahbar belgilanmagan"];
@@ -456,11 +423,8 @@
     const row = (icon, txt, title) => `<li title="${esc(title || txt)}"><i class="${icon}"></i><span>${esc(txt)}</span></li>`;
     return `
       <article class="card cc" style="--c:${i.color}">
-        <div class="cc-media">
-          <img src="${esc(clubImage(c))}" alt="" loading="lazy">
-          <span class="cc-chip"><i class="${i.icon}"></i>${esc(i.title)}</span>
-        </div>
         <div class="cc-body">
+          <span class="cc-chip"><i class="${i.icon}"></i>${esc(i.title)}</span>
           <h3>${esc(c.name)}</h3>
           ${c.desc ? `<p class="cc-desc">${esc(c.desc)}</p>` : ""}
           <ul class="cc-info">

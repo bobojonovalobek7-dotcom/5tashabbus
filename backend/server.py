@@ -69,7 +69,6 @@ SCHEMA = {
         F("rating", "Baho (faqat admin ko'radi)", "select", half=True, private=True, options=RATING_OPTIONS),
         F("ratingNote", "Baho izohi", half=True, private=True, placeholder="Masalan: davomat past"),
         F("desc", "Qisqa izoh", "textarea", limit=400, rows=2, placeholder="Kartochkada nomning ostida chiqadi"),
-        F("image", "Rasm", "image", hint="Tanlanmasa, yo'nalishga mos rasm avtomatik qo'yiladi."),
     ]},
     "courses": {"label": "Kasb-hunar kurslari", "one": "Kurs", "mode": "list", "title": "name",
                 "note": "Xotin-qizlar va yoshlarni kasb-hunarga o'qitish kurslari: o'rinlar, o'qiyotganlar, bitirganlar va bandlik hisobi.",
@@ -438,7 +437,6 @@ def clean_club(d):
         "rating": d.get("rating") if d.get("rating") in RATINGS else "",
         "ratingNote": text(d.get("ratingNote"), 300),
         "desc": text(d.get("desc"), 400),
-        "image": clean_field(F("image", "Rasm", "image"), d.get("image")),
     }
 
 
