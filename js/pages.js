@@ -31,9 +31,9 @@
       </div>`).join("");
   }
 
-  function chip(label, value, active, color, count) {
+  function chip(label, value, active, color, count, icon) {
     return `<button type="button" class="chip${active ? " active" : ""}" data-value="${esc(value)}"${color ? ` style="--c:${color}"` : ""}>
-      ${color ? '<span class="dot"></span>' : ""}${esc(label)}${count !== undefined ? ` <span class="count">${count}</span>` : ""}
+      ${icon ? `<i class="${icon}"></i>` : color ? '<span class="dot"></span>' : ""}${esc(label)}${count !== undefined ? ` <span class="count">${count}</span>` : ""}
     </button>`;
   }
 
@@ -90,15 +90,13 @@
 
     // Statistika plitkalari: admin panelda qiymat yozilmagan bo'lsa, ro'yxatlardan hisoblanadi
     const sum = (list, k) => list.reduce((a, x) => a + (Number(x[k]) || 0), 0);
-    const g5 = SITE.groups.find((i) => i.id === 5) || {};
     const courses = SITE.courses || [];
     // Kurslar hali kiritilmagan bo'lsa, kasb-hunar (5-yo'nalish) to'garaklari olinadi
     const auto = {
       students: { value: fmt(SITE.totals.students) },
       clubs: { value: SITE.totals.clubs, sub: SITE.totals.students, subLabel: "nafar talaba a'zo" },
-      courses: courses.length
-        ? { value: courses.length, sub: sum(courses, "enrolled"), subLabel: "nafar talaba o'qimoqda" }
-        : { value: g5.clubsCount || 0, sub: g5.students || 0, subLabel: "nafar talaba o'qimoqda" },
+      // Kurslar alohida bo'lim: soni kurslar ro'yxatidan, o'qiyotganlar — Statistika bo'limida qo'lda
+      courses: { value: courses.length, subLabel: "nafar talaba o'qimoqda" },
       contests: { value: SITE.contests.length, sub: sum(SITE.contests, "participants"), subLabel: "nafar talaba ishtirok etmoqda" },
       books: { value: SITE.books.length }
     };
@@ -113,7 +111,7 @@
     const rest = rows.filter((r) => r !== head);
     const toN = (v) => Number(String(v ?? "").replace(/\s/g, "")) || 0;
     const total = toN(head && head.shown);
-    const active = SITE.totals.students + (courses.length ? sum(courses, "enrolled") : 0);
+    const active = SITE.totals.students;
     const share = total ? Math.min(100, Math.round((active / total) * 100)) : 0;
     $("#home-stats").innerHTML = (head ? `
       <div class="sb-hero">
@@ -164,22 +162,21 @@
         <div class="dir-head"><span class="dir-ic"><i class="${icon}"></i></span><span class="dir-tag">${esc(tag)}</span></div>
         <h3>${esc(title)}</h3>
         <p>${esc(text || "")}</p>
-        <div class="dir-stats"><span><b>${fmt(clubs)}</b> ${extra || "to'garak"}</span><span><b>${fmt(students)}</b> ${extra ? "o'qiyotgan" : "a'zo"}</span></div>
+        <div class="dir-stats"><span><b>${fmt(clubs)}</b> ${extra || "to'garak"}</span><span><b>${fmt(students)}</b> ${extra ? "sertifikatli" : "a'zo"}</span></div>
         <a class="link-arrow" href="${link}">Ko'rish <i class="fa-solid fa-arrow-right"></i></a>
       </article>`;
     const groups = SITE.groups.filter((g) => g.id !== 6);
     const other = SITE.groups.find((g) => g.id === 6);
     const courses = SITE.courses || [];
-    const g5 = SITE.groups.find((g) => g.id === 5) || {};
-    const { COURSE_COLOR } = window.UI;
+    const { COURSE_COLOR, COURSE_ICON } = window.UI;
     $("#initiative-rows").innerHTML = `<div class="dir-grid">${groups.map((g) => card({
         id: `t${g.id}`, title: g.title, text: g.about || g.lead, color: g.color, icon: g.icon,
         tag: g.id <= 5 ? `${g.id}-tashabbus` : "Yo'nalish", link: `togaraklar.html?t=${g.id}`, clubs: g.clubsCount || 0, students: g.students || 0
       })).join("")}
       ${card({
-        id: "kurslar", title: "Kasbga o'qitish kurslari", color: COURSE_COLOR, icon: "fa-solid fa-briefcase", tag: "Kurslar", link: "togaraklar.html?t=courses",
+        id: "kurslar", title: "Kasbga o'qitish kurslari", color: COURSE_COLOR, icon: COURSE_ICON, tag: "Kurslar", link: "togaraklar.html?t=courses",
         text: "Talaba-qizlar va yoshlarni kasb-hunarga o'qitish: tikuvchilik, dizayn, pazandachilik, buxgalteriya va boshqa amaliy kurslar. Bitirganlarga sertifikat beriladi.",
-        clubs: courses.length || g5.clubsCount || 0, students: courses.length ? courses.reduce((a, c) => a + (Number(c.enrolled) || 0), 0) : g5.students || 0, extra: "kurs"
+        clubs: courses.length, students: courses.filter((c) => c.certificate).length, extra: "kurs"
       })}
       ${other ? card({
         id: "t6", title: other.title, color: other.color, icon: other.icon, tag: "Qo'shimcha", link: "togaraklar.html?t=6",
@@ -226,17 +223,17 @@
     let filter = params.get("t") || "all";
     const query = params.get("q") || "";  // sayt qidiruvidan kelgan havola uchun
     const chips = $("#club-filters");
-    const { courseCard, COURSE_COLOR } = window.UI;
+    const { courseCard, COURSE_COLOR, COURSE_ICON } = window.UI;
     const courses = SITE.courses || [];
-    // Kurslar hali kiritilmagan bo'lsa, kasb-hunar (5-yo'nalish) to'garaklari ko'rsatiladi — statistikadagi kabi
-    const courseItems = courses.length ? courses.map((c) => ({ c, card: courseCard })) : SITE.clubs.filter((c) => c.initiativeId === 5).map((c) => ({ c, card: clubCard }));
+    // Kurslar — alohida bo'lim: faqat admin paneldagi «Kasbga o'qitish kurslari»
+    const courseItems = courses.map((c) => ({ c, card: courseCard }));
     const other = SITE.groups.find((g) => g.id === 6);
     // 1–5 tashabbuslar, admin qo'shgan yo'nalishlar, kurslar va oxirida «Boshqa turdagi to'garaklar»
     const items = SITE.groups.filter((g) => g.id <= 5 || g.id >= 7).map((g) => [g.title, String(g.id), g.color])
-      .concat([["Kasbga o'qitish kurslari", "courses", COURSE_COLOR]])
+      .concat([["Kasbga o'qitish kurslari", "courses", COURSE_COLOR, COURSE_ICON]])
       .concat(other ? [[other.title, "6", other.color]] : []);
     const countOf = (v) => (v === "courses" ? courseItems.length : SITE.clubs.filter((c) => c.initiativeId === Number(v)).length);
-    chips.innerHTML = items.map(([label, v, color]) => chip(label, v, filter === v, color, countOf(v))).join("");
+    chips.innerHTML = items.map(([label, v, color, icon]) => chip(label, v, filter === v, color, countOf(v), icon)).join("");
 
     const render = () => {
       const norm = (s) => (window.ALIFBO ? ALIFBO.norm(s) : String(s || "").toLowerCase());
@@ -247,10 +244,12 @@
             (filter === "all" || c.initiativeId === Number(filter)) &&
             (!q || [c.name, c.place, c.schedule, c.mentors.join(" ")].some((f) => norm(f || "").includes(q)))
           ).map((c) => ({ c, card: clubCard }));
-      $("#club-count").textContent = filter === "courses" && courses.length ? `${list.length} ta kurs` : `${list.length} ta to'garak`;
+      $("#club-count").textContent = filter === "courses" ? `${list.length} ta kurs` : `${list.length} ta to'garak`;
       $("#club-list").innerHTML = list.length
         ? list.map(({ c, card }) => card(c)).join("")
-        : `<div class="empty"><i class="fa-regular fa-folder-open"></i>Bu bo'limda hozircha hech narsa yo'q</div>`;
+        : filter === "courses"
+          ? `<div class="empty"><i class="${COURSE_ICON}"></i>Kasbga o'qitish kurslari tez orada e'lon qilinadi</div>`
+          : `<div class="empty"><i class="fa-regular fa-folder-open"></i>Bu bo'limda hozircha hech narsa yo'q</div>`;
       const url = new URL(location.href);
       filter === "all" ? url.searchParams.delete("t") : url.searchParams.set("t", filter);
       history.replaceState(null, "", url);
@@ -261,9 +260,13 @@
       if (!b) return;
       filter = filter === b.dataset.value ? "all" : b.dataset.value;
       $$(".chip", chips).forEach((x) => x.classList.toggle("active", x.dataset.value === filter));
+      b.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
       render();
     });
     render();
+    // URL bilan kelgan filtr yorlig'i telefonda ko'rinib tursin
+    const act = $(".chip.active", chips);
+    if (act) act.scrollIntoView({ block: "nearest", inline: "center" });
   }
 
   /* ---------- Tanlovlar ---------- */

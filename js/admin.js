@@ -101,8 +101,7 @@
     const g = it.initiativeId !== undefined && group(it.initiativeId);
     switch (kind) {
       case "clubs": return [g && g.title, it.students ? `${it.students} o'quvchi` : "", (it.mentors || []).join(", "), it.ratingNote];
-      case "courses": return [COURSE_STATUS[it.status], it.teacher, it.capacity ? `${it.enrolled || 0} / ${it.capacity} o'rin` : it.enrolled ? `${it.enrolled} o'qiyapti` : "",
-        it.graduates ? `${it.graduates} bitirgan, ${pct(it.employed, it.graduates)}% ishda` : ""];
+      case "courses": return [it.teacher, it.duration, it.schedule, it.certificate ? "sertifikat beriladi" : ""];
       case "contests": return [it.deadline ? `${dmy(it.deadline)} gacha` : it.period, daysTo(it.deadline) !== null && daysTo(it.deadline) < 0 ? "Yakunlangan" : "Faol", it.doc ? "Nizomi bor" : ""];
       case "news": return [dmy(it.date), g && g.title];
       case "staff": return [it.role, it.phone, it.telegram && it.telegram.replace(/^https:\/\/t\.me\//, "@"), it.showOnPage === false ? "sahifada ko'rinmaydi" : ""];
@@ -231,9 +230,7 @@
     const statRow = (id) => (it.stats || []).find((s) => s.id === id) || {};
     const totalStudents = Number(String(statRow("students").value || "").replace(/\s/g, "")) || 0;
     const courses = it.courses || [];
-    const g5 = groups.find((g) => g.id === 5) || { clubs: 0, members: 0 };
-    const courseCount = courses.length || g5.clubs;
-    const learners = courses.length ? sum(courses, "enrolled") : g5.members;
+    const courseCount = courses.length;
     // Tanlov ishtirokchilari — «Statistika» bo'limidagi «Tanlovlar» pastki raqami
     const participants = Number(String(statRow("contests").sub || "").replace(/\s/g, "")) || 0;
     const stats = `<div class="stat-grid">
@@ -241,7 +238,7 @@
         totalStudents ? `${pct(members, totalStudents)}% i to'garaklarda` : "Statistika bo'limida kiriting", true)}
       ${stat("clubs", "fa-people-group", fmtN(clubs.length), "To'garaklar", `${dirs} ta yo'nalish bo'yicha`)}
       ${stat("members", "fa-users", fmtN(members), "To'garak a'zolari", `o'rtacha ${clubs.length ? Math.round(members / clubs.length) : 0} nafar / to'garak`)}
-      ${stat("courses", "fa-briefcase", fmtN(courseCount), "Kasbga o'qitish kurslari", `${fmtN(learners)} nafar o'qimoqda`)}
+      ${stat("courses", "fa-screwdriver-wrench", fmtN(courseCount), "Kasbga o'qitish kurslari", courseCount ? `${courses.filter((c) => c.certificate).length} tasida sertifikat` : "hali kurs kiritilmagan")}
       ${stat("books", "fa-book", fmtN((it.books || []).length), "Kitoblar", "kutubxonada tavsiya etilgan")}
       ${stat("contests", "fa-trophy", active.length, "Faol tanlovlar", nearest !== undefined ? `eng yaqin muddat: ${nearest} kun` : "muddati yaqin tanlov yo'q")}
       ${stat("participants", "fa-user-check", participants ? fmtN(participants) : "—", "Tanlov ishtirokchilari", participants ? `${contests.length} ta tanlov bo'yicha` : "Statistika bo'limida kiriting")}
@@ -339,7 +336,6 @@
     const members = sum(clubs, "students");
     const statRow = (id) => (it.stats || []).find((s) => s.id === id) || {};
     const total = Number(String(statRow("students").value || "").replace(/\s/g, "")) || 0;
-    const g5 = clubs.filter((c) => Number(c.initiativeId) === 5);
     const head = (ic, val, label, sub) => `
       <div class="khead"><span class="kic"><i class="fa-solid ${ic}"></i></span>
         <div><b>${val}</b><h2>${esc(label)}</h2>${sub ? `<p>${esc(sub)}</p>` : ""}</div></div>`;
@@ -350,8 +346,7 @@
       case "students": {
         const share = total ? pct(members, total) : 0;
         return head("fa-user-graduate", total ? fmtN(total) : "—", "Jami talabalar", "«Statistika» bo'limidagi qiymat") +
-          `<div class="kgrid">${ringHtml(share, "faol")}${tilesHtml([[fmtN(members), "to'garak a'zosi"], [fmtN(Math.max(0, total - members)), "hali qatnashmagan"],
-            [fmtN(courses.length ? sum(courses, "enrolled") : sum(g5, "students")), "kasbga o'qiyotgan"]])}</div>` +
+          `<div class="kgrid">${ringHtml(share, "faol")}${tilesHtml([[fmtN(members), "to'garak a'zosi"], [fmtN(Math.max(0, total - members)), "hali qatnashmagan"]])}</div>` +
           section("Yo'nalishlar bo'yicha qamrov", barsHtml(groups.map((g) => ({ label: g.title, value: g.members, color: g.color, note: total ? `${pct(g.members, total)}%` : "" })), "nafar")) +
           go("stats", "Statistikani tahrirlash");
       }
@@ -369,11 +364,10 @@
           section("To'garaklar hajmi", barsHtml(buckets, "ta")) + go("clubs", "To'garaklarga o'tish");
       }
       case "courses": {
-        const list = courses.length ? courses.map((c) => ({ label: c.name, value: +c.enrolled || 0, note: COURSE_STATUS[c.status] || "" }))
-          : g5.map((c) => ({ label: c.name, value: +c.students || 0 }));
-        return head("fa-briefcase", fmtN(list.length), "Kasbga o'qitish kurslari", courses.length ? "" : "Kurslar hali kiritilmagan — kasb-hunar to'garaklari ko'rsatilmoqda") +
-          (courses.length ? tilesHtml([[fmtN(sum(courses, "enrolled")), "o'qiyapti"], [fmtN(sum(courses, "graduates")), "bitirgan"], [`${pct(sum(courses, "employed"), sum(courses, "graduates"))}%`, "ishga joylashgan"]]) : "") +
-          section("O'qiyotganlar soni", barsHtml(list.sort((a, b) => b.value - a.value), "nafar")) + go("courses", "Kurslarga o'tish");
+        return head("fa-screwdriver-wrench", fmtN(courses.length), "Kasbga o'qitish kurslari", courses.length ? "" : "Hali kurs kiritilmagan") +
+          (courses.length ? tilesHtml([[fmtN(courses.filter((c) => c.certificate).length), "sertifikatli"], [fmtN(new Set(courses.map((c) => c.teacher).filter(Boolean)).size), "usta"]]) +
+            section("Kurslar", `<ul class="klist">${courses.map((c) => `<li><span>${esc(c.name)}</span><small>${esc([c.duration, c.teacher].filter(Boolean).join(" · "))}</small></li>`).join("")}</ul>`) : "") +
+          go("courses", "Kurslarga o'tish");
       }
       case "books": {
         const reads = sum(books, "reads");
@@ -560,17 +554,6 @@
       const chip = (k, label, icon) => `<button type="button" class="chip rate-chip ${k}${state.rating === k ? " active" : ""}" data-rating="${k}">${icon} ${label} <span class="count">${k === "all" ? all.length : rc[k]}</span></button>`;
       return `<div class="chips rate-chips">${chip("all", "Barchasi", "")}${Object.keys(RATING).map((k) => chip(k, RATING[k].l, `<i class="fa-solid ${RATING[k].ic}"></i>`)).join("")}${chip("none", "Baholanmagan", '<i class="fa-regular fa-circle"></i>')}</div>`;
     }
-    if (kind === "courses") {
-      const cs = state.items.courses || [];
-      if (!cs.length) return "";
-      const withCap = cs.filter((c) => c.capacity);
-      return `<div class="kpis">
-        <div class="card kpi"><strong>${cs.length}</strong><span>kurs · ${cs.filter((c) => c.status === "open").length} tasida qabul ochiq</span></div>
-        <div class="card kpi"><strong>${fmtN(sum(cs, "enrolled"))}</strong><span>o'qiyapti${withCap.length ? ` · o'rinlarning ${pct(sum(withCap, "enrolled"), sum(withCap, "capacity"))}% band` : ""}</span></div>
-        <div class="card kpi"><strong>${fmtN(sum(cs, "graduates"))}</strong><span>bitirgan · ${cs.filter((c) => c.certificate).length} ta kursda sertifikat</span></div>
-        <div class="card kpi"><strong>${pct(sum(cs, "employed"), sum(cs, "graduates"))}%</strong><span>bandlik · ${fmtN(sum(cs, "employed"))} nafar ish topgan</span></div>
-      </div>`;
-    }
     return "";
   }
 
@@ -619,12 +602,8 @@
     x = (it.staff || []).filter((p) => !p.photo && p.showOnPage !== false);
     add("info", "fa-camera", `${x.length} ta xodimning rasmi yo'q`, "Rahbariyat sahifasida rasm o'rniga bosh harflar ko'rinadi.", refs("staff", x));
 
-    x = courses.filter((c) => c.capacity && c.enrolled > c.capacity);
-    add("warn", "fa-user-plus", `${x.length} ta kursda o'quvchilar o'rinlardan ko'p`, "O'rinlar sonini yangilang yoki qo'shimcha guruh oching.", refs("courses", x));
     x = courses.filter((c) => !c.teacher || !c.place);
     add("warn", "fa-chalkboard-user", `${x.length} ta kursda usta yoki joy ko'rsatilmagan`, "Kursga yozilmoqchi bo'lganlar kim bilan bog'lanishni bilmaydi.", refs("courses", x));
-    x = courses.filter((c) => c.status === "finished" && (c.graduates == null || c.graduates === ""));
-    add("info", "fa-user-graduate", `${x.length} ta yakunlangan kursda bitirganlar soni yo'q`, "Bandlik natijasini hisoblash uchun bitirganlar va ishga joylashganlarni kiriting.", refs("courses", x));
 
     const st = (it.settings || [])[0] || {};
     const empty = { phone: "Telefon", centerEmail: "Markaz pochtasi", address: "Manzil", hours: "Qabul vaqti", telegram: "Telegram", instagram: "Instagram" };
@@ -754,7 +733,6 @@
     const clubs = it.clubs || [], contests = it.contests || [], books = it.books || [], reqs = it.requests || [], courses = it.courses || [];
     const total = Number(String(((it.stats || []).find((s) => s.id === "students") || {}).value || "").replace(/\s/g, "")) || 0;
     const members = sum(clubs, "students");
-    const g5 = clubs.filter((c) => Number(c.initiativeId) === 5);
     const open = contests.filter((c) => daysTo(c.deadline) !== null && daysTo(c.deadline) >= 0);
     const mentors = new Set(clubs.flatMap((c) => c.mentors || []).map((m) => String(m).trim().toLowerCase()).filter(Boolean)).size;
     const issues = computeIssues();
@@ -765,8 +743,7 @@
       ["Jami talabalar", total, "«Statistika» bo'limidan"],
       ["To'garaklar", clubs.length, `${new Set(clubs.map((c) => c.initiativeId)).size} ta yo'nalish bo'yicha`],
       ["To'garak a'zolari", members, total ? `talabalarning ${pct(members, total)}% i` : ""],
-      ["Kasbga o'qitish kurslari", courses.length || g5.length, courses.length ? "kurslar bo'limidan" : "kasb-hunar to'garaklari (kurslar hali kiritilmagan)"],
-      ["Kurslarda o'qiyotganlar", courses.length ? sum(courses, "enrolled") : sum(g5, "students"), ""],
+      ["Kasbga o'qitish kurslari", courses.length, `${courses.filter((c) => c.certificate).length} tasida sertifikat beriladi`],
       ["Tanlovlar", contests.length, `${open.length} tasida qabul ochiq`],
       ["Yutuqlar (sovrinli o'rinlar)", sum(SITE.groups, "awards"), `${(it.winners || []).length} ta shon-sharaf egasi`],
       ["To'garak rahbarlari", mentors, `${(it.staff || []).length} ta markaz xodimi`],
@@ -900,23 +877,20 @@
   function courseSheet(wb) {
     const cs = state.items.courses || [];
     sheet(wb, "Kurslar", "Kasbga o'qitish kurslari", [
-      { k: "n", l: "№", w: 5, center: true }, { k: "name", l: "Kurs nomi", w: 32 }, { k: "status", l: "Holati", w: 16 }, { k: "teacher", l: "Usta", w: 22 },
-      { k: "period", l: "Muddat", w: 22 }, { k: "schedule", l: "Jadval", w: 26 }, { k: "place", l: "Joy", w: 20 }, { k: "price", l: "Narxi", w: 10 },
-      { k: "capacity", l: "O'rinlar", w: 9, num: true }, { k: "enrolled", l: "O'qiyotganlar", w: 12, num: true }, { k: "graduates", l: "Bitirganlar", w: 11, num: true },
-      { k: "employed", l: "Ishga joylashgan", w: 13, num: true }, { k: "rate", l: "Bandlik", w: 10, num: true, pct: true }, { k: "cert", l: "Sertifikat", w: 10, center: true }
+      { k: "n", l: "№", w: 5, center: true }, { k: "name", l: "Kurs nomi", w: 32 }, { k: "teacher", l: "Usta / o'qituvchi", w: 24 },
+      { k: "duration", l: "Davomiyligi", w: 16 }, { k: "schedule", l: "Dars jadvali", w: 28 }, { k: "place", l: "Joy", w: 22 },
+      { k: "phone", l: "Telefon", w: 18 }, { k: "audience", l: "Kimlar uchun", w: 26 }, { k: "cert", l: "Sertifikat", w: 11, center: true },
+      { k: "desc", l: "Kurs haqida", w: 46 }
     ], cs.map((c, i) => ({
-      n: i + 1, name: c.name, status: COURSE_STATUS[c.status] || "", teacher: c.teacher,
-      period: [dmy(c.start), dmy(c.end)].filter(Boolean).join(" — ") || c.duration || "",
-      schedule: c.schedule, place: c.place, price: c.price, capacity: num(c.capacity), enrolled: num(c.enrolled), graduates: num(c.graduates),
-      employed: num(c.employed), rate: c.graduates ? pct(c.employed, c.graduates) : "", cert: c.certificate ? "Ha" : "Yo'q"
-    })).concat(cs.length ? [{ _total: true, name: "JAMI", capacity: sum(cs, "capacity"), enrolled: sum(cs, "enrolled"), graduates: sum(cs, "graduates"),
-      employed: sum(cs, "employed"), rate: pct(sum(cs, "employed"), sum(cs, "graduates")) }] : []));
+      n: i + 1, name: c.name, teacher: c.teacher, duration: c.duration, schedule: c.schedule, place: c.place, phone: c.phone,
+      audience: c.audience, cert: c.certificate ? "Ha" : "Yo'q", desc: plain(c.desc)
+    })));
   }
 
   // Har qanday bo'lim: ustunlar admin shaklidagi maydonlardan olinadi
   function kindSheet(wb, kind) {
     const s = state.schema[kind];
-    const fields = s.fields.filter((f) => !["image", "pdf"].includes(f.type));
+    const fields = s.fields.filter((f) => !["image", "images", "pdf"].includes(f.type));
     const width = (f) => ({ textarea: 46, rich: 50, lines: 28, phones: 22, int: 11, number: 11, date: 12, bool: 10, doc: 36 }[f.type] || (f.half ? 22 : 30));
     const value = (f, it) => {
       const v = getPath(it, f.key);
@@ -1038,6 +1012,17 @@
             <span class="pdf-progress" hidden></span>
           </div>
           ${hint}</div>`;
+      case "images": {
+        const list = Array.isArray(v) ? v : [];
+        return `<div class="field" data-imgs="${f.key}"><label>${esc(f.label)}</label>
+          <div class="gal">
+            ${list.map((p) => galItem(p)).join("")}
+            <label class="gal-add"><i class="fa-solid fa-plus"></i><span>Rasm qo'shish</span>
+              <input type="file" accept="image/jpeg,image/png,image/webp" multiple data-gal-upload="${f.key}" hidden></label>
+          </div>
+          <input type="hidden" name="${f.key}" value="${esc(list.join("\n"))}">
+          <p class="hint">${f.hint ? esc(f.hint) + " " : ""}JPG, PNG yoki WEBP. Bir yo'la bir nechta rasm tanlash mumkin.</p></div>`;
+      }
       case "pdf":
         return `<div class="field" data-pdf="${f.key}"><label>${esc(f.label)}</label>
           <div class="img-field">
@@ -1203,6 +1188,13 @@
       xhr.onerror = () => reject(new Error("Tarmoq xatosi: PDF yuklanmadi"));
       xhr.send(file);
     });
+  }
+
+  // Galereya (yangiliklarning qo'shimcha rasmlari)
+  const galItem = (p) => `<span class="gal-item" data-path="${esc(p)}"><img src="${esc(p)}" alt="" loading="lazy">
+    <button type="button" data-gal-del aria-label="Rasmni olib tashlash"><i class="fa-solid fa-xmark"></i></button></span>`;
+  function syncGallery(box) {
+    box.querySelector("input[type=hidden]").value = $$(".gal-item", box).map((x) => x.dataset.path).join("\n");
   }
 
   function setPdf(key, path) {
@@ -1532,6 +1524,41 @@ Keyin qayta baholash mumkin.`)) return;
         if (size.value) rteExec(size.closest(".rte").querySelector(".rte-area"), "fontSize", size.value);
         size.value = "";
       }
+    });
+
+    // Galereya: bir nechta rasm ketma-ket yuklanadi, har biri kichraytirilib serverga yuboriladi
+    $("#edit-fields").addEventListener("change", async (e) => {
+      const input = e.target.closest("[data-gal-upload]");
+      if (!input || !input.files.length) return;
+      const box = input.closest("[data-imgs]");
+      const add = box.querySelector(".gal-add");
+      const label = add.querySelector("span");
+      const save = $("#edit-form button[type=submit]");
+      const files = [...input.files];
+      $("#edit-error").textContent = "";
+      save.disabled = true;
+      add.classList.add("loading");
+      try {
+        for (let i = 0; i < files.length; i++) {
+          label.textContent = `Yuklanmoqda ${i + 1}/${files.length}`;
+          const { path } = await api("POST", "upload", { data: await prepareImage(files[i]) });
+          add.insertAdjacentHTML("beforebegin", galItem(path));
+        }
+      } catch (err) {
+        $("#edit-error").textContent = err.message;
+      }
+      syncGallery(box);
+      label.textContent = "Rasm qo'shish";
+      add.classList.remove("loading");
+      save.disabled = false;
+      input.value = "";
+    });
+    $("#edit-fields").addEventListener("click", (e) => {
+      const del = e.target.closest("[data-gal-del]");
+      if (!del) return;
+      const box = del.closest("[data-imgs]");
+      del.closest(".gal-item").remove();
+      syncGallery(box);
     });
 
     // «Nizomi yoki to'liq ma'lumot»: PDF yuklansa, maydonga uning manzili yoziladi

@@ -72,43 +72,33 @@ SCHEMA = {
         F("ratingNote", "Baho izohi", half=True, private=True, placeholder="Masalan: davomat past"),
         F("desc", "Qisqa izoh", "textarea", limit=400, rows=2, placeholder="Kartochkada nomning ostida chiqadi"),
     ]},
-    "courses": {"label": "Kasb-hunar kurslari", "one": "Kurs", "mode": "list", "title": "name",
-                "note": "Xotin-qizlar va yoshlarni kasb-hunarga o'qitish kurslari: o'rinlar, o'qiyotganlar, bitirganlar va bandlik hisobi.",
+    "courses": {"label": "Kasbga o'qitish kurslari", "one": "Kurs", "mode": "list", "title": "name",
+                "note": "Yoshlarni kasb-hunarga o'qitish kurslari. Saytdagi «To'garak va kurslar» sahifasida alohida bo'lim bo'lib chiqadi.",
                 "fields": [
         F("name", "Kurs nomi", required=True),
-        F("initiativeId", "Yo'nalish", "select", options=GROUPS_1_6, half=True, default=5),
-        F("status", "Holati", "select", half=True, options=[
-            {"value": "open", "label": "Qabul ochiq"}, {"value": "running", "label": "O'qish davom etmoqda"},
-            {"value": "planned", "label": "Rejalashtirilgan"}, {"value": "finished", "label": "Yakunlangan"}]),
-        F("start", "Boshlanish sanasi", "date", half=True),
-        F("end", "Tugash sanasi", "date", half=True),
         F("duration", "Davomiyligi", half=True, placeholder="3 oy, 72 soat"),
-        F("price", "Narxi", half=True, placeholder="Bepul"),
         F("schedule", "Dars jadvali", half=True, placeholder="Dushanba, Chorshanba · 14:00–16:00"),
         F("place", "O'qitiladigan joy", half=True),
         F("teacher", "Usta / o'qituvchi", half=True),
         F("phone", "Aloqa telefoni", half=True),
-        F("audience", "Kimlar uchun", placeholder="Talaba-qizlar va mahalla yoshlari"),
-        F("capacity", "O'rinlar soni", "int", half=True),
-        F("enrolled", "O'qiyotganlar", "int", half=True),
-        F("graduates", "Bitirganlar", "int", half=True),
-        F("employed", "Ishga joylashganlar", "int", half=True, hint="Bitirganlardan ish yoki daromad topganlar"),
+        F("audience", "Kimlar uchun", half=True, placeholder="Talaba-qizlar va mahalla yoshlari"),
         F("certificate", "Sertifikat beriladi", "bool"),
-        F("image", "Rasm", "image"),
-        F("desc", "Kurs haqida", "textarea", limit=1500),
+        F("desc", "Kurs haqida", "rich", limit=4000),
     ]},
     "contests": {"label": "Tanlovlar", "one": "Tanlov", "mode": "list", "title": "title", "fields": [
         F("title", "Nomi", required=True),
         F("deadline", "Tugash sanasi", "date", half=True, required=True, hint="Shu kundan keyin tanlov «Yakunlangan» bo'ladi"),
         F("prize", "Mukofot", half=True, placeholder="1-o'rin: 5 mln so'm"),
-        F("desc", "Qisqa izoh", "rich", limit=3000),
+        F("desc", "Qisqa ma'lumot", "rich", limit=1500, hint="Saytdagi kartochkada ko'rinadi: 2–3 gap"),
+        F("body", "Batafsil ma'lumot", "rich", limit=20000, rows=8, hint="«Batafsil» tugmasi bosilganda oynada ochiladi"),
         F("image", "Rasm", "image", hint="Tanlanmasa, universitet binosi rasmi qo'yiladi."),
         F("doc", "Nizomi yoki to'liq ma'lumot", "doc", hint="Havola (https://...) yozing yoki PDF yuklang."),
     ]},
     "news": {"label": "Yangiliklar", "one": "Yangilik", "mode": "list", "title": "title", "fields": [
         F("title", "Sarlavha", required=True),
         F("date", "Sana", "date", half=True, required=True),
-        F("image", "Rasm", "image", required=True),
+        F("image", "Asosiy rasm", "image", required=True),
+        F("gallery", "Qo'shimcha rasmlar", "images", hint="Bir nechta rasm tanlash mumkin; yangilik oynasida galereya bo'lib chiqadi."),
         F("excerpt", "Qisqa matn", "rich", limit=2000),
         F("body", "To'liq matn", "rich", limit=20000, rows=8),
     ]},
@@ -537,7 +527,8 @@ def clean_contest(d):
         "period": f"{fmt_date(deadline)} gacha",
         "image": image or "assets/images/urdu_main_building.jpg",
         "prize": text(d.get("prize"), 300),
-        "desc": clean_field(F("desc", "Qisqa izoh", "rich", limit=3000), d.get("desc")),
+        "desc": clean_field(F("desc", "Qisqa ma'lumot", "rich", limit=1500), d.get("desc")),
+        "body": clean_field(F("body", "Batafsil ma'lumot", "rich", limit=20000), d.get("body")),
         "doc": clean_field(F("doc", "Nizomi", "doc"), d.get("doc")),
     }
 
@@ -593,6 +584,20 @@ def clean_field(f, v):
         if v and not re.fullmatch(r"uploads/[\w.\-]+\.pdf", v):
             raise ValueError(f"{label}: fayl manzili noto'g'ri")
         return v
+    if t == "images":  # bir nechta rasm (galereya)
+        items = v if isinstance(v, list) else str(v or "").split("\n")
+        out = []
+        for x in items:
+            x = text(x, 300)
+            if not x:
+                continue
+            if not IMAGE_RE.fullmatch(x) or ".." in x:
+                raise ValueError(f"{label}: rasm manzili noto'g'ri")
+            if x not in out:
+                out.append(x)
+        if len(out) > 30:
+            raise ValueError(f"{label}: ko'pi bilan 30 ta rasm")
+        return out
     if t == "doc":  # havola yoki yuklangan PDF
         v = text(v, 500)
         if v and not (re.fullmatch(r"https?://\S+", v) or re.fullmatch(r"uploads/[\w.\-]+\.pdf", v)):

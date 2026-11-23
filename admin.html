@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/main.css?v=20261123h">
+  <link rel="stylesheet" href="css/main.css?v=20261123i">
   <style>
     :root {
       --side-bg: #0B2C8F;
@@ -320,6 +320,15 @@
     .kmuted { font-size: .86rem; color: var(--text-3); }
     .kfoot { display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
     .stat { cursor: pointer; }
+    /* Galereya maydoni */
+    .gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+    .gal-item, .gal-add { position: relative; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; }
+    .gal-item img { width: 100%; height: 100%; object-fit: cover; }
+    .gal-item button { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: .7rem; color: #fff; background: rgba(15, 23, 42, .65); }
+    .gal-item button:hover { background: var(--red); }
+    .field .gal-add { display: grid; margin: 0; place-content: center; justify-items: center; gap: 4px; border: 1.5px dashed var(--border); color: var(--text-3); font-size: .74rem; font-weight: 600; cursor: pointer; text-align: center; padding: 6px; }
+    .field .gal-add:hover { border-color: var(--brand); color: var(--brand); }
+    .field .gal-add.loading { opacity: .6; pointer-events: none; }
     /* Svetofor baholash */
     .lights { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--border); border-radius: 999px; margin-right: 6px; }
     .light { --c: var(--text-3); width: 26px; height: 26px; border-radius: 50%; border: 0; background: transparent; color: var(--border); cursor: pointer; display: grid; place-items: center; font-size: .92rem; transition: color .15s, background .15s; }
@@ -515,8 +524,8 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/alifbo.js?v=20261123h"></script>
-<script src="js/data.js?v=20261123h"></script>
-<script src="js/admin.js?v=20261123h"></script>
+<script src="js/alifbo.js?v=20261123i"></script>
+<script src="js/data.js?v=20261123i"></script>
+<script src="js/admin.js?v=20261123i"></script>
 </body>
 </html>
