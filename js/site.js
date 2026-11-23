@@ -17,7 +17,9 @@
   const dmy = (d) => (/^\d{4}-\d{2}-\d{2}$/.test(d || "") ? d.split("-").reverse().join(".") : d || "");
   const fmt = (n) => Number(n).toLocaleString("ru-RU").replace(/,/g, " ");
   // 1–5 tashabbuslar va qo'shimcha guruhlar (6 — ilmiy to'garaklar)
-  const initiative = (id) => SITE.groups.find((i) => i.id === Number(id));
+  // Yo'nalishi ko'rsatilmagan yozuvlar (yangi tanlov, yangilik) uchun neytral qiymat
+  const NO_GROUP = { id: 0, title: "", color: "var(--brand)", icon: "fa-solid fa-star" };
+  const initiative = (id) => SITE.groups.find((i) => i.id === Number(id)) || NO_GROUP;
   const groupLabel = (g) => (g.id <= 5 ? `${g.id}-tashabbus` : g.title);
   const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
@@ -492,51 +494,89 @@
     return d;
   }
 
+  /* ---------- Formatlangan matn (admin tahrirlagichidan) ---------- */
+  // Server allaqachon tozalaydi; brauzerda ham oq ro'yxat bo'yicha qayta tozalanadi (ikkinchi himoya)
+  const RICH_TAGS = new Set(["B", "STRONG", "I", "EM", "U", "S", "BR", "P", "DIV", "UL", "OL", "LI", "A", "H3", "H4", "BLOCKQUOTE", "SPAN"]);
+  function richHtml(v) {
+    v = String(v ?? "");
+    if (!/<[a-zA-Z/]/.test(v)) return esc(v).replace(/\n/g, "<br>");
+    const doc = new DOMParser().parseFromString(`<div>${v}</div>`, "text/html");
+    const walk = (node) => [...node.childNodes].map((n) => {
+      if (n.nodeType === 3) return esc(n.nodeValue);
+      if (n.nodeType !== 1) return "";
+      const inner = walk(n);
+      if (!RICH_TAGS.has(n.tagName)) return /^(SCRIPT|STYLE|IFRAME|OBJECT|SVG)$/.test(n.tagName) ? "" : inner;
+      const t = n.tagName.toLowerCase();
+      if (t === "br") return "<br>";
+      if (t === "a") {
+        const href = n.getAttribute("href") || "";
+        return /^(https?:|mailto:|tel:)/i.test(href) ? `<a href="${esc(href)}" target="_blank" rel="noopener">${inner}</a>` : inner;
+      }
+      if (t === "span") {
+        const cls = (n.getAttribute("class") || "").split(/\s+/).find((c) => /^fs-(s|l|xl)$/.test(c));
+        return cls ? `<span class="${cls}">${inner}</span>` : inner;
+      }
+      return `<${t}>${inner}</${t}>`;
+    }).join("");
+    return walk(doc.body.firstChild);
+  }
+  // Kartochkalar uchun: formatlashsiz qisqa matn
+  const richText = (v) => {
+    const d = document.createElement("div");
+    d.innerHTML = richHtml(v).replace(/<br>|<\/(p|div|li|h3|h4)>/g, " ");
+    return d.textContent.replace(/\s+/g, " ").trim();
+  };
+
+  // Tanlov ochiqmi: tugash sanasi o'tmagan va yakunlangan deb belgilanmagan
+  const contestOpen = (c) => c.status !== "completed" && daysLeft(c.deadline) >= 0;
+
   function contestCard(c) {
     const i = initiative(c.initiativeId);
     const d = daysLeft(c.deadline);
-    const open = c.status === "active" && d >= 0;
-    const status = c.status === "completed"
-      ? `<span class="tag tag-muted"><i class="fa-solid fa-flag-checkered"></i> Yakunlangan</span>`
-      : open
-        ? `<span class="tag tag-success"><i class="fa-solid fa-circle"></i> Qabul ochiq</span>`
-        : `<span class="tag tag-muted"><i class="fa-solid fa-lock"></i> Qabul yopilgan</span>`;
+    const open = contestOpen(c);
+    const status = open
+      ? `<span class="tag tag-success"><i class="fa-solid fa-circle"></i> Qabul ochiq</span>`
+      : `<span class="tag tag-muted"><i class="fa-solid fa-flag-checkered"></i> Yakunlangan</span>`;
+    const hasRules = c.rules && (c.rules.purpose || (c.rules.requirements || []).length);
+    const doc = c.doc
+      ? `<a class="btn btn-outline btn-sm" href="${esc(c.doc)}" target="_blank" rel="noopener"><i class="fa-regular fa-file-lines"></i> Nizomi</a>`
+      : hasRules ? `<button type="button" class="btn btn-outline btn-sm" data-rules="${c.id}">Nizomi</button>` : "";
     return `
       <article class="card card-hover contest-card" id="${c.id}" style="--c:${i.color}">
         <div class="contest-media">
           <img src="${c.image}" alt="" loading="lazy">
-          <span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span>
+          ${i.id ? `<span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span>` : ""}
         </div>
         <div class="contest-body">
           <div class="club-top">${status}${open ? `<span class="countdown${d > 7 ? " ok" : ""}">${d === 0 ? "Bugun oxirgi kun" : `${d} kun qoldi`}</span>` : ""}</div>
           <h3>${esc(c.title)}</h3>
-          <p>${esc(c.desc)}</p>
+          ${c.desc ? `<div class="rich rich-clamp">${richHtml(c.desc)}</div>` : ""}
           <div class="meta">
-            <div><i class="fa-regular fa-calendar"></i><span>${esc(c.period)}</span></div>
-            <div><i class="fa-solid fa-location-dot"></i><span>${esc(c.place)}</span></div>
+            <div><i class="fa-regular fa-calendar"></i><span>${esc(dmy(c.deadline))} gacha</span></div>
           </div>
-          <div class="prize"><i class="fa-solid fa-trophy"></i><span>${esc(c.prize)}</span></div>
+          ${c.prize ? `<div class="prize"><i class="fa-solid fa-trophy"></i><span>${esc(c.prize)}</span></div>` : ""}
           <div class="contest-foot">
-            <button type="button" class="btn btn-outline btn-sm" data-rules="${c.id}">Nizomi</button>
+            ${doc}
             ${open ? `<a class="btn btn-primary btn-sm" href="mailto:${esc(U.centerEmail)}?subject=${encodeURIComponent("Tanlovga ariza: " + c.title)}">Qatnashish</a>` : ""}
           </div>
         </div>
       </article>`;
   }
 
+  // Eski tanlovlar uchun (nizom maydonlari bilan kiritilganlar)
   function showRules(id) {
     const c = SITE.contests.find((x) => x.id === id);
-    if (!c) return;
+    if (!c || !c.rules) return;
     const r = c.rules;
-    const list = (arr) => `<ul class="dots">${arr.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+    const list = (arr) => ((arr || []).length ? `<ul class="dots">${arr.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : "");
     showInfo(`
       <h2>${esc(c.title)}</h2>
-      <p class="lead">${esc(c.organizer)} · ${esc(c.period)}</p>
-      <h4>Maqsad</h4><p>${esc(r.purpose)}</p>
-      <h4>Talablar</h4>${list(r.requirements)}
-      <h4>Bosqichlar</h4>${list(r.stages)}
-      <h4>Baholash</h4>${list(r.criteria)}
-      <h4>Mukofotlar</h4><p>${esc(r.awards)}</p>`);
+      <p class="lead">${esc(dmy(c.deadline))} gacha</p>
+      ${r.purpose ? `<h4>Maqsad</h4><p>${esc(r.purpose)}</p>` : ""}
+      ${(r.requirements || []).length ? `<h4>Talablar</h4>${list(r.requirements)}` : ""}
+      ${(r.stages || []).length ? `<h4>Bosqichlar</h4>${list(r.stages)}` : ""}
+      ${(r.criteria || []).length ? `<h4>Baholash</h4>${list(r.criteria)}` : ""}
+      ${r.awards ? `<h4>Mukofotlar</h4><p>${esc(r.awards)}</p>` : ""}`);
   }
 
   function newsCard(n) {
@@ -545,9 +585,9 @@
       <button type="button" class="card card-hover news-card" data-news="${n.id}" style="--c:${i.color}">
         <img src="${n.image}" alt="" loading="lazy">
         <div class="news-body">
-          <div class="news-meta"><span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span><span>${esc(dmy(n.date))}</span></div>
+          <div class="news-meta">${i.id ? `<span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span>` : ""}<span>${esc(dmy(n.date))}</span></div>
           <h3>${esc(n.title)}</h3>
-          <p>${esc(n.excerpt)}</p>
+          <p>${esc(richText(n.excerpt))}</p>
           <span class="link-arrow">Batafsil <i class="fa-solid fa-arrow-right"></i></span>
         </div>
       </button>`;
@@ -556,11 +596,13 @@
   function showNews(id) {
     const n = SITE.news.find((x) => x.id === id);
     if (!n) return;
+    const i = initiative(n.initiativeId);
     showInfo(`
       <img class="modal-img" src="${n.image}" alt="">
       <h2>${esc(n.title)}</h2>
-      <p class="lead">${esc(dmy(n.date))} ·${esc(initiative(n.initiativeId).title)}</p>
-      <p>${esc(n.excerpt)}</p><br><p>${esc(n.body)}</p>`);
+      <p class="lead">${esc(dmy(n.date))}${i.id ? ` · ${esc(i.title)}` : ""}</p>
+      ${n.excerpt ? `<div class="rich rich-lead">${richHtml(n.excerpt)}</div>` : ""}
+      ${n.body ? `<div class="rich">${richHtml(n.body)}</div>` : ""}`);
   }
 
   function initiativeCard(i) {
@@ -588,5 +630,5 @@
   renderModals();
   bindEvents();
 
-  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, sendRequest, clubCard, courseCard, COURSE_COLOR, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
+  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, sendRequest, richHtml, richText, contestOpen, clubCard, courseCard, COURSE_COLOR, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
 })();

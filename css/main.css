@@ -423,6 +423,31 @@ main > .section:last-child { padding-bottom: 0; }
   .rd-bottom { padding: 10px 70px 16px; }
 }
 
+/* Markaz haqida: yo'nalishlar to'ri (rasmsiz, minimal) */
+.dir-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+.dir-card { --c: var(--brand); position: relative; display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: 20px; overflow: hidden; }
+.dir-card::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--c); }
+.dir-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.dir-ic { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
+.dir-tag { font-size: .74rem; font-weight: 700; color: var(--c); }
+.dir-card h3 { font-size: 1.12rem; font-weight: 700; }
+.dir-card p { flex: 1; font-size: .9rem; color: var(--text-2); }
+.dir-stats { display: flex; gap: 18px; padding-top: 10px; border-top: 1px dashed var(--border); font-size: .84rem; color: var(--text-3); }
+.dir-stats b { font-family: var(--font-head); font-size: 1.1rem; color: var(--text); }
+.dir-card .link-arrow { color: var(--c); font-size: .9rem; }
+
+/* Formatlangan matn (yangilik, tanlov) */
+.rich { color: var(--text-2); font-size: .95rem; line-height: 1.7; overflow-wrap: anywhere; }
+.rich > * + * { margin-top: .6em; }
+.rich ul, .rich ol { padding-left: 1.3em; list-style: revert; }
+.rich a { color: var(--brand); text-decoration: underline; }
+.rich blockquote { padding: 8px 14px; border-left: 3px solid var(--brand); background: var(--surface-2); border-radius: 8px; }
+.rich h3, .rich h4 { color: var(--text); }
+.rich .fs-s { font-size: .85em; } .rich .fs-l { font-size: 1.2em; } .rich .fs-xl { font-size: 1.45em; font-weight: 700; }
+.rich-lead { font-size: 1.02rem; color: var(--text); margin-bottom: 14px; }
+.rich-clamp { font-size: .9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.rich-clamp > * + * { margin-top: 0; }
+.rich-clamp br { display: none; }
 /* Bosh sahifa: statistika + tanlovlar paneli */
 .dash { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
 .panel { display: flex; flex-direction: column; overflow: hidden; }
@@ -547,7 +572,21 @@ main > .section:last-child { padding-bottom: 0; }
 .faq-item.open .faq-q i { transform: rotate(45deg); }
 
 /* ---------- 12. Aloqa va shakllar ---------- */
-.contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: start; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: stretch; }
+/* Chap ustun: Markaz kartasi va ostida xarita (forma balandligigacha cho'ziladi) */
+.contact-side { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+/* O'ng ustun: forma kartasi chap ustun bilan teng tugaydi — ortiqcha joyni «Xabar» maydoni egallaydi */
+.contact-grid > .grid { display: flex; flex-direction: column; }
+.contact-grid > .grid > .card { flex: 1; display: flex; flex-direction: column; }
+#contact-form { flex: 1; display: flex; flex-direction: column; }
+#contact-form .field:has(textarea) { flex: 1; display: flex; flex-direction: column; }
+#contact-form textarea { flex: 1; }
+.contact-side .map-card { flex: 1; display: flex; flex-direction: column; min-height: 200px; }
+.contact-side .map-canvas { flex: 1; height: auto; min-height: 200px; }
+.contact-side .map-info { top: auto; bottom: 14px; left: 14px; width: auto; max-width: calc(100% - 28px); padding: 12px 14px; }
+.contact-side .map-info .map-kicker, .contact-side .map-info p { display: none; }
+.contact-side .map-info strong { margin-top: 0; font-size: .95rem; }
+.contact-side .map-actions { margin-top: 10px; }
 .contact-list { display: grid; gap: 18px; }
 .contact-item { display: flex; gap: 16px; align-items: flex-start; }
 .contact-item .stat-icon { width: 44px; height: 44px; }

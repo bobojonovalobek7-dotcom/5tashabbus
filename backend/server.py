@@ -15,6 +15,8 @@ Muhit o'zgaruvchilari:
     URDU5T_PORT   port. Standart: 8090
 """
 import base64
+from html import escape
+from html.parser import HTMLParser
 import getpass
 import hashlib
 import hmac
@@ -97,30 +99,18 @@ SCHEMA = {
     ]},
     "contests": {"label": "Tanlovlar", "one": "Tanlov", "mode": "list", "title": "title", "fields": [
         F("title", "Nomi", required=True),
-        F("initiativeId", "Tashabbus", "select", options=GROUPS_1_5, half=True),
-        F("status", "Holati", "select", half=True, options=[
-            {"value": "active", "label": "Faol (qabul ochiq)"}, {"value": "completed", "label": "Yakunlangan"}]),
-        F("start", "Boshlanish sanasi", "date", half=True),
-        F("deadline", "Tugash sanasi", "date", half=True, required=True),
-        F("place", "Joyi", half=True),
-        F("organizer", "Tashkilotchi", half=True),
+        F("deadline", "Tugash sanasi", "date", half=True, required=True, hint="Shu kundan keyin tanlov «Yakunlangan» bo'ladi"),
         F("prize", "Mukofot", half=True, placeholder="1-o'rin: 5 mln so'm"),
-        F("participants", "Ishtirokchilar soni", "int", half=True, hint="Bosh sahifa statistikasida jamlanadi"),
-        F("desc", "Qisqa izoh", "textarea"),
+        F("desc", "Qisqa izoh", "rich", limit=3000),
         F("image", "Rasm", "image", hint="Tanlanmasa, universitet binosi rasmi qo'yiladi."),
-        F("rules.purpose", "Nizom: maqsad", "textarea"),
-        F("rules.requirements", "Nizom: talablar", "lines", half=True, hint="Har bir band alohida qatorda"),
-        F("rules.stages", "Nizom: bosqichlar", "lines", half=True, hint="Har bir band alohida qatorda"),
-        F("rules.criteria", "Nizom: baholash", "lines", half=True, hint="Har bir band alohida qatorda"),
-        F("rules.awards", "Nizom: mukofotlar", "textarea", half=True),
+        F("doc", "Nizomi yoki to'liq ma'lumot", "doc", hint="Havola (https://...) yozing yoki PDF yuklang."),
     ]},
     "news": {"label": "Yangiliklar", "one": "Yangilik", "mode": "list", "title": "title", "fields": [
         F("title", "Sarlavha", required=True),
-        F("initiativeId", "Tashabbus", "select", options=GROUPS_1_5, half=True),
         F("date", "Sana", "date", half=True, required=True),
         F("image", "Rasm", "image", required=True),
-        F("excerpt", "Qisqa matn", "textarea", limit=600),
-        F("body", "To'liq matn", "textarea", limit=5000, rows=6),
+        F("excerpt", "Qisqa matn", "rich", limit=2000),
+        F("body", "To'liq matn", "rich", limit=20000, rows=8),
     ]},
     "staff": {"label": "Xodimlar", "one": "Xodim", "mode": "list", "title": "name", "sortable": True,
               "note": "Saytdagi «Rahbariyat» sahifasida xodimlar shu tartibda chiqadi: birinchisi katta kartochkada. "
@@ -140,12 +130,13 @@ SCHEMA = {
         F("sub", "Pastki raqam (bo'sh = avtomatik)", half=True, limit=30,
           hint="To'garak/kurs a'zolari yoki tanlov ishtirokchilari soni"),
     ]},
-    "groups": {"label": "Tashabbuslar", "one": "Tashabbus", "mode": "fixed", "title": "title", "fields": [
+    "groups": {"label": "Yo'nalishlar", "one": "Yo'nalish", "mode": "list", "title": "title",
+               "note": "Yangi yo'nalish qo'shilsa, to'garak va kurs shakllaridagi tanlovda paydo bo'ladi. "
+                       "Asosiy 6 ta yo'nalish va ichida to'garagi bor yo'nalish o'chirilmaydi.", "fields": [
         F("title", "Nomi", required=True),
-        F("lead", "Qisqa tavsif (bosh sahifa)", "textarea", limit=400),
+        F("lead", "Qisqa tavsif", "textarea", limit=400),
         F("about", "Batafsil (Markaz haqida sahifasi)", "textarea", limit=1500),
         F("awards", "Sovrinli o'rinlar soni", "int", half=True),
-        F("image", "Rasm", "image"),
     ]},
     "winners": {"label": "G'oliblar", "one": "G'olib", "mode": "list", "title": "name",
                 "note": "G'oliblar rasmlari bosh sahifadagi slayderda ham chiqadi.", "fields": [
@@ -203,6 +194,46 @@ SCHEMA = {
     ]},
 }
 KINDS = tuple(SCHEMA)
+GROUP_COLORS = ["#7C3AED", "#16A34A", "#0284C7", "#D97706", "#DB2777", "#0D9488", "#4F46E5", "#B45309", "#0891B2", "#BE123C"]
+
+
+def group_options():
+    """Bazadagi barcha yo'nalishlar (yangi qo'shilganlari ham) — to'garak va kurs shakllari uchun."""
+    try:
+        with db() as conn:
+            rows = conn.execute("SELECT id, data FROM items WHERE kind='groups'").fetchall()
+    except sqlite3.Error:
+        rows = []
+    opts = sorted(({"value": int(r[0]), "label": json.loads(r[1]).get("title") or r[0]} for r in rows if str(r[0]).isdigit()),
+                  key=lambda o: o["value"])
+    return opts or GROUPS_1_6
+
+
+def group_ids():
+    return {o["value"] for o in group_options()}
+
+
+def dynamic_schema():
+    """SCHEMA nusxasi: to'garak va kurslardagi «Yo'nalish» tanlovi bazadagi yo'nalishlardan olinadi."""
+    out = json.loads(json.dumps(SCHEMA))
+    opts = group_options()
+    for kind in ("clubs", "courses"):
+        for f in out[kind]["fields"]:
+            if f["key"] == "initiativeId":
+                f["options"] = opts
+    return out
+
+
+def group_locked(group_id):
+    """Yo'nalishni o'chirib bo'lmasa — sababi, bo'lsa — bo'sh satr."""
+    if str(group_id).isdigit() and int(group_id) <= 6:
+        return "Asosiy yo'nalishlarni o'chirib bo'lmaydi"
+    with db() as conn:
+        for kind in ("clubs", "courses"):
+            for r in conn.execute("SELECT data FROM items WHERE kind=?", (kind,)):
+                if str(json.loads(r[0]).get("initiativeId")) == str(group_id):
+                    return "Bu yo'nalishda to'garak yoki kurs bor: avval ularni boshqa yo'nalishga o'tkazing"
+    return ""
 
 # Bosh sahifadagi «Statistika» plitkalari. value/sub bo'sh bo'lsa, sayt ro'yxatlardan hisoblaydi.
 STATS_V2 = [
@@ -314,10 +345,17 @@ def save_item(kind, item, item_id=None):
     now = int(time.time())
     with db() as conn:
         if item_id is None:
-            item_id = new_id(kind, item)
+            if kind == "groups":
+                # Yo'nalish raqam bilan belgilanadi (to'garaklar initiativeId orqali bog'lanadi)
+                ids = [int(r[0]) for r in conn.execute("SELECT id FROM items WHERE kind='groups'") if str(r[0]).isdigit()]
+                item_id = str(max(ids + [6]) + 1)
+                item.setdefault("color", GROUP_COLORS[int(item_id) % len(GROUP_COLORS)])
+                item.setdefault("icon", "fa-solid fa-layer-group")
+            else:
+                item_id = new_id(kind, item)
             item["id"] = item_id
-            # Tartiblanadigan bo'limlarda yangi yozuv oxiriga, qolganlarida boshiga qo'shiladi
-            agg = "MAX(position), 0) + 1" if SCHEMA[kind].get("sortable") else "MIN(position), 0) - 1"
+            # Tartiblanadigan bo'limlarda va yo'nalishlarda yangi yozuv oxiriga, qolganlarida boshiga qo'shiladi
+            agg = "MAX(position), 0) + 1" if SCHEMA[kind].get("sortable") or kind == "groups" else "MIN(position), 0) - 1"
             pos = conn.execute(f"SELECT COALESCE({agg} FROM items WHERE kind=?", (kind,)).fetchone()[0]
             conn.execute(
                 "INSERT INTO items(kind, id, position, data, updated_at) VALUES (?,?,?,?,?)",
@@ -462,7 +500,7 @@ def clean_club(d):
     except ValueError:
         raise ValueError("O'quvchilar soni raqam bo'lishi kerak")
     return {
-        "initiativeId": group_id(d.get("initiativeId"), range(1, 7)),
+        "initiativeId": group_id(d.get("initiativeId"), group_ids()),
         "name": name,
         "schedule": text(d.get("schedule"), 300),
         "place": text(d.get("place"), 300),
@@ -487,32 +525,20 @@ def clean_contest(d):
     deadline = valid_date(d.get("deadline"))
     if not deadline:
         raise ValueError("Tugash sanasi kiritilmagan")
-    start = valid_date(d.get("start"))
-    status = d.get("status") if d.get("status") in ("active", "completed") else "active"
-    rules = d.get("rules") or {}
     image = text(d.get("image"), 300)
     if image and not re.fullmatch(r"(assets/images/|uploads/)[\w.\-/]+", image):
         raise ValueError("Rasm manzili noto'g'ri")
+    # Holat tugash sanasidan aniqlanadi: muddati o'tgan tanlov — yakunlangan
+    status = "completed" if deadline < time.strftime("%Y-%m-%d") else "active"
     return {
-        "initiativeId": group_id(d.get("initiativeId"), range(1, 6)),
         "status": status,
         "title": title,
-        "start": start,
         "deadline": deadline,
-        "period": f"{fmt_date(start)} — {fmt_date(deadline)}" if start else f"{fmt_date(deadline)} gacha",
-        "place": text(d.get("place"), 300),
-        "organizer": text(d.get("organizer"), 300),
+        "period": f"{fmt_date(deadline)} gacha",
         "image": image or "assets/images/urdu_main_building.jpg",
         "prize": text(d.get("prize"), 300),
-        "participants": clean_field(F("participants", "Ishtirokchilar soni", "int"), d.get("participants")),
-        "desc": text(d.get("desc"), 1000),
-        "rules": {
-            "purpose": text(rules.get("purpose"), 1500),
-            "requirements": lines(rules.get("requirements")),
-            "stages": lines(rules.get("stages")),
-            "criteria": lines(rules.get("criteria")),
-            "awards": text(rules.get("awards"), 1000),
-        },
+        "desc": clean_field(F("desc", "Qisqa izoh", "rich", limit=3000), d.get("desc")),
+        "doc": clean_field(F("doc", "Nizomi", "doc"), d.get("doc")),
     }
 
 
@@ -567,12 +593,107 @@ def clean_field(f, v):
         if v and not re.fullmatch(r"uploads/[\w.\-]+\.pdf", v):
             raise ValueError(f"{label}: fayl manzili noto'g'ri")
         return v
+    if t == "doc":  # havola yoki yuklangan PDF
+        v = text(v, 500)
+        if v and not (re.fullmatch(r"https?://\S+", v) or re.fullmatch(r"uploads/[\w.\-]+\.pdf", v)):
+            raise ValueError(f"{label}: https:// bilan boshlanadigan havola yozing yoki PDF yuklang")
+        return v
+    if t == "rich":  # formatlangan matn: faqat ruxsat etilgan teglar qoladi
+        v = sanitize_html(str(v or ""))
+        if len(v) > f.get("limit", 20000):
+            raise ValueError(f"{label}: matn juda uzun")
+        return v
     raise ValueError(f"Noma'lum maydon turi: {t}")
+
+
+# ------------------------------------------------------------------ formatlangan matn
+RICH_TAGS = {"b", "strong", "i", "em", "u", "s", "br", "p", "div", "ul", "ol", "li", "a", "h3", "h4", "blockquote", "span"}
+RICH_VOID = {"br"}
+RICH_SIZES = {"fs-s", "fs-l", "fs-xl"}
+FONT_SIZE = {"1": "fs-s", "2": "fs-s", "4": "fs-l", "5": "fs-l", "6": "fs-xl", "7": "fs-xl"}  # <font size> → sinf
+
+
+class _RichCleaner(HTMLParser):
+    """Admin tahrirlagichidan kelgan HTML'ni oq ro'yxat bo'yicha qayta quradi (skript, uslub, hodisalar tushib qoladi)."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.out, self.stack, self.skip = [], [], 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style", "iframe", "object", "svg", "math"):
+            self.skip += 1
+            return
+        if self.skip:
+            return
+        a = dict(attrs)
+        if tag == "font":  # brauzerning execCommand("fontSize") natijasi
+            cls = FONT_SIZE.get((a.get("size") or "").strip())
+            tag, a = ("span", {"class": cls}) if cls else (None, {})
+        if tag not in RICH_TAGS:
+            self.stack.append(None)
+            return
+        # <li> va <p> yopilmay kelsa, brauzerdagidek oldingisini yopamiz
+        if tag in ("li", "p") and self.stack and self.stack[-1] == tag:
+            self.out.append(f"</{self.stack.pop()}>")
+        attr = ""
+        if tag == "a":
+            href = (a.get("href") or "").strip()
+            if not re.match(r"(https?://|mailto:|tel:)", href, re.I):
+                self.stack.append(None)
+                return
+            attr = f' href="{escape(href, quote=True)}" target="_blank" rel="noopener"'
+        elif tag == "span":
+            cls = [c for c in (a.get("class") or "").split() if c in RICH_SIZES]
+            if not cls:
+                self.stack.append(None)
+                return
+            attr = f' class="{cls[0]}"'
+        self.out.append(f"<{tag}{attr}>")
+        if tag not in RICH_VOID:
+            self.stack.append(tag)
+
+    def handle_endtag(self, tag):
+        if tag in ("script", "style", "iframe", "object", "svg", "math"):
+            self.skip = max(0, self.skip - 1)
+            return
+        if self.skip or tag in RICH_VOID:
+            return
+        if tag == "font":
+            tag = "span"
+        if tag not in self.stack:  # ochilmagan yoki tashlab yuborilgan teg
+            if self.stack and self.stack[-1] is None:
+                self.stack.pop()
+            return
+        while self.stack:  # mos teggacha hammasini yopamiz
+            t = self.stack.pop()
+            if t:
+                self.out.append(f"</{t}>")
+            if t == tag:
+                break
+
+    def handle_data(self, data):
+        if not self.skip:
+            self.out.append(escape(data, quote=False))
+
+    def result(self):
+        self.out.extend(f"</{t}>" for t in reversed(self.stack) if t)
+        return "".join(self.out).strip()
+
+
+def sanitize_html(v):
+    if not re.search(r"<[a-zA-Z/]", v):  # oddiy matn: qatorlar saqlanadi
+        return escape(v.strip(), quote=False).replace("\n", "<br>")
+    p = _RichCleaner()
+    p.feed(v)
+    p.close()
+    html = p.result()
+    return "" if re.fullmatch(r"(<br>|<p></p>|<div></div>|<div><br></div>|\s)*", html) else html
 
 
 def clean_generic(kind, d):
     out = {}
-    for f in SCHEMA[kind]["fields"]:
+    for f in dynamic_schema()[kind]["fields"]:
         v = clean_field(f, d.get(f["key"]))
         if f.get("required") and v in ("", None, []):
             raise ValueError(f"{f['label']} kiritilmagan")
@@ -831,7 +952,7 @@ class Handler(BaseHTTPRequestHandler):
                     data = {k: [public(k, x) for x in v] for k, v in data.items()}
                 return self.send_json(data)
             if parts[1:] == ["schema"]:
-                return self.send_json(SCHEMA)
+                return self.send_json(dynamic_schema())
             if parts[1:] == ["me"]:
                 return self.send_json({"admin": self.authed()})
             if parts[1:] == ["requests"]:
@@ -939,6 +1060,10 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 3 and parts[0] == "api" and parts[1] in KINDS:
             if SCHEMA[parts[1]]["mode"] != "list":
                 return self.error(405, "Bu bo'limdan yozuv o'chirilmaydi")
+            if parts[1] == "groups":
+                why = group_locked(parts[2])
+                if why:
+                    return self.error(409, why)
             return self.send_json({"ok": True}) if delete_item(parts[1], parts[2]) else self.error(404, "Topilmadi")
         self.error(404, "Topilmadi")
 
