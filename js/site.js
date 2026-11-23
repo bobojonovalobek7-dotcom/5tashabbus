@@ -112,8 +112,8 @@
         <div class="container">
           <div class="footer-grid">
             <div class="footer-brand">
-              <img src="assets/images/urdu_5t_logo_white.png" alt="UrDU 5 muhim tashabbus markazi" width="928" height="482">
-              <p>${esc(U.name)} qoshidagi 5 muhim tashabbus markazining rasmiy portali.</p>
+              <img src="assets/images/urdu_5t_logo_white.png" alt="UrDU Besh muhim tashabbus markazi" width="928" height="482">
+              <p>${esc(U.name)} qoshidagi Besh muhim tashabbus markazining rasmiy portali.</p>
               <div class="socials">${socialLinks()}</div>
             </div>
             <div>
@@ -451,26 +451,30 @@
   function clubCard(c) {
     const i = initiative(c.initiativeId);
     const mentors = c.mentors.length ? c.mentors : ["Rahbar belgilanmagan"];
-    const who = mentors.length > 2 ? `${mentors.slice(0, 2).join(", ")} va yana ${mentors.length - 2} kishi` : mentors.join(", ");
+    const who = mentors.length > 1 ? `${mentors[0]} +${mentors.length - 1}` : mentors[0];
     const p = c.phones[0];
-    const phone = p ? (p.tel ? `<a href="tel:${p.tel}">${esc(p.text)}</a>` : esc(p.text)) : "";
+    const row = (icon, txt, title) => `<li title="${esc(title || txt)}"><i class="${icon}"></i><span>${esc(txt)}</span></li>`;
     return `
-      <article class="card card-hover club-card" style="--c:${i.color}">
-        <div class="club-media">
+      <article class="card cc" style="--c:${i.color}">
+        <div class="cc-media">
           <img src="${esc(clubImage(c))}" alt="" loading="lazy">
-          ${c.students ? `<span class="club-count"><i class="fa-solid fa-users"></i> ${c.students} a'zo</span>` : ""}
-          <span class="club-group"><i class="${i.icon}"></i> ${esc(i.title)}</span>
+          <span class="cc-chip"><i class="${i.icon}"></i>${esc(i.title)}</span>
         </div>
-        <div class="club-body">
+        <div class="cc-body">
           <h3>${esc(c.name)}</h3>
-          ${c.desc ? `<p>${esc(c.desc)}</p>` : ""}
-          <div class="club-meta">
-            <span><i class="fa-regular fa-id-card"></i>${esc(who)}</span>
-            ${c.place ? `<span><i class="fa-solid fa-location-dot"></i>${esc(c.place)}</span>` : ""}
-            ${c.schedule ? `<span><i class="fa-regular fa-clock"></i>${esc(c.schedule)}</span>` : ""}
-            ${phone ? `<span><i class="fa-solid fa-phone"></i>${phone}</span>` : ""}
-          </div>
-          <button type="button" class="btn club-join" data-join="${c.id}">A'zo bo'lish <i class="fa-solid fa-arrow-right"></i></button>
+          ${c.desc ? `<p class="cc-desc">${esc(c.desc)}</p>` : ""}
+          <ul class="cc-info">
+            ${row("fa-regular fa-user", who, mentors.join(", "))}
+            ${c.schedule ? row("fa-regular fa-clock", c.schedule) : ""}
+            ${c.place ? row("fa-regular fa-map", c.place) : ""}
+          </ul>
+        </div>
+        <div class="cc-foot">
+          ${c.students ? `<span class="cc-count"><b>${c.students}</b> a'zo</span>` : `<span class="cc-count">Yangi</span>`}
+          <span class="cc-actions">
+            ${p && p.tel ? `<a class="cc-call" href="tel:${p.tel}" title="${esc(p.text)}" aria-label="Qo'ng'iroq: ${esc(p.text)}"><i class="fa-solid fa-phone"></i></a>` : ""}
+            <button type="button" class="cc-join" data-join="${c.id}">A'zo bo'lish <i class="fa-solid fa-arrow-right"></i></button>
+          </span>
         </div>
       </article>`;
   }

@@ -177,6 +177,12 @@ SCHEMA = {
         F("q", "Savol", required=True),
         F("a", "Javob", "textarea", limit=2000, required=True),
     ]},
+    "slides": {"label": "Slayder", "one": "Slayd", "mode": "list", "title": "caption", "sortable": True,
+               "note": "Bosh sahifadagi katta rasm slayderi. Slaydlar shu tartibda almashadi: ↑ ↓ tugmalari bilan "
+                       "o'zgartiring. Hammasi o'chirilsa, g'oliblar rasmlari ko'rsatiladi.", "fields": [
+        F("image", "Rasm", "image", required=True, hint="Tavsiya: kamida 1000 px, odam yuzi markazda bo'lsin."),
+        F("caption", "Izoh (ixtiyoriy)", placeholder="Masalan: Dostonbek Olloquliyev — Respublika tanlovi g'olibi"),
+    ]},
     "settings": {"label": "Aloqa", "one": "Aloqa ma'lumotlari", "mode": "single", "title": "center", "fields": [
         F("name", "Universitet nomi", limit=300),
         F("center", "Markaz nomi", half=True),
@@ -254,12 +260,20 @@ def init_db():
                 continue
             # Har bo'lim bir marta to'ldiriladi: keyin admin hammasini o'chirsa ham qayta tiklanmaydi
             if not conn.execute("SELECT 1 FROM items WHERE kind=? LIMIT 1", (kind,)).fetchone():
-                for pos, item in enumerate(seed.get(kind, [])):
+                items = seed.get(kind, [])
+                if kind == "slides" and not items:
+                    # Slayder avval g'oliblar rasmlaridan chiqardi: o'sha rasmlar boshlang'ich slaydlar bo'ladi
+                    winners = [json.loads(r[0]) for r in conn.execute(
+                        "SELECT data FROM items WHERE kind='winners' ORDER BY position, updated_at")]
+                    items = [{"id": f"slide-{n}", "image": w["photo"],
+                              "caption": " — ".join(x for x in (w.get("name"), w.get("contest")) if x)}
+                             for n, w in enumerate((w for w in winners if w.get("photo")), 1)]
+                for pos, item in enumerate(items):
                     conn.execute(
                         "INSERT INTO items(kind, id, position, data, updated_at) VALUES (?,?,?,?,?)",
                         (kind, str(item["id"]), pos, json.dumps(item, ensure_ascii=False), now),
                     )
-                if seed.get(kind):
+                if items:
                     print(f"Boshlang'ich ma'lumot yuklandi: {kind}")
             conn.execute("INSERT INTO seeded(kind) VALUES (?)", (kind,))
         # Bosh sahifa statistikasi yangi ko'rsatkichlarga o'tdi: eski plitkalar bir marta almashtiriladi

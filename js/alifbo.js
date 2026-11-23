@@ -18,7 +18,7 @@
   // Pochta, havola, domen, fayl nomi — tegilmaydi
   var NOT_TEXT = /[@\/\\_=<>{}]|:\/\/|^www\.|[A-Za-z]\.[A-Za-z]{2}/;
   // Chet so'zlar (Excel, Hackathon, Facebook, Workshop...): o'zbekchada c faqat ch'da, w va th yo'q
-  var FOREIGN = /c(?!h)|w|th/i;
+  var FOREIGN = /c(?!h)|w|th|challeng|chat\b|chip\b/i;
 
   function word(w) {
     if (NOT_TEXT.test(w)) return w;
@@ -30,8 +30,13 @@
     return w.replace(RE_TUTUQ, "$1ʼ");
   }
 
+  // Markaz nomi doim so'z bilan: "5 muhim tashabbus" → "Besh muhim tashabbus" (bazadagi eski yozuvlar uchun ham)
+  var RE_BESH = /(^|[^\d.,])5(\s+)(muhim\s+ta(?:sh|ş)abbus)/gi;
+
   function text(s) {
-    return s == null ? s : String(s).replace(/\S+/g, word);
+    return s == null ? s : String(s)
+      .replace(RE_BESH, function (_, a, sp, rest) { return a + "Besh" + sp + rest; })
+      .replace(/\S+/g, word);
   }
 
   var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1, TEXTAREA: 1, INPUT: 1, CODE: 1, PRE: 1, KBD: 1, SVG: 1, svg: 1 };

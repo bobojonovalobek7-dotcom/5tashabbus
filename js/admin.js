@@ -15,14 +15,14 @@
   // Chap menyu bo'limlari (sxemada bor, lekin bu ro'yxatda yo'q bo'limlar "Sahifalar" oxiriga qo'shiladi)
   const NAV = [
     ["Asosiy", ["dashboard", "control"]],
-    ["Kontent", ["clubs", "courses", "contests", "news", "groups"]],
+    ["Kontent", ["clubs", "courses", "contests", "news", "slides", "groups"]],
     ["Natijalar", ["faculties", "winners", "stats"]],
     ["Sahifalar", ["staff", "books", "faqs", "settings"]]
   ];
   const ORDER = NAV.flatMap((s) => s[1]);
   const ICONS = {
     dashboard: "fa-gauge-high", control: "fa-shield-halved",
-    clubs: "fa-people-group", courses: "fa-briefcase", contests: "fa-trophy", news: "fa-newspaper", groups: "fa-layer-group",
+    clubs: "fa-people-group", courses: "fa-briefcase", contests: "fa-trophy", news: "fa-newspaper", slides: "fa-images", groups: "fa-layer-group",
     faculties: "fa-ranking-star", winners: "fa-medal", stats: "fa-chart-simple",
     staff: "fa-user-tie", books: "fa-book", faqs: "fa-circle-question", settings: "fa-address-book"
   };
@@ -94,6 +94,7 @@
       case "faculties": return [`${it.points} ball`, it.students ? `${it.students} talaba` : "", it.note];
       case "books": return [it.author, it.category];
       case "faqs": return [String(it.a || "").slice(0, 90)];
+      case "slides": return [it.caption ? "Bosh sahifa slayderi" : "Izohsiz slayd"];
       case "settings": return [it.phone, it.centerEmail, it.address];
       default: return [];
     }
@@ -132,7 +133,7 @@
     else if (k !== "dashboard") sub = s.mode === "list" ? `${(state.items[k] || []).length} ta yozuv · ${s.label}` : s.label;
     $("#page-title").textContent = title;
     $("#page-sub").textContent = sub;
-    document.title = `${title} — 5 muhim tashabbus boshqaruvi`;
+    document.title = `${title} — Besh muhim tashabbus boshqaruvi`;
 
     const staff = state.items.staff || [];
     const head = staff.find((p) => !Number(p.initiativeId)) || staff[0];
@@ -184,10 +185,23 @@
       <button type="button" class="stat${primary ? " primary" : ""}" data-go="${go}">
         <span class="ic"><i class="fa-solid ${ic}"></i></span><b>${val}</b><span class="lbl">${label}</span><small>${sub}</small>
       </button>`;
+    // Bosh sahifadagi «Statistika» bilan bir xil manba: Jami talabalar — Statistika bo'limidan
+    const statRow = (id) => (it.stats || []).find((s) => s.id === id) || {};
+    const totalStudents = Number(String(statRow("students").value || "").replace(/\s/g, "")) || 0;
+    const courses = it.courses || [];
+    const g5 = groups.find((g) => g.id === 5) || { clubs: 0, members: 0 };
+    const courseCount = courses.length || g5.clubs;
+    const learners = courses.length ? sum(courses, "enrolled") : g5.members;
+    const participants = sum(contests, "participants");
     const stats = `<div class="stat-grid">
-      ${stat("clubs", "fa-people-group", fmtN(clubs.length), "To'garaklar", `${dirs} ta yo'nalish bo'yicha`, true)}
+      ${stat("stats", "fa-user-graduate", totalStudents ? fmtN(totalStudents) : "—", "Jami talabalar",
+        totalStudents ? `${pct(members, totalStudents)}% i to'garaklarda` : "Statistika bo'limida kiriting", true)}
+      ${stat("clubs", "fa-people-group", fmtN(clubs.length), "To'garaklar", `${dirs} ta yo'nalish bo'yicha`)}
       ${stat("clubs", "fa-users", fmtN(members), "To'garak a'zolari", `o'rtacha ${clubs.length ? Math.round(members / clubs.length) : 0} nafar / to'garak`)}
+      ${stat(courses.length ? "courses" : "clubs", "fa-briefcase", fmtN(courseCount), "Kasbga o'qitish kurslari", `${fmtN(learners)} nafar o'qimoqda`)}
+      ${stat("books", "fa-book", fmtN((it.books || []).length), "Kitoblar", "kutubxonada tavsiya etilgan")}
       ${stat("contests", "fa-trophy", active.length, "Faol tanlovlar", nearest !== undefined ? `eng yaqin muddat: ${nearest} kun` : "muddati yaqin tanlov yo'q")}
+      ${stat("contests", "fa-user-check", participants ? fmtN(participants) : "—", "Tanlov ishtirokchilari", participants ? `${contests.length} ta tanlov bo'yicha` : "tanlovlarda kiritilmagan")}
       ${stat("winners", "fa-award", fmtN(awards), "Yutuqlar", `${(it.winners || []).length} ta shon-sharaf egasi`)}
       ${stat("staff", "fa-chalkboard-user", fmtN(mentors), "To'garak rahbarlari", `${staff.length} ta markaz xodimi`)}
       ${stat("control", "fa-shield-halved", `${complete}%`, "Ma'lumotlar to'liqligi", `${nIssues} ta muammo nazoratda`)}
@@ -520,7 +534,7 @@
     ws.mergeCells(1, 1, 1, cols.length);
     ws.getCell(1, 1).value = title;
     ws.getCell(1, 1).font = { bold: true, size: 14, color: { argb: "FF0B2C8F" } };
-    ws.getCell(2, 1).value = `Sana: ${dmy(today())} · UrDU 5 muhim tashabbus markazi`;
+    ws.getCell(2, 1).value = `Sana: ${dmy(today())} · UrDU Besh muhim tashabbus markazi`;
     ws.getCell(2, 1).font = { italic: true, color: { argb: "FF64748B" } };
     const head = ws.getRow(3);
     head.values = cols.map((c) => c.l);

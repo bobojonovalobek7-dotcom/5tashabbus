@@ -266,30 +266,37 @@ main > .section:last-child { padding-bottom: 0; }
 .tag-success { --c: #16A34A; }
 
 /* To'garak kartasi */
-.club-card { --c: var(--brand); display: flex; flex-direction: column; overflow: hidden; }
-.club-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--c); }
-.club-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
-.club-card:hover .club-media img { transform: scale(1.05); }
-.club-media::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 18%, transparent) 0%, transparent 35%, color-mix(in srgb, var(--c) 88%, #000) 100%); }
-.club-count { position: absolute; top: 14px; left: 14px; z-index: 1; display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px;
-  background: rgba(255, 255, 255, .94); color: var(--c); font-size: .78rem; font-weight: 700; box-shadow: 0 2px 8px rgba(0, 0, 0, .12); }
-.club-group { position: absolute; left: 16px; right: 16px; bottom: 12px; z-index: 1; display: flex; align-items: center; gap: 8px;
-  color: #fff; font-weight: 700; font-size: .88rem; text-shadow: 0 1px 6px rgba(0, 0, 0, .35); }
-.club-body { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 20px; flex: 1; }
-.club-card h3 { font-size: 1.2rem; font-weight: 800; }
-.club-body > p { color: var(--text-2); font-size: .9rem; }
-.club-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: .84rem; color: var(--text-2); }
-.club-meta span { display: inline-flex; align-items: flex-start; gap: 7px; }
-.club-meta i { color: var(--text-3); font-size: .8rem; margin-top: 4px; width: 14px; text-align: center; }
-.club-meta a:hover { color: var(--c); }
-.club-join {
-  margin-top: auto; width: 100%; border-radius: 12px; color: var(--c);
-  background: color-mix(in srgb, var(--c) 10%, var(--surface));
+/* To'garak / kurs kartasi — minimal: ichki rasm, yorliq, uch qator ma'lumot, pastki qator */
+.cc { --c: var(--brand); display: flex; flex-direction: column; padding: 10px; border-radius: 22px; transition: transform .25s ease, box-shadow .25s ease, border-color .25s; }
+.cc:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: color-mix(in srgb, var(--c) 35%, var(--border)); }
+.cc-media { position: relative; height: 168px; border-radius: 15px; overflow: hidden; background: color-mix(in srgb, var(--c) 18%, var(--surface-2)); }
+.cc-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.cc:hover .cc-media img { transform: scale(1.06); }
+.cc-chip {
+  position: absolute; left: 10px; top: 10px; display: inline-flex; align-items: center; gap: 7px; max-width: calc(100% - 20px);
+  padding: 6px 11px 6px 9px; border-radius: 999px; font-size: .74rem; font-weight: 700; color: var(--text);
+  background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.club-join i { transition: transform .2s; }
-.club-join:hover { background: var(--c); color: #fff; }
-.club-join:hover i { transform: translateX(4px); }
+.cc-chip i { color: var(--c); font-size: .78rem; }
+.cc-body { flex: 1; padding: 16px 10px 4px; }
+.cc h3 { font-size: 1.08rem; font-weight: 700; line-height: 1.3; }
+.cc-desc { margin-top: 6px; font-size: .86rem; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cc-info { display: grid; gap: 7px; margin-top: 12px; }
+.cc-info li { display: flex; align-items: flex-start; gap: 10px; font-size: .85rem; color: var(--text-2); min-width: 0; }
+.cc-info i { width: 14px; flex: none; margin-top: 4px; text-align: center; font-size: .8rem; color: var(--c); }
+.cc-info span { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.cc-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; padding: 12px 6px 2px 10px; border-top: 1px dashed var(--border); }
+.cc-count { font-size: .82rem; color: var(--text-3); white-space: nowrap; }
+.cc-count b { font-family: var(--font-head); font-size: 1.15rem; font-weight: 800; color: var(--text); margin-right: 2px; }
+.cc-actions { display: inline-flex; align-items: center; gap: 6px; }
+.cc-call, .cc-join { height: 38px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: .85rem; transition: .2s; }
+.cc-call { width: 38px; color: var(--c); background: color-mix(in srgb, var(--c) 10%, transparent); }
+.cc-call:hover { background: color-mix(in srgb, var(--c) 18%, transparent); }
+.cc-join { gap: 8px; padding: 0 16px; color: #fff; background: var(--c); }
+.cc-join i { font-size: .78rem; transition: transform .2s; }
+.cc-join:hover { filter: brightness(1.08); }
+.cc-join:hover i { transform: translateX(3px); }
 .club-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .mentor { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--surface-2); }
 .avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
@@ -378,12 +385,36 @@ main > .section:last-child { padding-bottom: 0; }
 .tile i { color: var(--brand); font-size: 1.3rem; margin-bottom: 6px; }
 .tile strong { font-family: var(--font-head); font-size: 1.75rem; font-weight: 800; line-height: 1.1; }
 .tile span { color: var(--text-3); font-size: .86rem; }
-.tile strong small { font-family: var(--font-body); font-size: .9rem; font-weight: 600; color: var(--text-3); }
-.tile em { margin-top: 4px; padding: 4px 10px; border-radius: 999px; font-style: normal; font-size: .76rem; font-weight: 600; line-height: 1.35;
-  color: var(--brand); background: var(--brand-50); }
-.tile em.muted { color: var(--text-3); background: var(--surface-2); }
-.tile-wide { grid-column: span 2; background: linear-gradient(135deg, var(--brand-50), transparent 70%); }
-.tile-wide strong { font-size: 2.1rem; }
+
+/* Bosh sahifa: Statistika (bitta katta raqam + halqa, ostida ingichka chiziqli to'r) */
+.stats-board { display: flex; flex-direction: column; flex: 1; }
+.sb-hero { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 26px 28px 24px; }
+.sb-kicker { display: inline-flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
+.sb-kicker i { color: var(--brand); }
+.sb-big { display: flex; align-items: baseline; gap: 10px; margin-top: 6px; font-family: var(--font-head); font-weight: 800; font-size: clamp(2.4rem, 4.4vw, 3.4rem); line-height: 1; letter-spacing: -.02em; color: var(--text); }
+.sb-big small { font-family: var(--font-body); font-size: 1rem; font-weight: 600; letter-spacing: 0; color: var(--text-3); }
+.sb-note { margin-top: 10px; font-size: .9rem; color: var(--text-2); }
+.sb-note b { color: var(--brand); }
+.sb-ring { --p: 0; position: relative; flex: none; width: 104px; height: 104px; display: grid; place-items: center; text-align: center; }
+.sb-ring::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(var(--brand) calc(var(--p) * 1%), color-mix(in srgb, var(--brand) 12%, transparent) 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
+}
+.sb-ring span { position: relative; display: grid; line-height: 1.1; }
+.sb-ring b { font-family: var(--font-head); font-size: 1.35rem; font-weight: 800; color: var(--brand); }
+.sb-ring small { font-size: .72rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
+.sb-grid { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--border); margin-top: auto; }
+.sb-cell { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; column-gap: 14px; align-content: start; padding: 20px 24px; }
+.sb-cell:nth-child(odd) { border-right: 1px solid var(--border); }
+.sb-cell:nth-child(n+3) { border-top: 1px solid var(--border); }
+.sb-ic { grid-row: 1 / 4; width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: .9rem; color: var(--brand); background: var(--brand-50); }
+.sb-cell strong { font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; line-height: 1.1; letter-spacing: -.01em; }
+.sb-cell strong small { margin-left: 6px; font-family: var(--font-body); font-size: .8rem; font-weight: 600; color: var(--text-3); }
+.sb-label { font-size: .84rem; color: var(--text-3); }
+.sb-cell em { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font-style: normal; font-size: .8rem; font-weight: 600; color: var(--brand); }
+.sb-cell em::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .contest-list { display: flex; flex-direction: column; padding: 8px 12px 12px; flex: 1; }
 .contest-row { display: flex; align-items: center; gap: 16px; padding: 10px 12px; border-radius: 12px; transition: background .15s; }
 .contest-row:hover { background: var(--brand-50); }
@@ -616,6 +647,12 @@ main > .section:last-child { padding-bottom: 0; }
   .grid-2, .grid-3, .grid-5, .steps { grid-template-columns: 1fr; }
   .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
   .tiles { grid-template-columns: repeat(2, 1fr); padding: 16px; gap: 10px; }
+  .sb-hero { padding: 20px 18px; gap: 14px; }
+  .sb-ring { width: 84px; height: 84px; }
+  .sb-ring b { font-size: 1.1rem; }
+  .sb-cell { padding: 16px 14px; grid-template-columns: 1fr; }
+  .sb-ic { grid-row: auto; width: 32px; height: 32px; border-radius: 9px; font-size: .8rem; margin-bottom: 8px; }
+  .sb-cell strong { font-size: 1.3rem; }
   .contest-row img { width: 72px; height: 52px; }
   .stat { padding: 16px; flex-direction: column; align-items: flex-start; gap: 10px; }
   .slider { aspect-ratio: 4 / 3; }

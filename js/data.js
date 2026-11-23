@@ -1,5 +1,5 @@
 /**
- * UrDU — 5 Muhim Tashabbus Markazi
+ * UrDU — Besh Muhim Tashabbus Markazi
  * Saytdagi barcha ma'lumotlar shu yerda saqlanadi.
  * Matn yoki raqamni o'zgartirish uchun faqat shu faylni tahrirlang.
  */
@@ -8,7 +8,7 @@ const SITE = {
   university: {
     name: "Abu Rayhon Beruniy nomidagi Urganch davlat universiteti",
     short: "UrDU",
-    center: "5 Muhim Tashabbus Markazi",
+    center: "Besh Muhim Tashabbus Markazi",
     address: "Urganch shahri, Hamid Olimjon ko'chasi, 14-uy",
     office: "UrDU Bosh binosi, 2-qavat, 215-xona",
     phone: "+998 (94) 981-69-99",
@@ -538,6 +538,7 @@ SITE.stats = [
   { id: "books", label: "Kitoblar", icon: "fa-book", value: "", sub: "" }
 ];
 SITE.courses = SITE.courses || [];
+SITE.slides = SITE.slides || [];
 SITE.university.hours = "Dushanba–Juma, 14:00–17:30";
 
 /* Dashboard (api/all) javobini saytga qo'llaydi. Obyektlar o'rnida yangilanadi,
@@ -570,7 +571,7 @@ SITE.apply = function (d) {
     SITE.leaders = staff.filter((p) => p.initiativeId > 0);
   }
 
-  ["clubs", "courses", "contests", "news", "winners", "faculties", "books", "faqs", "stats"].forEach((k) => {
+  ["clubs", "courses", "contests", "news", "winners", "slides", "faculties", "books", "faqs", "stats"].forEach((k) => {
     if (Array.isArray(d[k]) && (d[k].length || k === "contests" || k === "news" || k === "courses")) SITE[k] = d[k];
   });
   SITE.recompute();
