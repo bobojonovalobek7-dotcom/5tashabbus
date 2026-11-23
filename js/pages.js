@@ -442,13 +442,16 @@
     $("#map-address").textContent = [U.address, U.office].filter(Boolean).join(". ");
     contactMap();
 
-    $("#contact-form").addEventListener("submit", (e) => {
+    $("#contact-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const f = new FormData(e.target);
-      const body = `${f.get("message")}\n\n— ${f.get("name")}, ${f.get("phone")}`;
-      location.href = `mailto:${U.centerEmail}?subject=${encodeURIComponent(f.get("topic"))}&body=${encodeURIComponent(body)}`;
-      window.UI.toast("Pochta ilovasi ochildi — xatni yuborishni unutmang.");
-      e.target.reset();
+      const form = e.target;
+      const f = new FormData(form);
+      const ok = await window.UI.sendRequest(form, {
+        type: "contact", name: f.get("name"), phone: f.get("phone"), topic: f.get("topic"), message: f.get("message"), website: f.get("website")
+      });
+      if (!ok) return;
+      window.UI.toast("Xabaringiz yuborildi. Tez orada javob beramiz.");
+      form.reset();
     });
   }
 

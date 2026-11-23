@@ -12,28 +12,44 @@
   const group = (id) => SITE.groups.find((g) => g.id === Number(id));
   const dmy = (d) => (/^\d{4}-\d{2}-\d{2}$/.test(d || "") ? d.split("-").reverse().join(".") : d || "");
 
-  // Chap menyu bo'limlari (sxemada bor, lekin bu ro'yxatda yo'q bo'limlar "Sahifalar" oxiriga qo'shiladi)
+  // Chap menyu: bo'limlar va ochilib-yopiladigan guruhlar.
+  // Sxemada bor, lekin bu yerda yo'q bo'limlar «Bo'limlar» oxiriga qo'shiladi.
   const NAV = [
-    ["Asosiy", ["dashboard", "control"]],
-    ["Kontent", ["clubs", "courses", "contests", "news", "slides", "groups"]],
-    ["Natijalar", ["faculties", "winners", "stats"]],
-    ["Sahifalar", ["staff", "books", "faqs", "settings"]]
+    { title: "Asosiy", items: ["dashboard", "control"] },
+    { title: "Bo'limlar", items: [
+      { id: "g-clubs", label: "To'garak va kurslar", icon: "fa-people-group", items: ["clubs", "courses", "groups"] },
+      { id: "g-news", label: "Yangilik va slayd-shou", icon: "fa-newspaper", items: ["news", "slides"] },
+      "contests",
+      { id: "g-results", label: "Natijalar", icon: "fa-chart-simple", items: ["faculties", "winners", "stats"] },
+      "books",
+      { id: "g-settings", label: "Sozlamalar", icon: "fa-gear", items: ["staff", "settings", "requests", "faqs"] }
+    ] }
   ];
-  const ORDER = NAV.flatMap((s) => s[1]);
+  const ORDER = NAV.flatMap((s) => s.items.flatMap((x) => (typeof x === "string" ? [x] : x.items)));
+  const groupOf = (k) => NAV.flatMap((s) => s.items).find((x) => typeof x !== "string" && x.items.includes(k));
   const ICONS = {
     dashboard: "fa-gauge-high", control: "fa-shield-halved",
-    clubs: "fa-people-group", courses: "fa-briefcase", contests: "fa-trophy", news: "fa-newspaper", slides: "fa-images", groups: "fa-layer-group",
-    faculties: "fa-ranking-star", winners: "fa-medal", stats: "fa-chart-simple",
-    staff: "fa-user-tie", books: "fa-book", faqs: "fa-circle-question", settings: "fa-address-book"
+    clubs: "fa-people-group", courses: "fa-briefcase", groups: "fa-layer-group",
+    news: "fa-newspaper", slides: "fa-images", contests: "fa-trophy",
+    faculties: "fa-ranking-star", winners: "fa-medal", stats: "fa-chart-pie", books: "fa-book",
+    staff: "fa-user-tie", settings: "fa-address-book", requests: "fa-inbox", faqs: "fa-circle-question"
   };
-  // Menyudagi qisqa nomlar (bo'sh bo'lsa sxemadagi nom olinadi)
-  const NAV_LABEL = { groups: "Yo'nalishlar", winners: "Shon-sharaf", staff: "Rahbariyat" };
+  // Menyudagi nomlar (bo'sh bo'lsa sxemadagi nom olinadi)
+  const NAV_LABEL = {
+    clubs: "To'garaklar", courses: "Kasbga o'qitish kurslari", groups: "Yo'nalishlar", news: "Yangiliklar", slides: "Slayd-shou",
+    faculties: "Reyting", winners: "Shon-sharaf doskasi", books: "Kutubxona", staff: "Rahbariyat", settings: "Aloqa",
+    faqs: "Ko'p beriladigan savollar"
+  };
 
-  const state = { schema: {}, kinds: [], kind: "dashboard", items: {}, editing: null, query: "", rating: "all", metric: "students" };
-  // "Bosh panel" va "Nazorat" serverda bo'lim emas: mavjud ma'lumotdan shu yerda hisoblanadi
+  const state = {
+    schema: {}, kinds: [], kind: "dashboard", items: {}, editing: null, query: "", rating: "all", metric: "students",
+    reqFilter: "all", open: new Set()
+  };
+  // "Bosh panel", "Nazorat" va "Murojaatlar" — sxemadagi oddiy bo'lim emas, alohida ko'rinish
   const DASH = { label: "Bosh panel", mode: "view", fields: [] };
   const CONTROL = { label: "Nazorat", mode: "view", fields: [] };
-  const VIRTUAL = { dashboard: DASH, control: CONTROL };
+  const REQUESTS = { label: "Murojaatlar", one: "Murojaat", mode: "view", fields: [] };
+  const VIRTUAL = { dashboard: DASH, control: CONTROL, requests: REQUESTS };
   const schemaOf = (k) => VIRTUAL[k] || state.schema[k];
   const S = () => schemaOf(state.kind);
   const navLabel = (k) => NAV_LABEL[k] || schemaOf(k).label;
@@ -73,7 +89,9 @@
 
   /* ---------- Ro'yxat ---------- */
   async function loadAll() {
-    state.items = await api("GET", "all");
+    const [all, requests] = await Promise.all([api("GET", "all"), api("GET", "requests").catch(() => [])]);
+    state.items = all;
+    state.items.requests = requests || [];
     SITE.apply(state.items);  // yo'nalish nomlari va h.k. yangilansin
     render();
   }
@@ -109,27 +127,51 @@
   const initials = (name) => String(name || "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
   /* ---------- Chap menyu va yuqori panel ---------- */
+  const newRequests = () => (state.items.requests || []).filter((r) => r.status === "new").length;
+  // Diqqat talab qiladigan son (sariq belgi): Nazorat — kamchiliklar, Murojaatlar — yangilari
+  const alertCount = (k, issues) => (k === "control" ? issueCount(issues) : k === "requests" ? newRequests() : 0);
+
+  function navItem(k, issues, sub) {
+    const s = schemaOf(k);
+    const alert = alertCount(k, issues);
+    const n = (state.items[k] || []).length;
+    const badge = alert ? `<span class="badge gold">${alert}</span>` : s.mode === "list" ? `<span class="badge">${n}</span>` : "";
+    const on = k === state.kind;
+    return `<button type="button" class="nav-item${sub ? " sub" : ""}${on ? " active" : ""}${alert ? " alert" : ""}" data-kind="${k}"${on ? ' aria-current="page"' : ""}>
+      <i class="fa-solid ${ICONS[k] || "fa-folder"}"></i><span>${esc(navLabel(k))}</span>${badge}</button>`;
+  }
+
   function renderNav(issues) {
     const extra = state.kinds.filter((k) => !ORDER.includes(k));
-    $("#side-nav").innerHTML = NAV.map(([title, keys], i) => {
-      const list = keys.filter((k) => state.kinds.includes(k)).concat(i === NAV.length - 1 ? extra : []);
-      if (!list.length) return "";
-      return `<div class="nav-sec">${title}</div>` + list.map((k) => {
-        const s = schemaOf(k);
-        const n = k === "control" ? issueCount(issues) : (state.items[k] || []).length;
-        const badge = k === "control" ? (n ? `<span class="badge gold">${n}</span>` : "") : s.mode === "list" ? `<span class="badge">${n}</span>` : "";
-        const on = k === state.kind;
-        return `<button type="button" class="nav-item${on ? " active" : ""}${k === "control" && n ? " alert" : ""}" data-kind="${k}"${on ? ' aria-current="page"' : ""}>
-          <i class="fa-solid ${ICONS[k] || "fa-folder"}"></i><span>${esc(navLabel(k))}</span>${badge}</button>`;
+    $("#side-nav").innerHTML = NAV.map((sec, i) => {
+      const items = sec.items.concat(i === NAV.length - 1 ? extra : []);
+      const html = items.map((x) => {
+        if (typeof x === "string") return state.kinds.includes(x) ? navItem(x, issues) : "";
+        const kids = x.items.filter((k) => state.kinds.includes(k));
+        if (!kids.length) return "";
+        const open = state.open.has(x.id);
+        const alert = kids.reduce((a, k) => a + alertCount(k, issues), 0);
+        const has = kids.includes(state.kind);
+        return `<button type="button" class="nav-group${has ? " has-active" : ""}" data-group="${x.id}" aria-expanded="${open}">
+            <i class="fa-solid ${x.icon}"></i><span>${esc(x.label)}</span>
+            ${alert && !open ? `<span class="badge gold">${alert}</span>` : ""}<i class="fa-solid fa-chevron-down chev"></i></button>
+          <div class="nav-sub"${open ? "" : " hidden"}>${kids.map((k) => navItem(k, issues, true)).join("")}</div>`;
       }).join("");
+      return html ? `<div class="nav-sec">${sec.title}</div>${html}` : "";
     }).join("");
   }
+
+  // Ochiq guruhlar brauzerda eslab qolinadi; hozirgi bo'limning guruhi doim ochiq
+  function saveOpen() { try { localStorage.setItem("urdu5t-admin-open", JSON.stringify([...state.open])); } catch (e) { /* muhim emas */ } }
+  function loadOpen() { try { (JSON.parse(localStorage.getItem("urdu5t-admin-open")) || []).forEach((g) => state.open.add(g)); } catch (e) { /* muhim emas */ } }
+  function openGroupOf(k) { const g = groupOf(k); if (g && !state.open.has(g.id)) { state.open.add(g.id); saveOpen(); } }
 
   function renderHeader() {
     const k = state.kind, s = S();
     const title = k === "dashboard" ? "Bosh panel" : navLabel(k);
     let sub = `${location.host || "5tashabbus"} · boshqaruv`;
     if (k === "control") sub = "Saytdagi ma'lumotlarning avtomatik tekshiruvi";
+    else if (k === "requests") sub = `${(state.items.requests || []).length} ta murojaat · ${newRequests()} ta yangi`;
     else if (k !== "dashboard") sub = s.mode === "list" ? `${(state.items[k] || []).length} ta yozuv · ${s.label}` : s.label;
     $("#page-title").textContent = title;
     $("#page-sub").textContent = sub;
@@ -315,6 +357,11 @@
       $("#rows").innerHTML = controlHtml(issues);
       return;
     }
+    if (state.kind === "requests") {
+      $("#kind-extra").innerHTML = requestChipsHtml();
+      $("#rows").innerHTML = requestsHtml();
+      return;
+    }
 
     const q = norm(state.query.trim());
     let list = (state.items[state.kind] || []).filter((it) => !q || norm(JSON.stringify(it)).includes(q));
@@ -384,6 +431,7 @@
   /* ---------- Bo'lim ustidagi qo'shimcha tugmalar va xulosa ---------- */
   function toolsHtml(kind) {
     const xls = `<button type="button" class="btn btn-outline" data-xls="${kind}"><i class="fa-solid fa-file-excel"></i> Excel</button>`;
+    if (kind === "requests") return (state.items.requests || []).length ? xls : "";
     if (kind === "clubs") return `<button type="button" class="btn btn-outline" id="auto-rate" title="Baholanmagan to'garaklarga tavsiya etilgan bahoni qo'yadi"><i class="fa-solid fa-wand-magic-sparkles"></i> Avtomatik baholash</button>${xls}`;
     if (kind === "courses") {
       const voc = vocClubs();
@@ -492,6 +540,9 @@
     x = Object.keys(empty).filter((k) => !st[k]);
     if (x.length) I.push({ lv: "info", ic: "fa-address-card", t: `Aloqa bo'limida ${x.length} ta maydon bo'sh`, sub: `${x.map((k) => empty[k]).join(", ")}: saytda ko'rinmaydi.`, items: [{ kind: "settings", id: st.id || "site", label: "Aloqa ma'lumotlarini ochish" }] });
 
+    const nReq = (it.requests || []).filter((r) => r.status === "new").length;
+    if (nReq) I.push({ lv: "warn", ic: "fa-inbox", t: `${nReq} ta yangi murojaat javob kutmoqda`, sub: "Saytdan kelgan a'zo bo'lish arizalari va aloqa xabarlari.", items: [{ kind: "requests", label: "Murojaatlarni ochish" }] });
+
     const order = { bad: 0, warn: 1, info: 2 };
     return I.sort((a, b) => order[a.lv] - order[b.lv]);
   }
@@ -511,6 +562,94 @@
             <div class="issue-items">${i.items.slice(0, 40).map((r) => `<button type="button" class="link-chip" data-go="${esc(r.kind)}"${r.id ? ` data-id="${esc(r.id)}"` : ""}${r.add ? " data-add" : ""}>${esc(r.label)}</button>`).join("")}${i.items.length > 40 ? `<span class="hint">va yana ${i.items.length - 40} ta</span>` : ""}</div>
           </div>
         </div>`).join("");
+  }
+
+  /* ---------- Murojaatlar: Aloqa xabarlari va to'garakka a'zo bo'lish arizalari ---------- */
+  const REQ_STATUS = {
+    new: { l: "Yangi", c: "var(--brand)", ic: "fa-circle" },
+    read: { l: "O'qildi", c: "#E2A30B", ic: "fa-eye" },
+    done: { l: "Bajarildi", c: "var(--green)", ic: "fa-circle-check" }
+  };
+  // Keyingi qadam: yangi → o'qildi → bajarildi → (qayta ochish) o'qildi
+  const REQ_NEXT = { new: ["read", "O'qildi", "fa-eye"], read: ["done", "Bajarildi", "fa-check"], done: ["read", "Qayta ochish", "fa-rotate-left"] };
+  const reqDate = (t) => {
+    if (!t) return "";
+    const d = new Date(t * 1000), p = (n) => String(n).padStart(2, "0");
+    return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  };
+  const reqClub = (r) => r.club || ((state.items.clubs || []).find((c) => String(c.id) === String(r.clubId)) || {}).name || "";
+
+  function filteredRequests() {
+    const q = norm(state.query.trim());
+    const f = state.reqFilter;
+    return (state.items.requests || []).filter((r) =>
+      (f === "all" || (f === "new" ? r.status === "new" : r.type === f)) && (!q || norm(JSON.stringify(r)).includes(q)));
+  }
+
+  function requestChipsHtml() {
+    const all = state.items.requests || [];
+    const chip = (v, label, n, icon) => `<button type="button" class="chip${state.reqFilter === v ? " active" : ""}" data-req-filter="${v}">${icon ? `<i class="fa-solid ${icon}"></i> ` : ""}${label} <span class="count">${n}</span></button>`;
+    return `<div class="chips">${chip("all", "Barchasi", all.length)}${chip("new", "Yangi", all.filter((r) => r.status === "new").length, "fa-circle")}${
+      chip("join", "A'zo bo'lish arizalari", all.filter((r) => r.type === "join").length, "fa-user-plus")}${
+      chip("contact", "Aloqa xabarlari", all.filter((r) => r.type === "contact").length, "fa-envelope")}</div>`;
+  }
+
+  function requestsHtml() {
+    const list = filteredRequests();
+    if (!list.length) {
+      return (state.items.requests || []).length
+        ? `<div class="empty"><i class="fa-regular fa-folder-open"></i>Bu filtrda murojaat yo'q</div>`
+        : `<div class="empty"><i class="fa-solid fa-inbox"></i>Hozircha murojaat yo'q. Saytdagi «Aloqa» shakli va to'garakka «A'zo bo'lish» arizalari shu yerga tushadi.</div>`;
+    }
+    return list.map((r) => {
+      const st = REQ_STATUS[r.status] || REQ_STATUS.new;
+      const nx = REQ_NEXT[r.status] || REQ_NEXT.new;
+      const join = r.type === "join";
+      const telHref = String(r.phone || "").replace(/[^\d+]/g, "");
+      const about = join ? [reqClub(r), r.group].filter(Boolean).join(" · ") : r.topic || "";
+      return `
+        <div class="card req ${r.status}" style="--c:${st.c}">
+          <span class="req-ic"><i class="fa-solid ${join ? "fa-user-plus" : "fa-envelope"}"></i></span>
+          <div class="req-main">
+            <div class="req-head">
+              <strong>${esc(r.name)}</strong>
+              <span class="req-type">${join ? "A'zo bo'lish arizasi" : "Aloqa xabari"}</span>
+              <span class="req-status"><i class="fa-solid ${st.ic}"></i> ${st.l}</span>
+            </div>
+            <div class="req-meta">
+              ${r.phone ? `<a href="tel:${esc(telHref)}"><i class="fa-solid fa-phone"></i> ${esc(r.phone)}</a>` : ""}
+              ${about ? `<span><i class="fa-solid ${join ? "fa-people-group" : "fa-tag"}"></i> ${esc(about)}</span>` : ""}
+              <span><i class="fa-regular fa-clock"></i> ${reqDate(r.createdAt)}</span>
+            </div>
+            ${r.message ? `<p class="req-msg">${esc(r.message)}</p>` : ""}
+          </div>
+          <div class="actions">
+            <button type="button" class="btn btn-outline btn-sm" data-req-status="${esc(r.id)}" data-val="${nx[0]}"><i class="fa-solid ${nx[2]}"></i> ${nx[1]}</button>
+            <button type="button" class="icon-btn danger" data-req-del="${esc(r.id)}" aria-label="O'chirish"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  async function setRequestStatus(id, status) {
+    const item = await api("PUT", `requests/${encodeURIComponent(id)}`, { status });
+    state.items.requests = (state.items.requests || []).map((r) => (r.id === id ? item : r));
+    render();
+  }
+
+  async function exportRequests() {
+    await loadExcel();
+    const wb = new ExcelJS.Workbook();
+    wb.creator = "UrDU 5 tashabbus admin panel";
+    sheet(wb, "Murojaatlar", "Murojaatlar va arizalar", [
+      { k: "n", l: "№", w: 5 }, { k: "date", l: "Sana", w: 17 }, { k: "type", l: "Turi", w: 16 }, { k: "name", l: "Ism", w: 26 },
+      { k: "phone", l: "Telefon", w: 18 }, { k: "about", l: "To'garak / mavzu", w: 30 }, { k: "group", l: "Fakultet va guruh", w: 24 },
+      { k: "message", l: "Xabar", w: 50 }, { k: "status", l: "Holati", w: 12 }
+    ], filteredRequests().map((r, i) => ({
+      n: i + 1, date: reqDate(r.createdAt), type: r.type === "join" ? "A'zo bo'lish" : "Aloqa", name: r.name, phone: r.phone,
+      about: r.type === "join" ? reqClub(r) : r.topic, group: r.group || "", message: r.message || "", status: (REQ_STATUS[r.status] || {}).l || ""
+    })));
+    await saveWb(wb, `murojaatlar-${today()}.xlsx`);
   }
 
   /* ---------- Excel ---------- */
@@ -817,6 +956,7 @@
     const switchTo = (kind) => {
       if (state.kind !== kind) window.scrollTo({ top: 0, behavior: "instant" });
       state.kind = kind;
+      openGroupOf(kind);
       state.query = "";
       $("#admin-search").value = "";
       shell.classList.remove("nav-open");
@@ -829,6 +969,14 @@
     };
 
     $("#side-nav").addEventListener("click", (e) => {
+      const g = e.target.closest("[data-group]");
+      if (g) {
+        const id = g.dataset.group;
+        state.open.has(id) ? state.open.delete(id) : state.open.add(id);
+        saveOpen();
+        renderNav(computeIssues());
+        return;
+      }
       const b = e.target.closest("[data-kind]");
       if (b) switchTo(b.dataset.kind);
     });
@@ -928,6 +1076,8 @@
     $("#kind-extra").addEventListener("click", (e) => {
       const c = e.target.closest("[data-rating]");
       if (c) { state.rating = c.dataset.rating; render(); }
+      const r = e.target.closest("[data-req-filter]");
+      if (r) { state.reqFilter = r.dataset.reqFilter; render(); }
     });
 
     // Avtomatik baholash, kurslarni import, Excel
@@ -950,6 +1100,8 @@
           await exportClubs();
         } else if (b.dataset.xls === "courses") {
           await exportCourses();
+        } else if (b.dataset.xls === "requests") {
+          await exportRequests();
         }
       } catch (err) {
         alert(err.message);
@@ -961,6 +1113,25 @@
     $("#rows").addEventListener("click", async (e) => {
       // Nazorat havolalari ([data-go]) umumiy ishlovchida
       if (e.target.closest("[data-go]")) return;
+      // Murojaatlar: holat va o'chirish
+      const rs = e.target.closest("[data-req-status]");
+      if (rs) {
+        rs.disabled = true;
+        try { await setRequestStatus(rs.dataset.reqStatus, rs.dataset.val); } catch (err) { alert(err.message); rs.disabled = false; }
+        return;
+      }
+      const rd = e.target.closest("[data-req-del]");
+      if (rd) {
+        const r = (state.items.requests || []).find((x) => x.id === rd.dataset.reqDel);
+        if (!r || !confirm(`«${r.name}» murojaati o'chirilsinmi? Buni qaytarib bo'lmaydi.`)) return;
+        try {
+          await api("DELETE", `requests/${encodeURIComponent(r.id)}`);
+          state.items.requests = state.items.requests.filter((x) => x.id !== r.id);
+          render();
+          toast("O'chirildi");
+        } catch (err) { alert(err.message); }
+        return;
+      }
       // Svetofor: bir bosish bilan baho, qayta bosish bilan olib tashlash
       const light = e.target.closest("[data-rate]");
       if (light) {
@@ -1080,6 +1251,8 @@
       let saved = null;
       try { saved = localStorage.getItem("urdu5t-admin-tab"); } catch (e) { /* muhim emas */ }
       state.kind = state.kinds.includes(saved) ? saved : state.kinds[0];
+      loadOpen();
+      openGroupOf(state.kind);
       const me = await api("GET", "me");
       if (me.admin) { show("admin-view"); await loadAll(); }
       else showLogin();

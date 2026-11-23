@@ -649,6 +649,78 @@ def login_allowed(ip):
         return True
 
 
+# ------------------------------------------------------------------ murojaatlar
+# Saytdagi «Aloqa» xabarlari va to'garakka a'zo bo'lish arizalari. Shaxsiy ma'lumot bo'lgani uchun
+# KINDS ga kirmaydi: /api/all va ochiq ro'yxatlarda ko'rinmaydi, faqat admin o'qiydi.
+REQUEST_LIMIT = 5                # 10 daqiqada IP bo'yicha murojaatlar soni
+REQUEST_STATUS = ("new", "read", "done")
+_request_attempts = {}
+
+
+def requests_allowed(ip):
+    now = time.time()
+    with _lock:
+        tries = [t for t in _request_attempts.get(ip, []) if now - t < 600]
+        _request_attempts[ip] = tries
+        if len(tries) >= REQUEST_LIMIT:
+            return False
+        tries.append(now)
+        return True
+
+
+def clean_request(d):
+    if not isinstance(d, dict):
+        raise ValueError("Ma'lumot noto'g'ri")
+    kind = d.get("type")
+    if kind not in ("contact", "join"):
+        raise ValueError("Murojaat turi noto'g'ri")
+    name, phone = text(d.get("name"), 120), text(d.get("phone"), 60)
+    if not name:
+        raise ValueError("Ism kiritilmagan")
+    if not phone:
+        raise ValueError("Telefon kiritilmagan")
+    item = {"type": kind, "name": name, "phone": phone, "status": "new", "createdAt": int(time.time())}
+    if kind == "contact":
+        item["topic"] = text(d.get("topic"), 120)
+        item["message"] = text(d.get("message"), 3000)
+        if not item["message"]:
+            raise ValueError("Xabar matni kiritilmagan")
+    else:
+        item["group"] = text(d.get("group"), 160)
+        club_id = text(d.get("club"), 120)
+        with db() as conn:
+            row = conn.execute("SELECT data FROM items WHERE kind='clubs' AND id=?", (club_id,)).fetchone()
+        if row is None:
+            raise ValueError("To'garak tanlanmagan")
+        club = json.loads(row["data"])
+        item.update({"clubId": club_id, "club": club.get("name", ""), "initiativeId": club.get("initiativeId")})
+    return item
+
+
+def add_request(item):
+    item["id"] = f"r{int(time.time() * 1000)}-{secrets.token_hex(2)}"
+    with db() as conn:
+        # Yangisi tepada turishi uchun pozitsiya manfiy vaqt
+        conn.execute(
+            "INSERT INTO items(kind, id, position, data, updated_at) VALUES ('requests',?,?,?,?)",
+            (item["id"], -item["createdAt"], json.dumps(item, ensure_ascii=False), item["createdAt"]),
+        )
+    return item
+
+
+def set_request_status(req_id, status):
+    if status not in REQUEST_STATUS:
+        raise ValueError("Holat noto'g'ri")
+    with db() as conn:
+        row = conn.execute("SELECT data FROM items WHERE kind='requests' AND id=?", (req_id,)).fetchone()
+        if row is None:
+            return None
+        item = json.loads(row["data"])
+        item["status"] = status
+        conn.execute("UPDATE items SET data=? WHERE kind='requests' AND id=?", (json.dumps(item, ensure_ascii=False), req_id))
+    return item
+
+
 # ------------------------------------------------------------------ rasm yuklash
 IMAGE_TYPES = {b"\xff\xd8\xff": ".jpg", b"\x89PNG\r\n\x1a\n": ".png", b"RIFF": ".webp"}
 
@@ -762,6 +834,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_json(SCHEMA)
             if parts[1:] == ["me"]:
                 return self.send_json({"admin": self.authed()})
+            if parts[1:] == ["requests"]:
+                return self.send_json(list_items("requests")) if admin else self.error(401, "Avval tizimga kiring")
             return self.error(404, "Topilmadi")
         if parts[:1] == ["uploads"] and len(parts) == 2:
             return self.serve_file(os.path.join(UPLOAD_DIR, os.path.basename(parts[1])))
@@ -806,6 +880,15 @@ class Handler(BaseHTTPRequestHandler):
             if len(parts) == 4 and parts[1] == "books" and parts[3] == "read":
                 n = count_read(parts[2], self.client_ip())
                 return self.send_json({"reads": n}) if n is not None else self.error(404, "Topilmadi")
+            # Murojaat yoki a'zolik arizasi (ochiq). website — botlar uchun yashirin maydon
+            if parts == ["api", "requests"]:
+                body = self.read_json()
+                if body.get("website"):
+                    return self.send_json({"ok": True}, 201)
+                if not requests_allowed(self.client_ip()):
+                    return self.error(429, "Juda ko'p murojaat. 10 daqiqadan keyin qayta urinib ko'ring.")
+                add_request(clean_request(body))
+                return self.send_json({"ok": True}, 201)
             if not self.authed():
                 return self.error(401, "Avval tizimga kiring")
             if parts == ["api", "upload-pdf"]:
@@ -833,6 +916,12 @@ class Handler(BaseHTTPRequestHandler):
         _, parts = self.route()
         if not self.authed():
             return self.error(401, "Avval tizimga kiring")
+        if len(parts) == 3 and parts[:2] == ["api", "requests"]:
+            try:
+                item = set_request_status(parts[2], self.read_json().get("status"))
+            except ValueError as e:
+                return self.error(400, str(e))
+            return self.send_json(item) if item else self.error(404, "Topilmadi")
         if len(parts) == 3 and parts[0] == "api" and parts[1] in KINDS:
             try:
                 item = save_item(parts[1], clean(parts[1], self.read_json()), parts[2])
@@ -845,6 +934,8 @@ class Handler(BaseHTTPRequestHandler):
         _, parts = self.route()
         if not self.authed():
             return self.error(401, "Avval tizimga kiring")
+        if len(parts) == 3 and parts[:2] == ["api", "requests"]:
+            return self.send_json({"ok": True}) if delete_item("requests", parts[2]) else self.error(404, "Topilmadi")
         if len(parts) == 3 and parts[0] == "api" and parts[1] in KINDS:
             if SCHEMA[parts[1]]["mode"] != "list":
                 return self.error(405, "Bu bo'limdan yozuv o'chirilmaydi")
