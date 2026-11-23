@@ -197,8 +197,9 @@
         <div class="modal-box">
           <button type="button" class="icon-btn modal-close" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
           <h2 id="join-title">To'garakka a'zo bo'lish</h2>
-          <p class="lead">Arizani to'ldiring — u markaz pochtasiga yuboriladi va sardor siz bilan bog'lanadi.</p>
+          <p class="lead">Arizani to'ldiring — u markazga yuboriladi va sardor siz bilan bog'lanadi.</p>
           <form class="form" id="join-form">
+            <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
             <div class="field">
               <label for="j-name">Ism va familiya</label>
               <input id="j-name" name="name" required autocomplete="name">
@@ -246,6 +247,25 @@
     document.body.insertAdjacentHTML("beforeend", html);
   }
 
+  /* ---------- Murojaatni serverga yuborish (A'zo bo'lish va Aloqa shakllari) ---------- */
+  async function sendRequest(form, payload) {
+    const btn = form.querySelector("button[type=submit]");
+    btn.disabled = true;
+    try {
+      const r = await fetch("api/requests", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (r.ok) return true;
+      let msg = "Yuborib bo'lmadi. Keyinroq qayta urinib ko'ring.";
+      try { msg = (await r.json()).error || msg; } catch (x) { /* javob bo'sh */ }
+      toast(msg);
+      return false;
+    } catch (x) {
+      toast("Internet aloqasini tekshiring va qayta yuboring.");
+      return false;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
   /* ---------- A'zo bo'lish shakli ---------- */
   function fillClubs(initId, clubId) {
     const sel = $("#j-club");
@@ -267,23 +287,17 @@
 
   function bindJoinForm() {
     $("#j-init").addEventListener("change", (e) => fillClubs(e.target.value));
-    $("#join-form").addEventListener("submit", (e) => {
+    $("#join-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const f = new FormData(e.target);
-      const init = initiative(f.get("initiative"));
-      const club = SITE.clubs.find((c) => c.id === f.get("club"));
-      const body = [
-        `Ism: ${f.get("name")}`,
-        `Fakultet/guruh: ${f.get("group")}`,
-        `Telefon: ${f.get("phone")}`,
-        `Tashabbus: ${init ? init.title : ""}`,
-        `To'garak: ${club ? club.name : ""}`
-      ].join("\n");
-      const subject = `To'garakka ariza: ${club ? club.name : ""}`;
-      window.location.href = `mailto:${U.centerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const form = e.target;
+      const f = new FormData(form);
+      const ok = await sendRequest(form, {
+        type: "join", name: f.get("name"), group: f.get("group"), phone: f.get("phone"), club: f.get("club"), website: f.get("website")
+      });
+      if (!ok) return;
       closeModal($("#join-modal"));
-      toast("Pochta ilovasi ochildi — xatni yuborishni unutmang.");
-      e.target.reset();
+      toast("Arizangiz qabul qilindi. Sardor tez orada siz bilan bog'lanadi.");
+      form.reset();
     });
   }
 
@@ -293,7 +307,7 @@
     ["Rahbariyat", "rahbariyat.html", "fa-user-tie"],
     ["Nizom", "nizom.html", "fa-file-lines"],
     ["Yo'riqnoma va savol-javob", "yoriqnoma.html", "fa-circle-question"],
-    ["Fakultetlar reytingi", "reyting.html", "fa-ranking-star"],
+    ["Fakultetlararo faollik reytingi", "reyting.html", "fa-ranking-star"],
     ["Kutubxona", "kutubxona.html", "fa-book"],
     ["Aloqa", "aloqa.html", "fa-envelope"]
   ];
@@ -574,5 +588,5 @@
   renderModals();
   bindEvents();
 
-  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, clubCard, courseCard, COURSE_COLOR, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
+  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, sendRequest, clubCard, courseCard, COURSE_COLOR, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
 })();
