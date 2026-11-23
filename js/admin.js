@@ -103,7 +103,7 @@
       case "clubs": return [g && g.title, it.students ? `${it.students} o'quvchi` : "", (it.mentors || []).join(", "), it.ratingNote];
       case "courses": return [COURSE_STATUS[it.status], it.teacher, it.capacity ? `${it.enrolled || 0} / ${it.capacity} o'rin` : it.enrolled ? `${it.enrolled} o'qiyapti` : "",
         it.graduates ? `${it.graduates} bitirgan, ${pct(it.employed, it.graduates)}% ishda` : ""];
-      case "contests": return [g && g.title, it.period, it.status === "completed" ? "Yakunlangan" : "Faol"];
+      case "contests": return [it.deadline ? `${dmy(it.deadline)} gacha` : it.period, daysTo(it.deadline) !== null && daysTo(it.deadline) < 0 ? "Yakunlangan" : "Faol", it.doc ? "Nizomi bor" : ""];
       case "news": return [dmy(it.date), g && g.title];
       case "staff": return [it.role, it.phone, it.telegram && it.telegram.replace(/^https:\/\/t\.me\//, "@"), it.showOnPage === false ? "sahifada ko'rinmaydi" : ""];
       case "stats": return [it.value ? `Qiymat: ${it.value}` : "Avtomatik hisoblanadi"];
@@ -217,14 +217,14 @@
     const notice = nIssues
       ? `<div class="notice"><i class="fa-solid fa-circle-info"></i>
           <span>Ma'lumotlar <b>${dmy(today())}</b> holatiga. Nazoratda <b>${bad} ta muhim</b> va <b>${nIssues - bad} ta e'tibor talab qiladigan</b> kamchilik bor.</span>
-          <button type="button" class="btn btn-outline btn-sm" data-xls="clubs"><i class="fa-solid fa-file-excel"></i> Excel hisobot</button>
+          <button type="button" class="btn btn-outline btn-sm" data-xls="report"><i class="fa-solid fa-file-excel"></i> Excel hisobot</button>
           <button type="button" class="btn btn-outline btn-sm" data-go="control"><i class="fa-solid fa-shield-halved"></i> Nazoratga o'tish</button></div>`
       : `<div class="notice ok"><i class="fa-solid fa-circle-check"></i>
           <span>Ma'lumotlar <b>${dmy(today())}</b> holatiga. Muhim kamchilik topilmadi.</span>
-          <button type="button" class="btn btn-outline btn-sm" data-xls="clubs"><i class="fa-solid fa-file-excel"></i> Excel hisobot</button></div>`;
+          <button type="button" class="btn btn-outline btn-sm" data-xls="report"><i class="fa-solid fa-file-excel"></i> Excel hisobot</button></div>`;
 
     const stat = (go, ic, val, label, sub, primary) => `
-      <button type="button" class="stat${primary ? " primary" : ""}" data-go="${go}">
+      <button type="button" class="stat${primary ? " primary" : ""}" data-kpi="${go}" title="Batafsil ko'rish">
         <span class="ic"><i class="fa-solid ${ic}"></i></span><b>${val}</b><span class="lbl">${label}</span><small>${sub}</small>
       </button>`;
     // Bosh sahifadagi «Statistika» bilan bir xil manba: Jami talabalar — Statistika bo'limidan
@@ -234,18 +234,19 @@
     const g5 = groups.find((g) => g.id === 5) || { clubs: 0, members: 0 };
     const courseCount = courses.length || g5.clubs;
     const learners = courses.length ? sum(courses, "enrolled") : g5.members;
-    const participants = sum(contests, "participants");
+    // Tanlov ishtirokchilari — «Statistika» bo'limidagi «Tanlovlar» pastki raqami
+    const participants = Number(String(statRow("contests").sub || "").replace(/\s/g, "")) || 0;
     const stats = `<div class="stat-grid">
-      ${stat("stats", "fa-user-graduate", totalStudents ? fmtN(totalStudents) : "—", "Jami talabalar",
+      ${stat("students", "fa-user-graduate", totalStudents ? fmtN(totalStudents) : "—", "Jami talabalar",
         totalStudents ? `${pct(members, totalStudents)}% i to'garaklarda` : "Statistika bo'limida kiriting", true)}
       ${stat("clubs", "fa-people-group", fmtN(clubs.length), "To'garaklar", `${dirs} ta yo'nalish bo'yicha`)}
-      ${stat("clubs", "fa-users", fmtN(members), "To'garak a'zolari", `o'rtacha ${clubs.length ? Math.round(members / clubs.length) : 0} nafar / to'garak`)}
-      ${stat(courses.length ? "courses" : "clubs", "fa-briefcase", fmtN(courseCount), "Kasbga o'qitish kurslari", `${fmtN(learners)} nafar o'qimoqda`)}
+      ${stat("members", "fa-users", fmtN(members), "To'garak a'zolari", `o'rtacha ${clubs.length ? Math.round(members / clubs.length) : 0} nafar / to'garak`)}
+      ${stat("courses", "fa-briefcase", fmtN(courseCount), "Kasbga o'qitish kurslari", `${fmtN(learners)} nafar o'qimoqda`)}
       ${stat("books", "fa-book", fmtN((it.books || []).length), "Kitoblar", "kutubxonada tavsiya etilgan")}
       ${stat("contests", "fa-trophy", active.length, "Faol tanlovlar", nearest !== undefined ? `eng yaqin muddat: ${nearest} kun` : "muddati yaqin tanlov yo'q")}
-      ${stat("contests", "fa-user-check", participants ? fmtN(participants) : "—", "Tanlov ishtirokchilari", participants ? `${contests.length} ta tanlov bo'yicha` : "tanlovlarda kiritilmagan")}
-      ${stat("winners", "fa-award", fmtN(awards), "Yutuqlar", `${(it.winners || []).length} ta shon-sharaf egasi`)}
-      ${stat("staff", "fa-chalkboard-user", fmtN(mentors), "To'garak rahbarlari", `${staff.length} ta markaz xodimi`)}
+      ${stat("participants", "fa-user-check", participants ? fmtN(participants) : "—", "Tanlov ishtirokchilari", participants ? `${contests.length} ta tanlov bo'yicha` : "Statistika bo'limida kiriting")}
+      ${stat("awards", "fa-award", fmtN(awards), "Yutuqlar", `${(it.winners || []).length} ta shon-sharaf egasi`)}
+      ${stat("mentors", "fa-chalkboard-user", fmtN(mentors), "To'garak rahbarlari", `${staff.length} ta markaz xodimi`)}
       ${stat("control", "fa-shield-halved", `${complete}%`, "Ma'lumotlar to'liqligi", `${nIssues} ta muammo nazoratda`)}
     </div>`;
 
@@ -309,6 +310,121 @@
     </div>`;
 
     return `${notice}${stats}<div class="dash-grid">${chart}${deadlines}</div><div class="dash-grid three">${newsPanel}${ratingPanel}${issuesPanel}</div>`;
+  }
+
+  /* ---------- Bosh panel: ko'rsatkich bosilganda batafsil oyna (infografika) ---------- */
+  // Gorizontal ustunlar: [{ label, value, color, note }]
+  function barsHtml(rows, unit) {
+    const max = Math.max(1, ...rows.map((r) => r.value));
+    return rows.length ? `<div class="kbars">${rows.map((r) => `
+      <div class="kbar" style="--c:${esc(r.color || "var(--brand)")}">
+        <span class="kbar-label" title="${esc(r.label)}">${esc(r.label)}</span>
+        <span class="kbar-track"><span style="width:${((r.value / max) * 100).toFixed(1)}%"></span></span>
+        <span class="kbar-val"><b>${fmtN(r.value)}</b>${unit ? ` ${unit}` : ""}${r.note ? `<small>${esc(r.note)}</small>` : ""}</span>
+      </div>`).join("")}</div>` : `<p class="kmuted">Ma'lumot yo'q</p>`;
+  }
+  // Halqa: ulush foizda
+  const ringHtml = (p, label, color) => `
+    <div class="kring" style="--p:${Math.min(100, Math.max(0, p))};--c:${color || "var(--brand)"}"><span><b>${p}%</b><small>${esc(label)}</small></span></div>`;
+  // Kichik raqamli kataklar
+  const tilesHtml = (tiles) => `<div class="ktiles">${tiles.map(([v, l]) => `<div><b>${v}</b><span>${esc(l)}</span></div>`).join("")}</div>`;
+
+  function kpiHtml(key) {
+    const it = state.items;
+    const clubs = it.clubs || [], contests = it.contests || [], books = it.books || [], courses = it.courses || [];
+    const groups = SITE.groups.map((g) => {
+      const cl = clubs.filter((c) => Number(c.initiativeId) === g.id);
+      return { ...g, clubs: cl.length, members: sum(cl, "students") };
+    }).filter((g) => g.clubs);
+    const members = sum(clubs, "students");
+    const statRow = (id) => (it.stats || []).find((s) => s.id === id) || {};
+    const total = Number(String(statRow("students").value || "").replace(/\s/g, "")) || 0;
+    const g5 = clubs.filter((c) => Number(c.initiativeId) === 5);
+    const head = (ic, val, label, sub) => `
+      <div class="khead"><span class="kic"><i class="fa-solid ${ic}"></i></span>
+        <div><b>${val}</b><h2>${esc(label)}</h2>${sub ? `<p>${esc(sub)}</p>` : ""}</div></div>`;
+    const go = (kind, label) => `<div class="kfoot"><button type="button" class="btn btn-primary btn-sm" data-go="${kind}">${esc(label)} <i class="fa-solid fa-arrow-right"></i></button></div>`;
+    const section = (title, body) => `<section class="ksec"><h3>${esc(title)}</h3>${body}</section>`;
+
+    switch (key) {
+      case "students": {
+        const share = total ? pct(members, total) : 0;
+        return head("fa-user-graduate", total ? fmtN(total) : "—", "Jami talabalar", "«Statistika» bo'limidagi qiymat") +
+          `<div class="kgrid">${ringHtml(share, "faol")}${tilesHtml([[fmtN(members), "to'garak a'zosi"], [fmtN(Math.max(0, total - members)), "hali qatnashmagan"],
+            [fmtN(courses.length ? sum(courses, "enrolled") : sum(g5, "students")), "kasbga o'qiyotgan"]])}</div>` +
+          section("Yo'nalishlar bo'yicha qamrov", barsHtml(groups.map((g) => ({ label: g.title, value: g.members, color: g.color, note: total ? `${pct(g.members, total)}%` : "" })), "nafar")) +
+          go("stats", "Statistikani tahrirlash");
+      }
+      case "clubs":
+        return head("fa-people-group", fmtN(clubs.length), "To'garaklar", `${groups.length} ta yo'nalish bo'yicha`) +
+          section("Yo'nalishlar kesimida", barsHtml(groups.map((g) => ({ label: g.title, value: g.clubs, color: g.color })).sort((a, b) => b.value - a.value), "ta")) +
+          section("Eng ko'p a'zoli to'garaklar", barsHtml(clubs.slice().sort((a, b) => (b.students || 0) - (a.students || 0)).slice(0, 6)
+            .map((c) => ({ label: c.name, value: +c.students || 0, color: (group(c.initiativeId) || {}).color })), "a'zo")) +
+          go("clubs", "To'garaklarga o'tish");
+      case "members": {
+        const buckets = [["1–20", 0, 20], ["21–50", 21, 50], ["51–100", 51, 100], ["101–300", 101, 300], ["300+", 301, 1e9]]
+          .map(([l, a, b]) => ({ label: `${l} a'zoli`, value: clubs.filter((c) => (+c.students || 0) >= a && (+c.students || 0) <= b).length }));
+        return head("fa-users", fmtN(members), "To'garak a'zolari", `o'rtacha ${clubs.length ? Math.round(members / clubs.length) : 0} nafar bir to'garakda`) +
+          section("Yo'nalishlar bo'yicha", barsHtml(groups.map((g) => ({ label: g.title, value: g.members, color: g.color, note: `${g.clubs} to'garak` })).sort((a, b) => b.value - a.value), "nafar")) +
+          section("To'garaklar hajmi", barsHtml(buckets, "ta")) + go("clubs", "To'garaklarga o'tish");
+      }
+      case "courses": {
+        const list = courses.length ? courses.map((c) => ({ label: c.name, value: +c.enrolled || 0, note: COURSE_STATUS[c.status] || "" }))
+          : g5.map((c) => ({ label: c.name, value: +c.students || 0 }));
+        return head("fa-briefcase", fmtN(list.length), "Kasbga o'qitish kurslari", courses.length ? "" : "Kurslar hali kiritilmagan — kasb-hunar to'garaklari ko'rsatilmoqda") +
+          (courses.length ? tilesHtml([[fmtN(sum(courses, "enrolled")), "o'qiyapti"], [fmtN(sum(courses, "graduates")), "bitirgan"], [`${pct(sum(courses, "employed"), sum(courses, "graduates"))}%`, "ishga joylashgan"]]) : "") +
+          section("O'qiyotganlar soni", barsHtml(list.sort((a, b) => b.value - a.value), "nafar")) + go("courses", "Kurslarga o'tish");
+      }
+      case "books": {
+        const reads = sum(books, "reads");
+        return head("fa-book", fmtN(books.length), "Kitoblar", `${fmtN(reads)} marta o'qilgan`) +
+          tilesHtml([[fmtN(books.filter((b) => b.pdf).length), "saytda o'qiladi"], [fmtN(books.filter((b) => !b.pdf).length), "PDF yuklanmagan"], [fmtN(new Set(books.map((b) => b.category)).size), "turkum"]]) +
+          section("Eng ko'p o'qilganlar", barsHtml(books.slice().sort((a, b) => (b.reads || 0) - (a.reads || 0)).map((b) => ({ label: b.title, value: +b.reads || 0, note: b.author })), "marta")) +
+          go("books", "Kutubxonaga o'tish");
+      }
+      case "contests":
+      case "participants": {
+        const rows = contests.slice().sort((a, b) => String(a.deadline).localeCompare(String(b.deadline)));
+        const open = rows.filter((c) => daysTo(c.deadline) !== null && daysTo(c.deadline) >= 0);
+        const part = Number(String(statRow("contests").sub || "").replace(/\s/g, "")) || 0;
+        return head(key === "contests" ? "fa-trophy" : "fa-user-check", key === "contests" ? fmtN(open.length) : part ? fmtN(part) : "—",
+          key === "contests" ? "Faol tanlovlar" : "Tanlov ishtirokchilari", key === "contests" ? `jami ${contests.length} ta tanlov` : "«Statistika» bo'limidagi «Tanlovlar» pastki raqami") +
+          (contests.length ? `<div class="kgrid">${ringHtml(pct(open.length, contests.length), "ochiq", "var(--green)")}${tilesHtml([[open.length, "qabul ochiq"], [contests.length - open.length, "yakunlangan"], [contests.filter((c) => c.doc).length, "nizomi bor"]])}</div>` : "") +
+          section("Muddatlar", rows.length ? `<ul class="klist">${rows.map((c) => `<li><span>${esc(c.title)}</span>${contestPill(c)}</li>`).join("")}</ul>` : `<p class="kmuted">Tanlov yo'q</p>`) +
+          go(key === "contests" ? "contests" : "stats", key === "contests" ? "Tanlovlarga o'tish" : "Statistikani tahrirlash");
+      }
+      case "awards":
+        return head("fa-award", fmtN(sum(SITE.groups, "awards")), "Yutuqlar", `${(it.winners || []).length} ta shon-sharaf egasi`) +
+          section("Sovrinli o'rinlar — yo'nalishlar bo'yicha", barsHtml(SITE.groups.filter((g) => g.awards).map((g) => ({ label: g.title, value: +g.awards || 0, color: g.color })).sort((a, b) => b.value - a.value), "ta")) +
+          section("Shon-sharaf doskasi", (it.winners || []).length ? `<ul class="klist">${it.winners.map((w) => `<li><span>${esc(w.name)}</span><small>${esc([w.place, w.contest].filter(Boolean).join(" · "))}</small></li>`).join("")}</ul>` : `<p class="kmuted">Hali kiritilmagan</p>`) +
+          go("winners", "Shon-sharaf doskasiga o'tish");
+      case "mentors": {
+        const count = {};
+        clubs.forEach((c) => (c.mentors || []).forEach((m) => { const k = String(m).trim(); if (k) count[k] = (count[k] || 0) + 1; }));
+        const top = Object.entries(count).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([label, value]) => ({ label, value }));
+        return head("fa-chalkboard-user", fmtN(Object.keys(count).length), "To'garak rahbarlari", `${(it.staff || []).length} ta markaz xodimi`) +
+          tilesHtml([[fmtN(clubs.filter((c) => (c.mentors || []).length > 1).length), "bir nechta rahbarli to'garak"], [fmtN(clubs.filter((c) => !(c.mentors || []).length).length), "rahbarsiz to'garak"]]) +
+          section("Eng ko'p to'garak olib boruvchilar", barsHtml(top, "to'garak")) + go("staff", "Rahbariyatga o'tish");
+      }
+      case "control": {
+        const issues = computeIssues();
+        const n = (lv) => issues.filter((i) => i.lv === lv).length;
+        const complete = clubs.length ? pct(clubs.filter((c) => !clubProblems(c).length).length, clubs.length) : 100;
+        return head("fa-shield-halved", `${complete}%`, "Ma'lumotlar to'liqligi", "to'garak ma'lumotlari to'liq kiritilgan ulush") +
+          `<div class="kgrid">${ringHtml(complete, "to'liq", complete >= 80 ? "var(--green)" : "#E2A30B")}${tilesHtml([[n("bad"), "muhim"], [n("warn"), "e'tibor bering"], [n("info"), "maslahat"]])}</div>` +
+          section("Kamchiliklar", issues.length ? `<ul class="klist">${issues.slice(0, 8).map((i) => `<li class="${i.lv}"><span><i class="fa-solid ${i.ic}"></i> ${esc(i.t)}</span></li>`).join("")}</ul>` : `<p class="kmuted">Kamchilik yo'q</p>`) +
+          go("control", "Nazoratga o'tish");
+      }
+      default: return "";
+    }
+  }
+
+  function openKpi(key) {
+    const html = kpiHtml(key);
+    if (!html) return;
+    $("#kpi-content").innerHTML = html;
+    $("#kpi-modal").classList.add("open");
+    document.body.style.overflow = "hidden";
   }
 
   /* ---------- Butun panel bo'ylab qidiruv ---------- */
@@ -432,12 +548,9 @@
   function toolsHtml(kind) {
     const xls = `<button type="button" class="btn btn-outline" data-xls="${kind}"><i class="fa-solid fa-file-excel"></i> Excel</button>`;
     if (kind === "requests") return (state.items.requests || []).length ? xls : "";
-    if (kind === "clubs") return `<button type="button" class="btn btn-outline" id="auto-rate" title="Baholanmagan to'garaklarga tavsiya etilgan bahoni qo'yadi"><i class="fa-solid fa-wand-magic-sparkles"></i> Avtomatik baholash</button>${xls}`;
-    if (kind === "courses") {
-      const voc = vocClubs();
-      return `${voc.length ? `<button type="button" class="btn btn-outline" id="import-voc" title="«Xotin-qizlar bandligi» to'garaklaridan kurs qoralamasi yaratadi"><i class="fa-solid fa-file-import"></i> To'garaklardan olish (${voc.length})</button>` : ""}${(state.items.courses || []).length ? xls : ""}`;
-    }
-    return "";
+    if (kind === "clubs") return `<button type="button" class="btn btn-outline" id="auto-rate" title="Baholanmagan to'garaklarga tavsiya etilgan bahoni qo'yadi"><i class="fa-solid fa-wand-magic-sparkles"></i> Avtomatik baholash</button><button type="button" class="btn btn-outline" id="reset-rate" title="Barcha to'garaklardan bahoni olib tashlaydi"><i class="fa-solid fa-rotate-left"></i> Baholashni bekor qilish</button>${xls}`;
+    if (VIRTUAL[kind] || !(state.items[kind] || []).length && kind !== "courses") return "";
+    return xls;  // har bir bo'lim Excel'ga yuklab olinadi
   }
 
   function extraHtml(kind) {
@@ -459,26 +572,6 @@
       </div>`;
     }
     return "";
-  }
-
-  const vocClubs = () => (state.items.clubs || []).filter((c) => Number(c.initiativeId) === 5 && !(state.items.courses || []).some((k) => k.name === c.name));
-
-  async function importVoc() {
-    const list = vocClubs();
-    if (!list.length || !confirm(`«Xotin-qizlar bandligi» yo'nalishidagi ${list.length} ta to'garakdan kurs qoralamasi yaratilsinmi?\nKeyin har biriga o'rinlar soni, muddat va sertifikatni kiritasiz.`)) return;
-    try {
-      for (const c of list) {
-        await api("POST", "courses", {
-          name: c.name, initiativeId: 5, status: "running", schedule: c.schedule || "", place: c.place || "",
-          teacher: (c.mentors || []).join(", "), phone: (c.phones || [])[0] ? c.phones[0].text : "",
-          enrolled: c.students ?? "", price: "Bepul", audience: "Talaba-qizlar va mahalla yoshlari", certificate: true
-        });
-      }
-      toast(`${list.length} ta kurs qo'shildi`);
-    } catch (err) {
-      alert(err.message);
-    }
-    await loadAll();
   }
 
   /* ---------- Nazorat: saytdagi kamchiliklar ---------- */
@@ -514,8 +607,6 @@
     x = clubs.filter((c) => !RATING[c.rating]);
     if (x.length) I.push({ lv: "info", ic: "fa-traffic-light", t: `${x.length} ta to'garak hali baholanmagan`, sub: "To'garaklar bo'limidagi «Avtomatik baholash» tugmasi tavsiya etilgan bahoni qo'yadi.", items: [{ kind: "clubs", label: "To'garaklarga o'tish" }] });
 
-    x = contests.filter((c) => c.status !== "completed" && daysTo(c.deadline) < 0);
-    add("bad", "fa-hourglass-end", `${x.length} ta tanlov muddati o'tgan, lekin «Faol»`, "Holatini «Yakunlangan»ga o'zgartiring va g'oliblarni kiriting.", refs("contests", x));
     x = contests.filter((c) => c.status !== "completed" && daysTo(c.deadline) >= 0 && daysTo(c.deadline) <= 7);
     add("info", "fa-bell", `${x.length} ta tanlov muddati 7 kun ichida tugaydi`, "Natijalarni e'lon qilishga tayyorlaning.", refs("contests", x));
 
@@ -637,19 +728,59 @@
     render();
   }
 
+  function requestSheet(wb, list) {
+    sheet(wb, "Murojaatlar", "Murojaatlar va arizalar", [
+      { k: "n", l: "№", w: 5, center: true }, { k: "date", l: "Sana", w: 17, center: true }, { k: "type", l: "Turi", w: 15 }, { k: "name", l: "Ism", w: 26 },
+      { k: "phone", l: "Telefon", w: 18 }, { k: "about", l: "To'garak / mavzu", w: 30 }, { k: "group", l: "Fakultet va guruh", w: 24 },
+      { k: "message", l: "Xabar", w: 50 }, { k: "status", l: "Holati", w: 12, center: true }
+    ], list.map((r, i) => ({
+      n: i + 1, date: reqDate(r.createdAt), type: r.type === "join" ? "A'zo bo'lish" : "Aloqa", name: r.name, phone: r.phone,
+      about: r.type === "join" ? reqClub(r) : r.topic, group: r.group || "", message: r.message || "", status: (REQ_STATUS[r.status] || {}).l || "",
+      _fill: r.status === "new" ? "FFE0E7FF" : null, _fillCol: 9
+    })), `${list.filter((r) => r.status === "new").length} ta yangi`);
+  }
+
   async function exportRequests() {
     await loadExcel();
-    const wb = new ExcelJS.Workbook();
-    wb.creator = "UrDU 5 tashabbus admin panel";
-    sheet(wb, "Murojaatlar", "Murojaatlar va arizalar", [
-      { k: "n", l: "№", w: 5 }, { k: "date", l: "Sana", w: 17 }, { k: "type", l: "Turi", w: 16 }, { k: "name", l: "Ism", w: 26 },
-      { k: "phone", l: "Telefon", w: 18 }, { k: "about", l: "To'garak / mavzu", w: 30 }, { k: "group", l: "Fakultet va guruh", w: 24 },
-      { k: "message", l: "Xabar", w: 50 }, { k: "status", l: "Holati", w: 12 }
-    ], filteredRequests().map((r, i) => ({
-      n: i + 1, date: reqDate(r.createdAt), type: r.type === "join" ? "A'zo bo'lish" : "Aloqa", name: r.name, phone: r.phone,
-      about: r.type === "join" ? reqClub(r) : r.topic, group: r.group || "", message: r.message || "", status: (REQ_STATUS[r.status] || {}).l || ""
-    })));
+    const wb = newWb();
+    requestSheet(wb, filteredRequests());
     await saveWb(wb, `murojaatlar-${today()}.xlsx`);
+  }
+
+  // Bosh paneldagi «Excel hisobot»: bitta faylda umumiy ko'rsatkichlar va barcha asosiy bo'limlar
+  async function exportReport() {
+    await loadExcel();
+    const it = state.items;
+    const clubs = it.clubs || [], contests = it.contests || [], books = it.books || [], reqs = it.requests || [], courses = it.courses || [];
+    const total = Number(String(((it.stats || []).find((s) => s.id === "students") || {}).value || "").replace(/\s/g, "")) || 0;
+    const members = sum(clubs, "students");
+    const g5 = clubs.filter((c) => Number(c.initiativeId) === 5);
+    const open = contests.filter((c) => daysTo(c.deadline) !== null && daysTo(c.deadline) >= 0);
+    const mentors = new Set(clubs.flatMap((c) => c.mentors || []).map((m) => String(m).trim().toLowerCase()).filter(Boolean)).size;
+    const issues = computeIssues();
+    const wb = newWb();
+    sheet(wb, "Umumiy ko'rsatkichlar", "Umumiy hisobot", [
+      { k: "n", l: "№", w: 5, center: true }, { k: "label", l: "Ko'rsatkich", w: 34 }, { k: "value", l: "Qiymat", w: 14, num: true }, { k: "note", l: "Izoh", w: 48 }
+    ], [
+      ["Jami talabalar", total, "«Statistika» bo'limidan"],
+      ["To'garaklar", clubs.length, `${new Set(clubs.map((c) => c.initiativeId)).size} ta yo'nalish bo'yicha`],
+      ["To'garak a'zolari", members, total ? `talabalarning ${pct(members, total)}% i` : ""],
+      ["Kasbga o'qitish kurslari", courses.length || g5.length, courses.length ? "kurslar bo'limidan" : "kasb-hunar to'garaklari (kurslar hali kiritilmagan)"],
+      ["Kurslarda o'qiyotganlar", courses.length ? sum(courses, "enrolled") : sum(g5, "students"), ""],
+      ["Tanlovlar", contests.length, `${open.length} tasida qabul ochiq`],
+      ["Yutuqlar (sovrinli o'rinlar)", sum(SITE.groups, "awards"), `${(it.winners || []).length} ta shon-sharaf egasi`],
+      ["To'garak rahbarlari", mentors, `${(it.staff || []).length} ta markaz xodimi`],
+      ["Kitoblar", books.length, `${books.filter((b) => b.pdf).length} tasini saytda o'qish mumkin`],
+      ["Kitob o'qishlari", sum(books, "reads"), ""],
+      ["Murojaatlar", reqs.length, `${reqs.filter((r) => r.status === "new").length} ta yangi`],
+      ["Nazorat: kamchiliklar", issueCount(issues), `${issues.filter((i) => i.lv === "bad").length} ta muhim`]
+    ].map(([label, value, note], i) => ({ n: i + 1, label, value, note })));
+    clubSheets(wb, clubs);
+    if (courses.length) courseSheet(wb);
+    kindSheet(wb, "contests");
+    kindSheet(wb, "books");
+    if (reqs.length) requestSheet(wb, reqs);
+    await saveWb(wb, `hisobot-${today()}.xlsx`);
   }
 
   /* ---------- Excel ---------- */
@@ -666,30 +797,54 @@
     return excelLoading;
   }
 
-  const BORDER = { style: "thin", color: { argb: "FFE3E7F0" } };
-  function sheet(wb, name, title, cols, rows) {
-    const ws = wb.addWorksheet(name, { views: [{ state: "frozen", ySplit: 3 }], pageSetup: { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 } });
+  // Excel uslubi: sarlavha, izoh, ko'k sarlavha qatori, "zebra" qatorlar, raqamlar o'ngda, JAMI qatori ajratilgan
+  const XL = { brand: "FF0B2C8F", zebra: "FFF7F8FC", line: "FFE3E7F0", muted: "FF64748B", total: "FFDCE4FF", headLine: "FF2A4BB0" };
+  const thin = { style: "thin", color: { argb: XL.line } };
+  function sheet(wb, name, title, cols, rows, note) {
+    const HEAD = 4;  // 1 — sarlavha, 2 — izoh, 3 — bo'sh, 4 — ustun nomlari
+    const ws = wb.addWorksheet(String(name).replace(/[\\/*?:[\]]/g, "").slice(0, 31), {
+      properties: { tabColor: { argb: XL.brand } },
+      views: [{ state: "frozen", ySplit: HEAD, showGridLines: false }],
+      pageSetup: { orientation: cols.length > 6 ? "landscape" : "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9,
+        margins: { left: 0.4, right: 0.4, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 } },
+      headerFooter: { oddFooter: "&L&8UrDU Besh muhim tashabbus markazi&R&8&P / &N bet" }
+    });
     ws.columns = cols.map((c) => ({ key: c.k, width: c.w || 14 }));
     ws.mergeCells(1, 1, 1, cols.length);
-    ws.getCell(1, 1).value = title;
-    ws.getCell(1, 1).font = { bold: true, size: 14, color: { argb: "FF0B2C8F" } };
-    ws.getCell(2, 1).value = `Sana: ${dmy(today())} · UrDU Besh muhim tashabbus markazi`;
-    ws.getCell(2, 1).font = { italic: true, color: { argb: "FF64748B" } };
-    const head = ws.getRow(3);
+    ws.mergeCells(2, 1, 2, cols.length);
+    const t = ws.getCell(1, 1);
+    t.value = title;
+    t.font = { bold: true, size: 16, color: { argb: XL.brand } };
+    t.alignment = { vertical: "middle" };
+    ws.getRow(1).height = 30;
+    const count = rows.filter((r) => !r._total).length;
+    const sub = ws.getCell(2, 1);
+    sub.value = `UrDU Besh muhim tashabbus markazi · ${dmy(today())} holatiga · ${count} ta yozuv${note ? " · " + note : ""}`;
+    sub.font = { italic: true, size: 10, color: { argb: XL.muted } };
+    ws.getRow(3).height = 6;
+    const head = ws.getRow(HEAD);
     head.values = cols.map((c) => c.l);
-    head.height = 30;
+    head.height = 34;
     head.eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF0B2C8F" } };
+      cell.font = { bold: true, size: 10, color: { argb: "FFFFFFFF" } };
+      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: XL.brand } };
       cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
+      cell.border = { left: { style: "thin", color: { argb: XL.headLine } }, right: { style: "thin", color: { argb: XL.headLine } } };
     });
-    rows.forEach((r) => {
+    rows.forEach((r, i) => {
       const row = ws.addRow(cols.map((c) => r[c.k] ?? ""));
-      row.alignment = { vertical: "top", wrapText: true };
-      if (r._fill) row.getCell(r._fillCol).fill = { type: "pattern", pattern: "solid", fgColor: { argb: r._fill } };
-      row.eachCell({ includeEmpty: true }, (cell) => { cell.border = { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER }; });
+      row.font = { size: 10, bold: !!r._total };
+      cols.forEach((c, j) => {
+        const cell = row.getCell(j + 1);
+        cell.alignment = { vertical: "top", wrapText: true, horizontal: c.num ? "right" : c.center ? "center" : "left" };
+        if (c.num && typeof cell.value === "number") cell.numFmt = c.pct ? '0"%"' : "#,##0";
+        cell.border = r._total ? { top: { style: "medium", color: { argb: XL.brand } }, bottom: thin } : { bottom: thin };
+        const fill = r._total ? XL.total : r._fill && r._fillCol === j + 1 ? r._fill : i % 2 ? XL.zebra : null;
+        if (fill) cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: fill } };
+      });
     });
-    ws.autoFilter = { from: { row: 3, column: 1 }, to: { row: 3, column: cols.length } };
+    if (rows.length) ws.autoFilter = { from: { row: HEAD, column: 1 }, to: { row: HEAD, column: cols.length } };
+    ws.pageSetup.printTitlesRow = `${HEAD}:${HEAD}`;
     return ws;
   }
 
@@ -702,60 +857,109 @@
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
+  function newWb() {
+    const wb = new ExcelJS.Workbook();
+    wb.creator = "UrDU Besh muhim tashabbus boshqaruv paneli";
+    wb.created = new Date();
+    return wb;
+  }
 
   const RATING_FILL = { green: "FFD1FADF", yellow: "FFFEF0C7", red: "FFFEE4E2" };
   const gTitle = (id) => (group(id) || {}).title || "";
   const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
+  const plain = (v) => {
+    const d = document.createElement("div");
+    d.innerHTML = String(v || "").replace(/<br>|<\/(p|div|li)>/g, "\n");
+    return d.textContent.replace(/\n{3,}/g, "\n\n").trim();
+  };
+  const num = (v) => (v === "" || v == null || isNaN(Number(v)) ? v ?? "" : Number(v));
 
-  async function exportClubs() {
-    await loadExcel();
-    const q = state.query.trim().toLowerCase();
-    const list = (state.items.clubs || []).filter((c) => (!q || JSON.stringify(c).toLowerCase().includes(q)) &&
-      (state.rating === "all" || (RATING[c.rating] ? c.rating : "none") === state.rating));
-    const wb = new ExcelJS.Workbook();
-    wb.creator = "UrDU 5 tashabbus admin panel";
+  function clubSheets(wb, list) {
     sheet(wb, "To'garaklar", "To'garaklar ro'yxati", [
-      { k: "n", l: "№", w: 5 }, { k: "name", l: "Nomi", w: 34 }, { k: "g", l: "Yo'nalish", w: 22 }, { k: "students", l: "A'zolar", w: 9 },
+      { k: "n", l: "№", w: 5, center: true }, { k: "name", l: "Nomi", w: 34 }, { k: "g", l: "Yo'nalish", w: 22 }, { k: "students", l: "A'zolar", w: 9, num: true },
       { k: "schedule", l: "Jadval", w: 30 }, { k: "place", l: "Joy", w: 22 }, { k: "mentors", l: "Rahbarlar", w: 26 }, { k: "phones", l: "Telefonlar", w: 20 },
-      { k: "rating", l: "Baho", w: 13 }, { k: "ratingNote", l: "Baho izohi", w: 28 }, { k: "problems", l: "Yetishmayotgan ma'lumot", w: 24 }
+      { k: "rating", l: "Baho", w: 13, center: true }, { k: "ratingNote", l: "Baho izohi", w: 28 }, { k: "problems", l: "Yetishmayotgan ma'lumot", w: 24 }
     ], list.map((c, i) => ({
-      n: i + 1, name: c.name, g: gTitle(c.initiativeId), students: c.students ?? "", schedule: c.schedule, place: c.place,
+      n: i + 1, name: c.name, g: gTitle(c.initiativeId), students: num(c.students), schedule: c.schedule, place: c.place,
       mentors: (c.mentors || []).join("\n"), phones: (c.phones || []).map((p) => p.text).join("\n"),
       rating: RATING[c.rating] ? RATING[c.rating].l : "Baholanmagan", ratingNote: c.ratingNote || "", problems: clubProblems(c).join(", "),
       _fill: RATING_FILL[c.rating], _fillCol: 9
-    })));
+    })).concat(list.length ? [{ _total: true, name: "JAMI", students: sum(list, "students") }] : []));
     const rows = (state.items.groups || []).map((g) => {
       const cl = list.filter((c) => Number(c.initiativeId) === Number(g.id));
       return { g: g.title, clubs: cl.length, students: sum(cl, "students"), ...ratingCounts(cl) };
     }).filter((r) => r.clubs);
-    rows.push({ g: "JAMI", clubs: list.length, students: sum(list, "students"), ...ratingCounts(list) });
-    const ws = sheet(wb, "Xulosa", "Yo'nalishlar bo'yicha xulosa", [
-      { k: "g", l: "Yo'nalish", w: 30 }, { k: "clubs", l: "To'garaklar", w: 12 }, { k: "students", l: "A'zolar", w: 12 },
-      { k: "green", l: "Yashil", w: 10 }, { k: "yellow", l: "Sariq", w: 10 }, { k: "red", l: "Qizil", w: 10 }, { k: "none", l: "Baholanmagan", w: 14 }
+    rows.push({ _total: true, g: "JAMI", clubs: list.length, students: sum(list, "students"), ...ratingCounts(list) });
+    sheet(wb, "Yo'nalishlar kesimida", "To'garaklar — yo'nalishlar kesimida", [
+      { k: "g", l: "Yo'nalish", w: 32 }, { k: "clubs", l: "To'garaklar", w: 12, num: true }, { k: "students", l: "A'zolar", w: 12, num: true },
+      { k: "green", l: "Yashil", w: 10, num: true }, { k: "yellow", l: "Sariq", w: 10, num: true }, { k: "red", l: "Qizil", w: 10, num: true },
+      { k: "none", l: "Baholanmagan", w: 14, num: true }
     ], rows);
-    ws.lastRow.font = { bold: true };
+  }
+
+  function courseSheet(wb) {
+    const cs = state.items.courses || [];
+    sheet(wb, "Kurslar", "Kasbga o'qitish kurslari", [
+      { k: "n", l: "№", w: 5, center: true }, { k: "name", l: "Kurs nomi", w: 32 }, { k: "status", l: "Holati", w: 16 }, { k: "teacher", l: "Usta", w: 22 },
+      { k: "period", l: "Muddat", w: 22 }, { k: "schedule", l: "Jadval", w: 26 }, { k: "place", l: "Joy", w: 20 }, { k: "price", l: "Narxi", w: 10 },
+      { k: "capacity", l: "O'rinlar", w: 9, num: true }, { k: "enrolled", l: "O'qiyotganlar", w: 12, num: true }, { k: "graduates", l: "Bitirganlar", w: 11, num: true },
+      { k: "employed", l: "Ishga joylashgan", w: 13, num: true }, { k: "rate", l: "Bandlik", w: 10, num: true, pct: true }, { k: "cert", l: "Sertifikat", w: 10, center: true }
+    ], cs.map((c, i) => ({
+      n: i + 1, name: c.name, status: COURSE_STATUS[c.status] || "", teacher: c.teacher,
+      period: [dmy(c.start), dmy(c.end)].filter(Boolean).join(" — ") || c.duration || "",
+      schedule: c.schedule, place: c.place, price: c.price, capacity: num(c.capacity), enrolled: num(c.enrolled), graduates: num(c.graduates),
+      employed: num(c.employed), rate: c.graduates ? pct(c.employed, c.graduates) : "", cert: c.certificate ? "Ha" : "Yo'q"
+    })).concat(cs.length ? [{ _total: true, name: "JAMI", capacity: sum(cs, "capacity"), enrolled: sum(cs, "enrolled"), graduates: sum(cs, "graduates"),
+      employed: sum(cs, "employed"), rate: pct(sum(cs, "employed"), sum(cs, "graduates")) }] : []));
+  }
+
+  // Har qanday bo'lim: ustunlar admin shaklidagi maydonlardan olinadi
+  function kindSheet(wb, kind) {
+    const s = state.schema[kind];
+    const fields = s.fields.filter((f) => !["image", "pdf"].includes(f.type));
+    const width = (f) => ({ textarea: 46, rich: 50, lines: 28, phones: 22, int: 11, number: 11, date: 12, bool: 10, doc: 36 }[f.type] || (f.half ? 22 : 30));
+    const value = (f, it) => {
+      const v = getPath(it, f.key);
+      if (f.type === "select") { const o = (f.options || []).find((x) => String(x.value) === String(v)); return o ? o.label : v ?? ""; }
+      if (f.type === "bool") return v ? "Ha" : "Yo'q";
+      if (f.type === "lines" || f.type === "phones") return (v || []).map((x) => (typeof x === "object" ? x.text : x)).join("\n");
+      if (f.type === "rich") return plain(v);
+      if (f.type === "date") return dmy(v);
+      if (f.type === "int" || f.type === "number") return num(v);
+      if (f.type === "doc" && v && !/^https?:/.test(v)) return `${location.origin}/${v}`;
+      return v ?? "";
+    };
+    const cols = [{ k: "_n", l: "№", w: 5, center: true }]
+      .concat(fields.map((f) => ({ k: f.key, l: f.label, w: width(f), num: f.type === "int" || f.type === "number", center: f.type === "bool" || f.type === "date" })))
+      .concat(kind === "books" ? [{ k: "_reads", l: "O'qilgan", w: 10, num: true }] : []);
+    const rows = (state.items[kind] || []).map((it, i) => {
+      const r = { _n: i + 1, _reads: num(it.reads || 0) };
+      fields.forEach((f) => { r[f.key] = value(f, it); });
+      return r;
+    });
+    sheet(wb, navLabel(kind), navLabel(kind), cols, rows);
+  }
+
+  async function exportClubs() {
+    await loadExcel();
+    const list = (state.items.clubs || []).filter((c) => state.rating === "all" || (RATING[c.rating] ? c.rating : "none") === state.rating);
+    const wb = newWb();
+    clubSheets(wb, list);
     await saveWb(wb, `togaraklar-${today()}.xlsx`);
   }
 
   async function exportCourses() {
     await loadExcel();
-    const cs = state.items.courses || [];
-    const wb = new ExcelJS.Workbook();
-    wb.creator = "UrDU 5 tashabbus admin panel";
-    const ws = sheet(wb, "Kurslar", "Kasb-hunar kurslari", [
-      { k: "n", l: "№", w: 5 }, { k: "name", l: "Kurs nomi", w: 32 }, { k: "status", l: "Holati", w: 16 }, { k: "teacher", l: "Usta", w: 22 },
-      { k: "period", l: "Muddat", w: 22 }, { k: "schedule", l: "Jadval", w: 26 }, { k: "place", l: "Joy", w: 20 }, { k: "price", l: "Narxi", w: 10 },
-      { k: "capacity", l: "O'rinlar", w: 9 }, { k: "enrolled", l: "O'qiyotganlar", w: 12 }, { k: "graduates", l: "Bitirganlar", w: 11 },
-      { k: "employed", l: "Ishga joylashgan", w: 13 }, { k: "rate", l: "Bandlik, %", w: 11 }, { k: "cert", l: "Sertifikat", w: 10 }
-    ], cs.map((c, i) => ({
-      n: i + 1, name: c.name, status: COURSE_STATUS[c.status] || "", teacher: c.teacher,
-      period: [dmy(c.start), dmy(c.end)].filter(Boolean).join(" — ") || c.duration || "",
-      schedule: c.schedule, place: c.place, price: c.price, capacity: c.capacity ?? "", enrolled: c.enrolled ?? "", graduates: c.graduates ?? "",
-      employed: c.employed ?? "", rate: c.graduates ? pct(c.employed, c.graduates) : "", cert: c.certificate ? "Ha" : "Yo'q"
-    })).concat([{ name: "JAMI", capacity: sum(cs, "capacity"), enrolled: sum(cs, "enrolled"), graduates: sum(cs, "graduates"),
-      employed: sum(cs, "employed"), rate: pct(sum(cs, "employed"), sum(cs, "graduates")) }]));
-    ws.lastRow.font = { bold: true };
-    await saveWb(wb, `kasb-kurslari-${today()}.xlsx`);
+    const wb = newWb();
+    courseSheet(wb);
+    await saveWb(wb, `kasbga-oqitish-kurslari-${today()}.xlsx`);
+  }
+
+  async function exportKind(kind) {
+    await loadExcel();
+    const wb = newWb();
+    kindSheet(wb, kind);
+    await saveWb(wb, `${kind}-${today()}.xlsx`);
   }
 
   /* ---------- Shakl ---------- */
@@ -797,6 +1001,43 @@
           </div>`;
         return `<div class="field" data-img="${f.key}"><label>${esc(f.label)}${f.required ? " *" : ""}</label>${input}
           <p class="hint">${f.hint ? esc(f.hint) + " " : ""}JPG, PNG yoki WEBP. Katta rasm avtomatik kichraytiriladi.</p></div>`;
+      case "rich":
+        return `<div class="field" data-rich="${f.key}"><label>${esc(f.label)}${f.required ? " *" : ""}</label>
+          <div class="rte">
+            <div class="rte-bar" role="toolbar" aria-label="Matnni formatlash">
+              <button type="button" data-cmd="bold" title="Qalin"><i class="fa-solid fa-bold"></i></button>
+              <button type="button" data-cmd="italic" title="Kursiv"><i class="fa-solid fa-italic"></i></button>
+              <button type="button" data-cmd="underline" title="Tagiga chizilgan"><i class="fa-solid fa-underline"></i></button>
+              <button type="button" data-cmd="strikeThrough" title="Ustidan chizilgan"><i class="fa-solid fa-strikethrough"></i></button>
+              <span class="rte-sep"></span>
+              <select data-size title="Matn o'lchami" aria-label="Matn o'lchami">
+                <option value="">O'lcham</option><option value="2">Kichik</option><option value="3">Oddiy</option><option value="5">Katta</option><option value="6">Juda katta</option>
+              </select>
+              <span class="rte-sep"></span>
+              <button type="button" data-cmd="insertUnorderedList" title="Ro'yxat"><i class="fa-solid fa-list-ul"></i></button>
+              <button type="button" data-cmd="insertOrderedList" title="Raqamli ro'yxat"><i class="fa-solid fa-list-ol"></i></button>
+              <button type="button" data-cmd="formatBlock" data-val="blockquote" title="Iqtibos"><i class="fa-solid fa-quote-left"></i></button>
+              <button type="button" data-cmd="createLink" title="Havola"><i class="fa-solid fa-link"></i></button>
+              <button type="button" data-cmd="removeFormat" title="Formatni tozalash"><i class="fa-solid fa-eraser"></i></button>
+              <span class="rte-sep"></span>
+              <span class="rte-emoji-wrap">
+                <button type="button" data-emoji-toggle title="Emoji"><i class="fa-regular fa-face-smile"></i></button>
+                <span class="rte-emoji" hidden>${EMOJI.map((e) => `<button type="button" data-emoji="${e}">${e}</button>`).join("")}</span>
+              </span>
+            </div>
+            <div class="rte-area" contenteditable="true" data-placeholder="Matnni shu yerga yozing...">${richSafe(v)}</div>
+          </div>
+          <input type="hidden" name="${f.key}" value="">
+          ${hint}</div>`;
+      case "doc":
+        return `<div class="field" data-doc="${f.key}"><label for="${id}">${esc(f.label)}</label>
+          <div class="doc-field">
+            <input id="${id}" name="${f.key}" type="text" value="${esc(v || "")}" placeholder="https://... yoki PDF yuklang">
+            <label class="btn btn-outline btn-sm"><i class="fa-solid fa-upload"></i> PDF yuklash
+              <input type="file" accept="application/pdf,.pdf" data-upload-doc="${f.key}" hidden></label>
+            <span class="pdf-progress" hidden></span>
+          </div>
+          ${hint}</div>`;
       case "pdf":
         return `<div class="field" data-pdf="${f.key}"><label>${esc(f.label)}</label>
           <div class="img-field">
@@ -853,6 +1094,8 @@
     const form = e.target;
     const err = $("#edit-error");
     err.textContent = "";
+    // Tahrirlagichlardagi matn yashirin maydonga o'tkaziladi (server tozalaydi)
+    $$("[data-rich]", form).forEach((b) => { b.querySelector("input[type=hidden]").value = b.querySelector(".rte-area").innerHTML; });
     const payload = {};
     for (const f of s.fields) {
       const el = form.elements[f.key];
@@ -922,6 +1165,46 @@
     box.querySelector("[data-clear]").hidden = !path;
   }
 
+  /* ---------- Formatlangan matn tahrirlagichi ---------- */
+  const EMOJI = ["😀", "😊", "😍", "🤩", "👏", "🙌", "👍", "💪", "🎉", "🎊", "🏆", "🥇", "🥈", "🥉", "🎓", "📚", "📖", "✍️", "💡", "🚀",
+    "⭐", "🌟", "🔥", "✅", "📌", "📅", "⏰", "📍", "📢", "🎭", "🎨", "🎵", "⚽", "🏀", "🏐", "♟️", "💻", "🤝", "❤️", "🇺🇿"];
+  // Bazadagi matn server tomonidan tozalangan; eski oddiy matn qatorlari <br> bo'ladi
+  const richSafe = (v) => (/<[a-zA-Z/]/.test(String(v || "")) ? String(v) : esc(v || "").replace(/\n/g, "<br>"));
+  let rteRange = null;  // tahrirlagichdagi oxirgi belgilangan joy (tugma bosilganda yo'qolmasin)
+  function rteRestore(area) {
+    area.focus();
+    if (rteRange && area.contains(rteRange.commonAncestorContainer)) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(rteRange);
+    }
+  }
+  function rteExec(area, cmd, val) {
+    rteRestore(area);
+    document.execCommand("styleWithCSS", false, false);
+    document.execCommand(cmd, false, val);
+  }
+
+  // PDF faylni xom holda yuklaydi; foizni el ichida ko'rsatadi
+  function uploadPdfFile(file, prog) {
+    return new Promise((resolve, reject) => {
+      if (!/\.pdf$/i.test(file.name) && file.type !== "application/pdf") return reject(new Error("Faqat PDF fayl yuklash mumkin"));
+      if (file.size > 40 * 1024 * 1024) return reject(new Error("PDF 40 MB dan katta"));
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "api/upload-pdf");
+      xhr.setRequestHeader("Content-Type", "application/pdf");
+      xhr.upload.onprogress = (ev) => { if (ev.lengthComputable && prog) prog.textContent = `Yuklanmoqda… ${Math.round((ev.loaded / ev.total) * 100)}%`; };
+      xhr.onload = () => {
+        let d = null;
+        try { d = JSON.parse(xhr.responseText); } catch (ex) { /* bo'sh javob */ }
+        if (xhr.status === 200 && d && d.path) resolve(d.path);
+        else reject(new Error((d && d.error) || `Yuklab bo'lmadi (${xhr.status})`));
+      };
+      xhr.onerror = () => reject(new Error("Tarmoq xatosi: PDF yuklanmadi"));
+      xhr.send(file);
+    });
+  }
+
   function setPdf(key, path) {
     const box = $(`[data-pdf="${key}"]`);
     box.querySelector("input[type=hidden]").value = path;
@@ -958,7 +1241,6 @@
       state.kind = kind;
       openGroupOf(kind);
       state.query = "";
-      $("#admin-search").value = "";
       shell.classList.remove("nav-open");
       try { localStorage.setItem("urdu5t-admin-tab", state.kind); } catch (ex) { /* muhim emas */ }
       render();
@@ -1006,13 +1288,23 @@
     });
 
     // Bosh panel: ko'rsatkichni almashtirish, Excel
+    // Ko'rsatkich oynasidagi «Bo'limga o'tish» tugmasi
+    $("#kpi-modal").addEventListener("click", (e) => {
+      const go = e.target.closest("[data-go]");
+      if (!go) return;
+      closeModals();
+      switchTo(go.dataset.go);
+    });
+
     $("#dash-view").addEventListener("click", async (e) => {
+      const k = e.target.closest("[data-kpi]");
+      if (k) { openKpi(k.dataset.kpi); return; }
       const m = e.target.closest("[data-metric]");
       if (m) { state.metric = m.dataset.metric; render(); return; }
       const x = e.target.closest("[data-xls]");
       if (x && !x.disabled) {
         x.disabled = true;
-        try { await exportClubs(); } catch (err) { alert(err.message); }
+        try { await exportReport(); } catch (err) { alert(err.message); }
         x.disabled = false;
       }
     });
@@ -1069,7 +1361,6 @@
         gs.select();
       }
     });
-    $("#admin-search").addEventListener("input", (e) => { state.query = e.target.value; render(); });
     $("#add-btn").addEventListener("click", () => openEdit(null));
 
     // Baho bo'yicha saralash
@@ -1086,7 +1377,14 @@
       if (!b || b.disabled) return;
       b.disabled = true;
       try {
-        if (b.id === "auto-rate") {
+        if (b.id === "reset-rate") {
+          const rated = (state.items.clubs || []).filter((c) => RATING[c.rating]);
+          if (!rated.length) { toast("Baholangan to'garak yo'q"); return; }
+          if (!confirm(`${rated.length} ta to'garakning bahosi olib tashlansinmi?
+Keyin qayta baholash mumkin.`)) return;
+          await rate(Object.fromEntries(rated.map((c) => [c.id, ""])));
+          toast(`${rated.length} ta to'garakning bahosi bekor qilindi`);
+        } else if (b.id === "auto-rate") {
           const todo = (state.items.clubs || []).filter((c) => !RATING[c.rating]);
           if (!todo.length) { toast("Barcha to'garaklar baholangan"); return; }
           const ratings = Object.fromEntries(todo.map((c) => [c.id, suggestRating(c)]));
@@ -1094,14 +1392,14 @@
           if (!confirm(`${todo.length} ta baholanmagan to'garakka tavsiya etilgan baho qo'yilsinmi?\n\nYashil: ${n.green}\nSariq: ${n.yellow}\nQizil: ${n.red}\n\nTavsiya joy, jadval, telefon va a'zolar soniga qarab beriladi. Keyin istalganini qo'lda o'zgartirasiz.`)) return;
           await rate(ratings, true);
           toast(`${todo.length} ta to'garak baholandi`);
-        } else if (b.id === "import-voc") {
-          await importVoc();
         } else if (b.dataset.xls === "clubs") {
           await exportClubs();
         } else if (b.dataset.xls === "courses") {
           await exportCourses();
         } else if (b.dataset.xls === "requests") {
           await exportRequests();
+        } else if (b.dataset.xls) {
+          await exportKind(b.dataset.xls);
         }
       } catch (err) {
         alert(err.message);
@@ -1202,6 +1500,60 @@
       if (c) setImage(c.dataset.clear, "");
       const p = e.target.closest("[data-clear-pdf]");
       if (p) setPdf(p.dataset.clearPdf, "");
+    });
+
+    // Formatlangan matn: tugmalar belgilangan joyni yo'qotmasligi uchun mousedown'da fokus saqlanadi
+    document.addEventListener("selectionchange", () => {
+      const sel = window.getSelection();
+      if (sel.rangeCount && sel.anchorNode && sel.anchorNode.parentElement && sel.anchorNode.parentElement.closest(".rte-area")) rteRange = sel.getRangeAt(0).cloneRange();
+    });
+    $("#edit-fields").addEventListener("mousedown", (e) => { if (e.target.closest(".rte-bar button")) e.preventDefault(); });
+    $("#edit-fields").addEventListener("click", (e) => {
+      const rte = e.target.closest(".rte");
+      if (!rte) return;
+      const area = rte.querySelector(".rte-area");
+      const b = e.target.closest("button");
+      if (!b) return;
+      if (b.hasAttribute("data-emoji-toggle")) { const p = rte.querySelector(".rte-emoji"); p.hidden = !p.hidden; return; }
+      if (b.dataset.emoji) { rteExec(area, "insertText", b.dataset.emoji); rte.querySelector(".rte-emoji").hidden = true; return; }
+      const cmd = b.dataset.cmd;
+      if (!cmd) return;
+      if (cmd === "createLink") {
+        const url = prompt("Havola manzili (https://...):", "https://");
+        if (!url || !/^(https?:\/\/|mailto:|tel:)/i.test(url.trim())) return;
+        rteExec(area, "createLink", url.trim());
+        return;
+      }
+      rteExec(area, cmd, b.dataset.val || null);
+    });
+    $("#edit-fields").addEventListener("change", (e) => {
+      const size = e.target.closest("[data-size]");
+      if (size) {
+        if (size.value) rteExec(size.closest(".rte").querySelector(".rte-area"), "fontSize", size.value);
+        size.value = "";
+      }
+    });
+
+    // «Nizomi yoki to'liq ma'lumot»: PDF yuklansa, maydonga uning manzili yoziladi
+    $("#edit-fields").addEventListener("change", async (e) => {
+      const input = e.target.closest("[data-upload-doc]");
+      if (!input || !input.files[0]) return;
+      const box = input.closest(".doc-field");
+      const prog = box.querySelector(".pdf-progress");
+      const save = $("#edit-form button[type=submit]");
+      $("#edit-error").textContent = "";
+      box.classList.add("loading");
+      prog.hidden = false;
+      save.disabled = true;
+      try {
+        box.querySelector("input[type=text]").value = await uploadPdfFile(input.files[0], prog);
+      } catch (err) {
+        $("#edit-error").textContent = err.message;
+      }
+      box.classList.remove("loading");
+      prog.hidden = true;
+      save.disabled = false;
+      input.value = "";
     });
 
     // Kitob PDF fayli: xom holda yuboriladi (base64'siz), yuklanish foizi ko'rsatiladi

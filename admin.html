@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/main.css?v=20261123g">
+  <link rel="stylesheet" href="css/main.css?v=20261123h">
   <style>
     :root {
       --side-bg: #0B2C8F;
@@ -234,7 +234,7 @@
 
     /* ---------- Bo'limlar ro'yxati ---------- */
     .kind-note { margin: 0 0 12px; font-size: .82rem; color: var(--text-3); }
-    .toolbar { margin-bottom: 12px; }
+    .toolbar { margin-bottom: 12px; justify-content: flex-end; }
     .tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .rows { display: grid; gap: 8px; }
     .row { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 8px 12px; border-radius: 12px; }
@@ -259,6 +259,67 @@
     .check { display: flex; gap: 10px; align-items: center; font-weight: 600; }
     .check input { width: 18px; height: 18px; }
     textarea.lines { min-height: 90px; }
+    /* Formatlangan matn tahrirlagichi */
+    .rte { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: visible; }
+    .rte:focus-within { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-50); }
+    .rte-bar { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 2px; padding: 6px; border-bottom: 1px solid var(--border); background: var(--surface-2); border-radius: 12px 12px 0 0; }
+    .rte-bar button { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; color: var(--text-2); font-size: .85rem; }
+    .rte-bar button:hover { background: var(--surface); color: var(--brand); }
+    .rte-bar select { width: auto !important; flex: none; height: 32px !important; padding: 0 8px !important; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); font-size: .8rem; color: var(--text-2); }
+    .rte-sep { width: 1px; height: 20px; margin: 0 4px; background: var(--border); }
+    .rte-emoji-wrap { position: relative; }
+    .rte-emoji { position: absolute; z-index: 5; top: 38px; left: 0; display: grid; grid-template-columns: repeat(8, 34px); gap: 2px; padding: 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-lg); }
+    .rte-emoji[hidden] { display: none; }
+    .rte-emoji button { width: 34px; height: 34px; font-size: 1.15rem; }
+    .rte-area { min-height: 110px; max-height: 360px; overflow-y: auto; padding: 12px 14px; outline: none; font-size: .92rem; line-height: 1.6; color: var(--text); }
+    .rte-area:empty::before { content: attr(data-placeholder); color: var(--text-3); }
+    .rte-area ul, .rte-area ol { padding-left: 1.3em; list-style: revert; }
+    .rte-area blockquote { margin: 6px 0; padding: 6px 12px; border-left: 3px solid var(--brand); background: var(--surface-2); border-radius: 6px; }
+    .rte-area a { color: var(--brand); text-decoration: underline; }
+    .rte-area font[size="2"], .rte-area .fs-s { font-size: .85em; }
+    .rte-area font[size="5"], .rte-area .fs-l { font-size: 1.2em; }
+    .rte-area font[size="6"], .rte-area .fs-xl { font-size: 1.45em; font-weight: 700; }
+    .doc-field { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .doc-field input[type=text] { flex: 1; min-width: 220px; }
+    .doc-field.loading { opacity: .55; pointer-events: none; }
+    /* Ko'rsatkich oynasi (infografika) */
+    .kpi-box { max-width: 680px; padding: 26px 28px; }
+    .khead { display: flex; align-items: center; gap: 16px; margin: 0 44px 18px 0; }
+    .kic { width: 52px; height: 52px; flex: none; border-radius: 14px; display: grid; place-items: center; font-size: 1.2rem; color: var(--brand); background: var(--brand-50); }
+    .khead b { display: block; font-family: var(--font-head); font-size: 2rem; font-weight: 800; line-height: 1; }
+    .khead h2 { margin: 4px 0 0; font-family: var(--font-body); font-size: 1rem; font-weight: 600; color: var(--text-2); }
+    .khead p { margin-top: 2px; font-size: .8rem; color: var(--text-3); }
+    .kgrid { display: flex; align-items: center; gap: 18px; margin-bottom: 6px; }
+    .kgrid .ktiles { flex: 1; }
+    .kring { --p: 0; --c: var(--brand); position: relative; flex: none; width: 112px; height: 112px; display: grid; place-items: center; text-align: center; }
+    .kring::before { content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background: conic-gradient(var(--c) calc(var(--p) * 1%), color-mix(in srgb, var(--c) 14%, transparent) 0);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 11px), #000 calc(100% - 10px)); mask: radial-gradient(farthest-side, transparent calc(100% - 11px), #000 calc(100% - 10px)); }
+    .kring span { position: relative; display: grid; line-height: 1.1; }
+    .kring b { font-family: var(--font-head); font-size: 1.4rem; color: var(--c); }
+    .kring small { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); }
+    .ktiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 6px; }
+    .ktiles div { padding: 10px 12px; border-radius: 12px; background: var(--surface-2); }
+    .ktiles b { display: block; font-family: var(--font-head); font-size: 1.25rem; }
+    .ktiles span { font-size: .76rem; color: var(--text-3); }
+    .ksec { margin-top: 18px; }
+    .ksec h3 { margin-bottom: 10px; font-family: var(--font-body); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
+    .kbars { display: grid; gap: 8px; }
+    .kbar { --c: var(--brand); display: grid; grid-template-columns: minmax(0, 190px) minmax(0, 1fr) auto; gap: 12px; align-items: center; font-size: .85rem; }
+    .kbar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-2); }
+    .kbar-track { display: block; height: 10px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+    .kbar-track span { display: block; height: 100%; min-width: 4px; border-radius: inherit; background: var(--c); }
+    .kbar-val { text-align: right; white-space: nowrap; font-size: .8rem; color: var(--text-3); }
+    .kbar-val b { font-size: .9rem; color: var(--text); }
+    .kbar-val small { margin-left: 6px; color: var(--text-3); }
+    .klist { display: grid; gap: 2px; }
+    .klist li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: .86rem; }
+    .klist li:last-child { border-bottom: 0; }
+    .klist small { color: var(--text-3); text-align: right; }
+    .klist li.bad i { color: var(--red); } .klist li.warn i { color: #E2A30B; } .klist li.info i { color: var(--brand); }
+    .kmuted { font-size: .86rem; color: var(--text-3); }
+    .kfoot { display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .stat { cursor: pointer; }
     /* Svetofor baholash */
     .lights { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--border); border-radius: 999px; margin-right: 6px; }
     .light { --c: var(--text-3); width: 26px; height: 26px; border-radius: 50%; border: 0; background: transparent; color: var(--border); cursor: pointer; display: grid; place-items: center; font-size: .92rem; transition: color .15s, background .15s; }
@@ -337,6 +398,11 @@
       .notice > span { flex: 1 1 calc(100% - 40px); }
       .row { grid-template-columns: 1fr auto; }
       .req { grid-template-columns: 1fr; }
+      .kpi-box { padding: 20px 16px; }
+      .kgrid { flex-direction: column; align-items: stretch; }
+      .kring { margin: 0 auto; }
+      .kbar { grid-template-columns: 1fr auto; }
+      .kbar-track { grid-column: 1 / -1; grid-row: 2; }
       .req-ic { display: none; }
       .row .thumb { display: none; }
       .row .actions { flex-wrap: wrap; justify-content: flex-end; }
@@ -413,11 +479,6 @@
         <!-- Bo'lim -->
         <section id="list-view" hidden>
           <div class="toolbar" id="toolbar">
-            <label class="search-input">
-              <span class="sr-only">Bo'lim ichida qidirish</span>
-              <i class="fa-solid fa-magnifying-glass"></i>
-              <input type="search" id="admin-search" placeholder="Shu bo'limdan qidirish...">
-            </label>
             <div class="tools">
               <span class="tools" id="kind-tools"></span>
               <button type="button" class="btn btn-primary" id="add-btn"><i class="fa-solid fa-plus"></i> <span id="add-label">Qo'shish</span></button>
@@ -444,10 +505,18 @@
     </div>
   </div>
 
+  <!-- Bosh panel: ko'rsatkich bo'yicha batafsil oyna -->
+  <div class="modal" id="kpi-modal" role="dialog" aria-modal="true" aria-label="Batafsil ko'rsatkich">
+    <div class="modal-box kpi-box">
+      <button type="button" class="icon-btn modal-close" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
+      <div id="kpi-content"></div>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/alifbo.js?v=20261123g"></script>
-<script src="js/data.js?v=20261123g"></script>
-<script src="js/admin.js?v=20261123g"></script>
+<script src="js/alifbo.js?v=20261123h"></script>
+<script src="js/data.js?v=20261123h"></script>
+<script src="js/admin.js?v=20261123h"></script>
 </body>
 </html>

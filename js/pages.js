@@ -9,7 +9,7 @@
   const U = SITE.university;
   const params = new URLSearchParams(location.search);
 
-  const isOpen = (c) => c.status === "active" && daysLeft(c.deadline) >= 0;
+  const isOpen = (c) => window.UI.contestOpen(c);
 
   /* ---------- Umumiy bloklar ---------- */
   function fillInitiatives(el) {
@@ -158,27 +158,34 @@
   /* ---------- Markaz haqida ---------- */
   function markaz() {
     fillStats($("#stats"));
-    const leaders = SITE.leaders;
-    $("#initiative-rows").innerHTML = SITE.initiatives.map((i) => {
-      const l = leaders.find((x) => x.initiativeId === i.id);
-      return `
-        <article class="card init-row reveal" id="t${i.id}">
-          <div class="init-row-media"><img src="${i.image}" alt="${esc(i.title)}" loading="lazy"></div>
-          <div class="init-row-body" style="--c:${i.color}">
-            <span class="tag" style="--c:${i.color}"><i class="${i.icon}"></i> ${i.id}-tashabbus</span>
-            <h3>${esc(i.title)}</h3>
-            <p>${esc(i.about)}</p>
-            <ul class="check-list">${SITE.clubs.filter((c) => c.initiativeId === i.id).sort((a, b) => (b.students || 0) - (a.students || 0)).slice(0, 4).map((c) => `<li><i class="fa-solid fa-circle-check"></i>${esc(c.name)}</li>`).join("")}</ul>
-            <div class="mini-stats">
-              <div><strong>${i.clubsCount}</strong><span>to'garak</span></div>
-              <div><strong>${fmt(i.students)}</strong><span>o'quvchi</span></div>
-              <div><strong>${i.awards || 0}</strong><span>sovrin</span></div>
-            </div>
-            ${l ? `<div class="mentor">${avatar(l.name, l.photo)}<div><strong>${esc(l.name)}</strong><span>Yo'nalish sardori</span></div></div>` : ""}
-            <a class="link-arrow" href="togaraklar.html?t=${i.id}" style="color:${i.color}">To'garaklarni ko'rish <i class="fa-solid fa-arrow-right"></i></a>
-          </div>
-        </article>`;
-    }).join("");
+    // Markaz yo'nalishlari: tashabbuslar, admin qo'shgan yo'nalishlar, kasbga o'qitish kurslari va boshqa turdagi to'garaklar
+    const card = ({ id, title, text, color, icon, tag, link, clubs, students, extra }) => `
+      <article class="card dir-card reveal" id="${id}" style="--c:${color}">
+        <div class="dir-head"><span class="dir-ic"><i class="${icon}"></i></span><span class="dir-tag">${esc(tag)}</span></div>
+        <h3>${esc(title)}</h3>
+        <p>${esc(text || "")}</p>
+        <div class="dir-stats"><span><b>${fmt(clubs)}</b> ${extra || "to'garak"}</span><span><b>${fmt(students)}</b> ${extra ? "o'qiyotgan" : "a'zo"}</span></div>
+        <a class="link-arrow" href="${link}">Ko'rish <i class="fa-solid fa-arrow-right"></i></a>
+      </article>`;
+    const groups = SITE.groups.filter((g) => g.id !== 6);
+    const other = SITE.groups.find((g) => g.id === 6);
+    const courses = SITE.courses || [];
+    const g5 = SITE.groups.find((g) => g.id === 5) || {};
+    const { COURSE_COLOR } = window.UI;
+    $("#initiative-rows").innerHTML = `<div class="dir-grid">${groups.map((g) => card({
+        id: `t${g.id}`, title: g.title, text: g.about || g.lead, color: g.color, icon: g.icon,
+        tag: g.id <= 5 ? `${g.id}-tashabbus` : "Yo'nalish", link: `togaraklar.html?t=${g.id}`, clubs: g.clubsCount || 0, students: g.students || 0
+      })).join("")}
+      ${card({
+        id: "kurslar", title: "Kasbga o'qitish kurslari", color: COURSE_COLOR, icon: "fa-solid fa-briefcase", tag: "Kurslar", link: "togaraklar.html?t=courses",
+        text: "Talaba-qizlar va yoshlarni kasb-hunarga o'qitish: tikuvchilik, dizayn, pazandachilik, buxgalteriya va boshqa amaliy kurslar. Bitirganlarga sertifikat beriladi.",
+        clubs: courses.length || g5.clubsCount || 0, students: courses.length ? courses.reduce((a, c) => a + (Number(c.enrolled) || 0), 0) : g5.students || 0, extra: "kurs"
+      })}
+      ${other ? card({
+        id: "t6", title: other.title, color: other.color, icon: other.icon, tag: "Qo'shimcha", link: "togaraklar.html?t=6",
+        text: other.about || other.lead || "Fan, til, tafakkur va boshqa qiziqishlar bo'yicha besh tashabbusdan tashqari to'garaklar.",
+        clubs: other.clubsCount || 0, students: other.students || 0
+      }) : ""}</div>`;
   }
 
   /* ---------- Rahbariyat ---------- */
@@ -197,7 +204,7 @@
       if (p.role) return p.role;
       if (p.initiativeId === 0) return "Markaz rahbari";
       const i = initiative(p.initiativeId);
-      return i ? `${i.title} yo'nalishi sardori` : "";
+      return i.id ? `${i.title} yo'nalishi sardori` : "";
     };
     const colorOf = (p) => (initiative(p.initiativeId) || {}).color || "var(--brand)";
 
@@ -224,7 +231,8 @@
     // Kurslar hali kiritilmagan bo'lsa, kasb-hunar (5-yo'nalish) to'garaklari ko'rsatiladi — statistikadagi kabi
     const courseItems = courses.length ? courses.map((c) => ({ c, card: courseCard })) : SITE.clubs.filter((c) => c.initiativeId === 5).map((c) => ({ c, card: clubCard }));
     const other = SITE.groups.find((g) => g.id === 6);
-    const items = SITE.groups.filter((g) => g.id <= 5).map((g) => [g.title, String(g.id), g.color])
+    // 1–5 tashabbuslar, admin qo'shgan yo'nalishlar, kurslar va oxirida «Boshqa turdagi to'garaklar»
+    const items = SITE.groups.filter((g) => g.id <= 5 || g.id >= 7).map((g) => [g.title, String(g.id), g.color])
       .concat([["Kasbga o'qitish kurslari", "courses", COURSE_COLOR]])
       .concat(other ? [[other.title, "6", other.color]] : []);
     const countOf = (v) => (v === "courses" ? courseItems.length : SITE.clubs.filter((c) => c.initiativeId === Number(v)).length);
@@ -262,7 +270,7 @@
   function tanlovlar() {
     let status = "all";
     const open = SITE.contests.filter(isOpen).length;
-    const done = SITE.contests.filter((c) => c.status === "completed").length;
+    const done = SITE.contests.filter((c) => !isOpen(c)).length;
 
     $("#contest-status").innerHTML =
       chip("Barchasi", "all", true, null, SITE.contests.length) +
@@ -271,7 +279,7 @@
 
     const render = () => {
       const list = SITE.contests.filter((c) =>
-        (status === "all" || (status === "open" ? isOpen(c) : c.status === "completed"))
+        (status === "all" || (status === "open" ? isOpen(c) : !isOpen(c)))
       ).sort((a, b) => Number(isOpen(b)) - Number(isOpen(a)) || a.deadline.localeCompare(b.deadline));
       $("#contest-list").innerHTML = list.length
         ? list.map(contestCard).join("")
@@ -418,7 +426,8 @@
       });
       L.marker(UNI, { icon, title: "Urganch davlat universiteti" }).addTo(map);
       // Katta ekranda belgi manzil kartochkasi ortida qolmasin
-      if (box.clientWidth > 760) map.panBy([-Math.round(box.clientWidth * 0.17), -20], { animate: false });
+      // Manzil kartochkasi pastda turadi: belgi undan yuqoriroqda ko'rinsin
+      map.panBy([0, box.clientWidth > 520 ? 50 : 30], { animate: false });
       // Sahifani aylantirayotganda xarita kattalashmasin: bosilgandan keyin g'ildirak ishlaydi
       map.on("click focus", () => map.scrollWheelZoom.enable());
       map.on("mouseout", () => map.scrollWheelZoom.disable());

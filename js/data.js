@@ -558,10 +558,17 @@ SITE.apply = function (d) {
     }));
   }
 
-  if (list("groups")) d.groups.forEach((g) => {
-    const target = SITE.groups.find((x) => x.id === Number(g.id));
-    if (target) Object.assign(target, g, { id: target.id });
-  });
+  if (list("groups")) {
+    d.groups.forEach((g) => {
+      const target = SITE.groups.find((x) => x.id === Number(g.id));
+      if (target) Object.assign(target, g, { id: target.id });
+      // Admin paneldan qo'shilgan yangi yo'nalish
+      else if (Number(g.id)) SITE.groups.push({ ...g, id: Number(g.id), color: g.color || "#4F46E5", icon: g.icon || "fa-solid fa-layer-group" });
+    });
+    // O'chirilgan qo'shimcha yo'nalishlar ro'yxatdan chiqadi
+    const ids = new Set(d.groups.map((g) => Number(g.id)));
+    SITE.groups = SITE.groups.filter((g) => g.id <= 6 || ids.has(g.id));
+  }
 
   if (list("staff")) {
     const staff = d.staff.map((p) => ({ ...p, initiativeId: Number(p.initiativeId) || 0 }));
