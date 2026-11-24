@@ -503,7 +503,7 @@
 
       const icon = L.divIcon({
         className: "map-marker",
-        html: `<span class="map-pulse"></span><span class="map-pin"><img src="assets/images/urdu_5t_emblem.png" alt=""></span>`,
+        html: `<span class="map-pulse"></span><span class="map-pin"><img src="assets/images/urdu_5t_emblem.png?v=2" alt=""></span>`,
         iconSize: [56, 56], iconAnchor: [28, 56]
       });
       L.marker(UNI, { icon, title: "Urganch davlat universiteti" }).addTo(map);

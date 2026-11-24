@@ -76,8 +76,8 @@
       <header class="header" id="header">
         <div class="container">
           <a href="index.html" class="brand" aria-label="Bosh sahifa">
-            <img class="logo-light" src="assets/images/urdu_5t_logo.png" alt="UrDU Besh muhim tashabbus markazi" width="715" height="420">
-            <img class="logo-dark" src="assets/images/urdu_5t_logo_white.png" alt="" width="715" height="420">
+            <img class="logo-light" src="assets/images/urdu_5t_logo.png?v=2" alt="UrDU Besh muhim tashabbus markazi" width="715" height="420">
+            <img class="logo-dark" src="assets/images/urdu_5t_logo_white.png?v=2" alt="" width="715" height="420">
           </a>
           <ul class="nav" id="nav">${navHtml}</ul>
           <div class="header-actions">
@@ -114,7 +114,7 @@
         <div class="container">
           <div class="footer-grid">
             <div class="footer-brand">
-              <img src="assets/images/urdu_5t_logo_white.png" alt="UrDU Besh muhim tashabbus markazi" width="715" height="420">
+              <img src="assets/images/urdu_5t_logo_white.png?v=2" alt="UrDU Besh muhim tashabbus markazi" width="715" height="420">
               <p>${esc(U.name)} qoshidagi Besh muhim tashabbus markazining rasmiy portali.</p>
               <div class="socials">${socialLinks()}</div>
             </div>
