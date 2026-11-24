@@ -91,14 +91,13 @@ SCHEMA = {
         F("prize", "Mukofot", half=True, placeholder="1-o'rin: 5 mln so'm"),
         F("desc", "Qisqa ma'lumot", "rich", limit=1500, hint="Saytdagi kartochkada ko'rinadi: 2–3 gap"),
         F("body", "Batafsil ma'lumot", "rich", limit=20000, rows=8, hint="«Batafsil» tugmasi bosilganda oynada ochiladi"),
-        F("image", "Rasm", "image", hint="Tanlanmasa, universitet binosi rasmi qo'yiladi."),
+        F("gallery", "Rasm yuklash", "images", hint="Birinchi rasm muqova bo'ladi. Bir nechta bo'lsa, saytda slayd-shou bo'lib almashadi. Tanlanmasa, universitet binosi rasmi qo'yiladi."),
         F("doc", "Nizomi yoki to'liq ma'lumot", "doc", hint="Havola (https://...) yozing yoki PDF yuklang."),
     ]},
     "news": {"label": "Yangiliklar", "one": "Yangilik", "mode": "list", "title": "title", "fields": [
         F("title", "Sarlavha", required=True),
         F("date", "Sana", "date", half=True, required=True),
-        F("image", "Asosiy rasm", "image", required=True),
-        F("gallery", "Qo'shimcha rasmlar", "images", hint="Bir nechta rasm tanlash mumkin; yangilik oynasida galereya bo'lib chiqadi."),
+        F("gallery", "Rasm yuklash", "images", required=True, hint="Birinchi rasm muqova bo'ladi. Bir nechta bo'lsa, saytda slayd-shou bo'lib almashadi."),
         F("excerpt", "Qisqa matn", "rich", limit=2000),
         F("body", "To'liq matn", "rich", limit=20000, rows=8),
     ]},
@@ -317,6 +316,20 @@ def init_db():
                                  (json.dumps(g, ensure_ascii=False), now))
                     print("6-yo'nalish nomi yangilandi")
             conn.execute("INSERT INTO seeded(kind) VALUES ('groups_v2')")
+        # Yangilik va tanlovlarda «Asosiy rasm» + «Qo'shimcha rasmlar» bitta ro'yxatga birlashdi
+        if not conn.execute("SELECT 1 FROM seeded WHERE kind='media_v1'").fetchone():
+            for kind in ("news", "contests"):
+                for row in conn.execute("SELECT id, data FROM items WHERE kind=?", (kind,)).fetchall():
+                    it = json.loads(row[1])
+                    imgs = []
+                    for x in [it.get("image")] + list(it.get("gallery") or []):
+                        if x and x not in imgs and not (kind == "contests" and x.endswith("urdu_main_building.jpg")):
+                            imgs.append(x)
+                    it["gallery"] = imgs
+                    conn.execute("UPDATE items SET data=? WHERE kind=? AND id=?",
+                                 (json.dumps(it, ensure_ascii=False), kind, row[0]))
+            conn.execute("INSERT INTO seeded(kind) VALUES ('media_v1')")
+            print("Yangilik va tanlov rasmlari bitta ro'yxatga o'tkazildi")
 
 
 def list_items(kind):
@@ -511,9 +524,8 @@ def clean_contest(d):
     deadline = valid_date(d.get("deadline"))
     if not deadline:
         raise ValueError("Tugash sanasi kiritilmagan")
-    image = text(d.get("image"), 300)
-    if image and not re.fullmatch(r"(assets/images/|uploads/)[\w.\-/]+", image):
-        raise ValueError("Rasm manzili noto'g'ri")
+    # Rasmlar ro'yxati; birinchisi muqova (eski yozuvlardagi "image" ham hisobga olinadi)
+    gallery = clean_field(F("gallery", "Rasm", "images"), d.get("gallery") or ([d["image"]] if d.get("image") else []))
     # Holat tugash sanasidan aniqlanadi: muddati o'tgan tanlov — yakunlangan
     status = "completed" if deadline < time.strftime("%Y-%m-%d") else "active"
     return {
@@ -521,7 +533,8 @@ def clean_contest(d):
         "title": title,
         "deadline": deadline,
         "period": f"{fmt_date(deadline)} gacha",
-        "image": image or "assets/images/urdu_main_building.jpg",
+        "image": gallery[0] if gallery else "assets/images/urdu_main_building.jpg",
+        "gallery": gallery,
         "prize": text(d.get("prize"), 300),
         "desc": clean_field(F("desc", "Qisqa ma'lumot", "rich", limit=1500), d.get("desc")),
         "body": clean_field(F("body", "Batafsil ma'lumot", "rich", limit=20000), d.get("body")),
@@ -702,7 +715,13 @@ def clean_generic(kind, d):
     return out
 
 
-CLEANERS = {"clubs": clean_club, "contests": clean_contest}
+def clean_news(d):
+    out = clean_generic("news", d)
+    out["image"] = out["gallery"][0]  # muqova: kartochka va eski sahifalar uchun
+    return out
+
+
+CLEANERS = {"clubs": clean_club, "contests": clean_contest, "news": clean_news}
 
 
 def clean(kind, d):
