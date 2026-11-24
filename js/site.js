@@ -63,7 +63,7 @@
               ${esc(item.label)} <i class="fa-solid fa-chevron-down"></i>
             </button>
             <div class="dropdown">
-              ${item.children.map((c) => `<a href="${c.href}"${c.key === page ? ' class="active" aria-current="page"' : ""}><i class="fa-solid ${c.icon}"></i><span>${esc(c.label)}</span></a>`).join("")}
+              ${item.children.map((c) => `<a href="${c.href}"${c.key === page ? ' class="active" aria-current="page"' : ""}><span>${esc(c.label)}</span></a>`).join("")}
             </div>
           </li>`;
       }
