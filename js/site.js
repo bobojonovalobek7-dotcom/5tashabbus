@@ -139,7 +139,7 @@
               <h4>Bog'lanish</h4>
               <ul>
                 <li class="contact-row"><i class="fa-solid fa-location-dot"></i><span>${esc(U.address)}</span></li>
-                ${[U.phone, U.youthPhone].filter(Boolean).map((p) => `<li class="contact-row"><i class="fa-solid fa-phone"></i><a href="${tel(p)}">${esc(p)}</a></li>`).join("")}
+                ${[U.phone].filter(Boolean).map((p) => `<li class="contact-row"><i class="fa-solid fa-phone"></i><a href="${tel(p)}">${esc(p)}</a></li>`).join("")}
                 ${U.centerEmail ? `<li class="contact-row"><i class="fa-solid fa-envelope"></i><a href="mailto:${esc(U.centerEmail)}">${esc(U.centerEmail)}</a></li>` : ""}
               </ul>
             </div>
@@ -413,6 +413,8 @@
         else if (document.body.classList.contains("nav-open")) burger.click();
       }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openSearch(); }
+      // Tanlov kartasi klaviaturadan ham ochiladi
+      if (e.key === "Enter" && e.target.matches && e.target.matches("article[data-contest]")) showContest(e.target.dataset.contest);
     });
 
     // "A'zo bo'lish" tugmalari (sahifaning istalgan joyida)
@@ -444,9 +446,11 @@
   function clubCard(c) {
     const i = initiative(c.initiativeId);
     const mentors = c.mentors.length ? c.mentors : ["Rahbar belgilanmagan"];
-    const who = mentors.length > 1 ? `${mentors[0]} +${mentors.length - 1}` : mentors[0];
-    const p = c.phones[0];
     const row = (icon, txt, title) => `<li title="${esc(title || txt)}"><i class="${icon}"></i><span>${esc(txt)}</span></li>`;
+    // Barcha rahbarlar va barcha telefonlar yonma-yon (raqam bosilsa — qo'ng'iroq)
+    const people = `<li class="full"><i class="fa-regular fa-user"></i><span class="cc-tags">${mentors.map((m) => `<b>${esc(m)}</b>`).join("")}</span></li>`;
+    const phones = c.phones.length ? `<li class="full"><i class="fa-solid fa-phone"></i><span class="cc-tags">${c.phones.map((p) =>
+      p.tel ? `<a href="tel:${esc(p.tel)}">${esc(p.text)}</a>` : `<b>${esc(p.text)}</b>`).join("")}</span></li>` : "";
     return `
       <article class="card cc" style="--c:${i.color}">
         <div class="cc-body">
@@ -454,7 +458,8 @@
           <h3>${esc(c.name)}</h3>
           ${c.desc ? `<p class="cc-desc">${esc(richText(c.desc))}</p>` : ""}
           <ul class="cc-info">
-            ${row("fa-regular fa-user", who, mentors.join(", "))}
+            ${people}
+            ${phones}
             ${c.schedule ? row("fa-regular fa-clock", c.schedule) : ""}
             ${c.place ? row("fa-regular fa-map", c.place) : ""}
           </ul>
@@ -462,7 +467,6 @@
         <div class="cc-foot">
           ${c.students ? `<span class="cc-count"><b>${c.students}</b> a'zo</span>` : `<span class="cc-count">Yangi</span>`}
           <span class="cc-actions">
-            ${p && p.tel ? `<a class="cc-call" href="tel:${p.tel}" title="${esc(p.text)}" aria-label="Qo'ng'iroq: ${esc(p.text)}"><i class="fa-solid fa-phone"></i></a>` : ""}
             <button type="button" class="cc-join" data-join="${c.id}">A'zo bo'lish <i class="fa-solid fa-arrow-right"></i></button>
           </span>
         </div>
@@ -546,13 +550,14 @@
     const open = contestOpen(c);
     const status = open
       ? `<span class="tag tag-success"><i class="fa-solid fa-circle"></i> Qabul ochiq</span>`
-      : `<span class="tag tag-muted"><i class="fa-solid fa-flag-checkered"></i> Yakunlangan</span>`;
+      : `<span class="tag tag-muted"><i class="fa-solid fa-flag-checkered"></i> Tanlov tugadi</span>`;
     const hasRules = c.rules && (c.rules.purpose || (c.rules.requirements || []).length);
     const doc = c.doc
       ? `<a class="btn btn-outline btn-sm" href="${esc(c.doc)}" target="_blank" rel="noopener"><i class="fa-regular fa-file-lines"></i> Nizomi</a>`
-      : hasRules ? `<button type="button" class="btn btn-outline btn-sm" data-rules="${c.id}">Nizomi</button>` : "";
+      : hasRules ? `<button type="button" class="btn btn-outline btn-sm" data-rules="${c.id}"><i class="fa-regular fa-file-lines"></i> Nizomi</button>` : "";
+    // Karta bosilsa to'liq oyna ochiladi; sana va sovrin har doim pastda, bir tekisda
     return `
-      <article class="card card-hover contest-card" id="${c.id}" style="--c:${i.color}">
+      <article class="card card-hover contest-card${open ? "" : " ended"}" id="${c.id}" style="--c:${i.color}" data-contest="${esc(c.id)}" tabindex="0" role="button" aria-label="${esc(c.title)} — batafsil">
         <div class="contest-media">
           <img src="${c.image}" alt="" loading="lazy">
           ${i.id ? `<span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span>` : ""}
@@ -561,13 +566,13 @@
           <div class="club-top">${status}${open ? `<span class="countdown${d > 7 ? " ok" : ""}">${d === 0 ? "Bugun oxirgi kun" : `${d} kun qoldi`}</span>` : ""}</div>
           <h3>${esc(c.title)}</h3>
           ${c.desc ? `<div class="rich rich-clamp">${richHtml(c.desc)}</div>` : ""}
-          <div class="meta">
-            <div><i class="fa-regular fa-calendar"></i><span>${esc(dmy(c.deadline))} gacha</span></div>
-          </div>
-          ${c.prize ? `<div class="prize"><i class="fa-solid fa-trophy"></i><span>${esc(c.prize)}</span></div>` : ""}
-          <div class="contest-foot">
-            <button type="button" class="btn btn-outline btn-sm" data-contest="${esc(c.id)}">Batafsil</button>
-            ${open ? `<a class="btn btn-primary btn-sm" href="mailto:${esc(U.centerEmail)}?subject=${encodeURIComponent("Tanlovga ariza: " + c.title)}">Qatnashish</a>` : doc}
+          <div class="contest-facts">
+            <div class="meta"><div><i class="fa-regular fa-calendar"></i><span>${open ? `${esc(dmy(c.deadline))} gacha` : `${esc(dmy(c.deadline))} da tugadi`}</span></div></div>
+            <div class="prize${c.prize ? "" : " empty"}"><i class="fa-solid fa-trophy"></i><span>${esc(c.prize || "Mukofot e'lon qilinadi")}</span></div>
+            <div class="contest-foot">
+              ${doc}
+              ${open ? `<a class="btn btn-primary btn-sm" href="mailto:${esc(U.centerEmail)}?subject=${encodeURIComponent("Tanlovga ariza: " + c.title)}">Qatnashish</a>` : ""}
+            </div>
           </div>
         </div>
       </article>`;
@@ -589,11 +594,19 @@
       ${r.awards ? `<h4>Mukofotlar</h4><p>${esc(r.awards)}</p>` : ""}`);
   }
 
+  // Yangilik rasmi: bir nechta bo'lsa, kartada avtomatik almashadi
+  function newsMedia(n) {
+    const imgs = [...new Set([n.image].concat(n.gallery || []).filter(Boolean))];
+    return `<div class="news-media"${imgs.length > 1 ? " data-slides" : ""}>${imgs.map((src, k) =>
+      `<img src="${esc(src)}" alt="" loading="lazy"${k ? "" : ' class="on"'}>`).join("")}${imgs.length > 1
+      ? `<span class="news-count"><i class="fa-regular fa-images"></i> ${imgs.length}</span>` : ""}</div>`;
+  }
+
   function newsCard(n) {
     const i = initiative(n.initiativeId);
     return `
       <button type="button" class="card card-hover news-card" data-news="${n.id}" style="--c:${i.color}">
-        <img src="${n.image}" alt="" loading="lazy">
+        ${newsMedia(n)}
         <div class="news-body">
           <div class="news-meta">${i.id ? `<span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span>` : ""}<span>${esc(dmy(n.date))}</span></div>
           <h3>${esc(n.title)}</h3>
@@ -606,7 +619,7 @@
   function showDetail(html) {
     $("#detail-content").innerHTML = html;
     openModal("detail-modal");
-    $("#detail-modal .modal-box").scrollTop = 0;
+    $("#detail-content").scrollTop = 0;
   }
 
   // Galereya: asosiy rasm, ← → tugmalari, kichik rasmlar, surib almashtirish
@@ -665,7 +678,7 @@
         ${galleryHtml([c.image], c.title)}
         <div class="dt-body">
           <div class="dt-meta">
-            ${open ? `<span class="dt-tag ok"><i class="fa-solid fa-circle"></i> Qabul ochiq</span>` : `<span class="dt-tag muted"><i class="fa-solid fa-flag-checkered"></i> Yakunlangan</span>`}
+            ${open ? `<span class="dt-tag ok"><i class="fa-solid fa-circle"></i> Qabul ochiq</span>` : `<span class="dt-tag muted"><i class="fa-solid fa-flag-checkered"></i> Tanlov tugadi</span>`}
             ${open ? `<span class="dt-left">${d === 0 ? "Bugun oxirgi kun" : `${d} kun qoldi`}</span>` : ""}
           </div>
           <h2>${esc(c.title)}</h2>
@@ -701,7 +714,7 @@
     const n = e.target.closest("[data-news]");
     if (n) showNews(n.dataset.news);
     const ct = e.target.closest("[data-contest]");
-    if (ct) showContest(ct.dataset.contest);
+    if (ct && !e.target.closest("a, button")) showContest(ct.dataset.contest);
     // Galereya tugmalari
     const g = e.target.closest("[data-gallery]");
     if (g) {
@@ -711,6 +724,18 @@
       if (to) galleryGo(g, Number(to.dataset.galTo));
     }
   });
+  // Yangilik kartalarida rasmlar 3,5 soniyada almashadi (sichqoncha ustida bo'lsa to'xtaydi)
+  setInterval(() => {
+    if (document.hidden) return;
+    $("[data-slides]").forEach((m) => {
+      if (m.matches(":hover")) return;
+      const imgs = $("img", m);
+      const i = Math.max(0, imgs.findIndex((x) => x.classList.contains("on")));
+      imgs[i].classList.toggle("on", false);
+      imgs[(i + 1) % imgs.length].classList.toggle("on", true);
+    });
+  }, 3500);
+
   // Galereyada barmoq bilan surish
   let galX = null;
   document.addEventListener("touchstart", (e) => { galX = e.target.closest(".dt-stage") && e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });

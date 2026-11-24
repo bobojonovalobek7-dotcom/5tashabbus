@@ -46,6 +46,87 @@
     });
   }
 
+  /* ---------- Sahifalash: ro'yxatni bo'laklab ko'rsatadi, ostida ‹ 1 2 3 › ----------
+     Elementlar bitta sahifaga sig'sa, raqamlar ko'rinmaydi. */
+  function paginate(listEl, items, cardFn, per, emptyHtml) {
+    let page = 1;
+    const pages = Math.max(1, Math.ceil(items.length / per));
+    let nav = listEl.nextElementSibling;
+    if (!nav || !nav.classList.contains("pager")) {
+      nav = document.createElement("nav");
+      nav.className = "pager";
+      nav.setAttribute("aria-label", "Sahifalar");
+      listEl.after(nav);
+      nav.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-page]");
+        if (b && !b.disabled && nav._go) nav._go(b.dataset.page);
+      });
+    }
+    // Ko'p sahifa bo'lsa: 1 … 4 5 6 … 12
+    const nums = () => {
+      if (pages <= 7) return Array.from({ length: pages }, (_, i) => i + 1);
+      const out = [1];
+      if (page > 3) out.push("…");
+      for (let p = Math.max(2, page - 1); p <= Math.min(pages - 1, page + 1); p++) out.push(p);
+      if (page < pages - 2) out.push("…");
+      out.push(pages);
+      return out;
+    };
+    const draw = (scroll) => {
+      listEl.innerHTML = items.length ? items.slice((page - 1) * per, page * per).map(cardFn).join("") : emptyHtml || "";
+      nav.hidden = pages <= 1;
+      nav.innerHTML = pages <= 1 ? "" : `
+        <button type="button" data-page="prev" aria-label="Oldingi sahifa"${page === 1 ? " disabled" : ""}><i class="fa-solid fa-chevron-left"></i></button>
+        ${nums().map((n) => (n === "…" ? `<span class="pager-gap">…</span>`
+          : `<button type="button" data-page="${n}"${n === page ? ' class="on" aria-current="page"' : ""}>${n}</button>`)).join("")}
+        <button type="button" data-page="next" aria-label="Keyingi sahifa"${page === pages ? " disabled" : ""}><i class="fa-solid fa-chevron-right"></i></button>`;
+      listEl.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+      if (scroll) window.scrollTo({ top: listEl.getBoundingClientRect().top + scrollY - 110, behavior: "smooth" });
+    };
+    nav._go = (v) => {
+      page = v === "prev" ? page - 1 : v === "next" ? page + 1 : Number(v);
+      page = Math.min(pages, Math.max(1, page));
+      draw(true);
+    };
+    draw(false);
+  }
+
+  /* ---------- Statistika animatsiyasi: blok ekranga kirganda raqamlar sanab chiqadi, halqa to'ladi ---------- */
+  function animateCounters(root) {
+    if (!root) return;
+    const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const run = () => {
+      root.classList.add("in-view");
+      if (reduce) return;
+      // Halqa 0 dan to'ladi (boshlang'ich holatda to'liq ko'rinib turadi)
+      root.querySelectorAll("[data-p]").forEach((r) => {
+        r.style.transition = "none";
+        r.style.setProperty("--p", 0);
+        void r.offsetWidth;
+        r.style.transition = "";
+        requestAnimationFrame(() => requestAnimationFrame(() => r.style.setProperty("--p", r.dataset.p)));
+      });
+      root.querySelectorAll("[data-count]").forEach((el) => {
+        const target = Number(String(el.dataset.count).replace(/\s/g, ""));
+        if (!isFinite(target) || target <= 0) return;
+        const suffix = el.dataset.suffix || "";
+        const t0 = performance.now(), dur = 1500;
+        const step = (t) => {
+          const k = Math.min(1, (t - t0) / dur);
+          el.textContent = fmt(Math.round(target * (1 - Math.pow(1 - k, 3)))) + suffix;
+          if (k < 1) requestAnimationFrame(step);
+        };
+        el.textContent = "0" + suffix;
+        requestAnimationFrame(step);
+      });
+    };
+    if (!("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { io.disconnect(); run(); }
+    }, { threshold: 0.25 });
+    io.observe(root);
+  }
+
   /* ---------- Bosh sahifa ---------- */
   function home() {
     // Slayder: admin paneldagi «Slayder» bo'limi; u bo'sh bo'lsa — g'oliblar rasmlari
@@ -117,20 +198,21 @@
       <div class="sb-hero">
         <div class="sb-main">
           <span class="sb-kicker"><i class="fa-solid ${esc(head.icon)}"></i> ${esc(head.label)}</span>
-          <strong class="sb-big">${esc(num(head.shown))}${head.unit ? `<small>${esc(head.unit)}</small>` : ""}</strong>
+          <strong class="sb-big"><span data-count="${esc(head.shown)}">${esc(num(head.shown))}</span>${head.unit ? `<small>${esc(head.unit)}</small>` : ""}</strong>
           ${share ? `<p class="sb-note"><b>${fmt(active)}</b> nafari to'garak va kurslarda shug'ullanadi</p>` : ""}
         </div>
-        ${share ? `<div class="sb-ring" style="--p:${share}" role="img" aria-label="Talabalarning ${share} foizi faol">
-          <span><b>${share}%</b><small>faol</small></span></div>` : ""}
+        ${share ? `<div class="sb-ring" data-p="${share}" style="--p:${share}" role="img" aria-label="Talabalarning ${share} foizi faol">
+          <span><b data-count="${share}" data-suffix="%">${share}%</b><small>faol</small></span></div>` : ""}
       </div>` : "") + `
       <div class="sb-grid">${rest.map((r) => `
         <div class="sb-cell">
           <span class="sb-ic"><i class="fa-solid ${esc(r.icon)}"></i></span>
-          <strong>${esc(num(r.shown))}${r.unit ? `<small>${esc(r.unit)}</small>` : ""}</strong>
+          <strong><span data-count="${esc(r.shown)}">${esc(num(r.shown))}</span>${r.unit ? `<small>${esc(r.unit)}</small>` : ""}</strong>
           <span class="sb-label">${esc(r.label)}</span>
           ${r.subN ? `<em>${esc(num(r.subN))} ${esc(r.subLabel)}</em>` : ""}
         </div>`).join("")}
       </div>`;
+    animateCounters($("#home-stats"));
 
     // Tanlovlar ro'yxati: avval qabul ochiqlari (muddati yaqinroq), keyin yakunlanganlar
     const contests = [...SITE.contests]
@@ -142,7 +224,7 @@
         <img src="${c.image}" alt="" loading="lazy">
         <span>
           <strong>${esc(c.title)}</strong>
-          <small><i class="fa-regular fa-clock"></i> ${isOpen(c) ? `${dmy(c.deadline)} gacha` : "Yakunlangan"}</small>
+          <small><i class="fa-regular fa-clock"></i> ${isOpen(c) ? `${dmy(c.deadline)} gacha` : "Tanlov tugadi"}</small>
         </span>
       </a>`).join("");
 
@@ -245,11 +327,9 @@
             (!q || [c.name, c.place, c.schedule, c.mentors.join(" ")].some((f) => norm(f || "").includes(q)))
           ).map((c) => ({ c, card: clubCard }));
       $("#club-count").textContent = filter === "courses" ? `${list.length} ta kurs` : `${list.length} ta to'garak`;
-      $("#club-list").innerHTML = list.length
-        ? list.map(({ c, card }) => card(c)).join("")
-        : filter === "courses"
-          ? `<div class="empty"><i class="${COURSE_ICON}"></i>Kasbga o'qitish kurslari tez orada e'lon qilinadi</div>`
-          : `<div class="empty"><i class="fa-regular fa-folder-open"></i>Bu bo'limda hozircha hech narsa yo'q</div>`;
+      paginate($("#club-list"), list, ({ c, card }) => card(c), 9, filter === "courses"
+        ? `<div class="empty"><i class="${COURSE_ICON}"></i>Kasbga o'qitish kurslari tez orada e'lon qilinadi</div>`
+        : `<div class="empty"><i class="fa-regular fa-folder-open"></i>Bu bo'limda hozircha hech narsa yo'q</div>`);
       const url = new URL(location.href);
       filter === "all" ? url.searchParams.delete("t") : url.searchParams.set("t", filter);
       history.replaceState(null, "", url);
@@ -284,9 +364,8 @@
       const list = SITE.contests.filter((c) =>
         (status === "all" || (status === "open" ? isOpen(c) : !isOpen(c)))
       ).sort((a, b) => Number(isOpen(b)) - Number(isOpen(a)) || a.deadline.localeCompare(b.deadline));
-      $("#contest-list").innerHTML = list.length
-        ? list.map(contestCard).join("")
-        : `<div class="empty"><i class="fa-regular fa-calendar-xmark"></i>Bu bo'limda hozircha tanlov yo'q</div>`;
+      paginate($("#contest-list"), list, contestCard, 9,
+        `<div class="empty"><i class="fa-regular fa-calendar-xmark"></i>Bu bo'limda hozircha tanlov yo'q</div>`);
     };
 
     bindChips($("#contest-status"), (v) => { status = v; render(); });
@@ -309,7 +388,7 @@
         <div class="rank-points">${f.points.toFixed(1)}<small>ball</small></div>
       </div>`).join("");
 
-    $("#fame").innerHTML = SITE.winners.map((w) => {
+    paginate($("#fame"), SITE.winners, (w) => {
       const i = initiative(w.initiativeId);
       return `
         <article class="card fame-card reveal" style="--c:${i.color}">
@@ -323,7 +402,7 @@
             ${w.quote ? `<blockquote>${esc(w.quote)}</blockquote>` : ""}
           </div>
         </article>`;
-    }).join("");
+    }, 9);
   }
 
   /* ---------- Kutubxona ---------- */
@@ -335,7 +414,7 @@
 
     const render = (cat) => {
       const list = SITE.books.filter((b) => cat === "all" || b.category === cat);
-      $("#book-list").innerHTML = list.map((b) => `
+      paginate($("#book-list"), list, (b) => `
         <article class="card card-hover book-card">
           <div class="book-cover"><img src="${b.cover}" alt="${esc(b.title)} muqovasi" loading="lazy"></div>
           <div class="book-body">
@@ -351,7 +430,7 @@
               ? `<button type="button" class="btn btn-primary book-read" data-read="${esc(b.id)}"><i class="fa-solid fa-book-open"></i> Mutolaa qilish</button>`
               : `<button type="button" class="btn book-read" disabled title="Kitob fayli hali yuklanmagan"><i class="fa-regular fa-clock"></i> Tez orada</button>`}
           </div>
-        </article>`).join("");
+        </article>`, 8, `<div class="empty"><i class="fa-solid fa-book"></i>Bu turkumda hozircha kitob yo'q</div>`);
     };
     bindChips(chips, render);
     render("all");
@@ -443,8 +522,8 @@
   function aloqa() {
     const item = (icon, title, body) => body ? `
       <div class="contact-item"><span class="stat-icon"><i class="${icon}"></i></span><div><strong>${title}</strong>${body}</div></div>` : "";
-    const phones = [U.phone, U.youthPhone].filter(Boolean).map((p) => `<a href="${tel(p)}">${esc(p)}</a>`).join("<br>");
-    const mails = [U.centerEmail, U.email].filter(Boolean).map((m) => `<a href="mailto:${esc(m)}">${esc(m)}</a>`).join("<br>");
+    const phones = [U.phone].filter(Boolean).map((p) => `<a href="${tel(p)}">${esc(p)}</a>`).join("<br>");
+    const mails = [U.centerEmail].filter(Boolean).map((m) => `<a href="mailto:${esc(m)}">${esc(m)}</a>`).join("<br>");
     $("#contact-info").innerHTML =
       item("fa-solid fa-location-dot", "Manzil", U.address ? `<span>${esc([U.address, U.office].filter(Boolean).join(". "))}</span>` : "") +
       item("fa-solid fa-phone", "Telefonlar", phones) +

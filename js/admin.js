@@ -543,8 +543,10 @@
     const xls = `<button type="button" class="btn btn-outline" data-xls="${kind}"><i class="fa-solid fa-file-excel"></i> Excel</button>`;
     if (kind === "requests") return (state.items.requests || []).length ? xls : "";
     if (kind === "clubs") return `<button type="button" class="btn btn-outline" id="auto-rate" title="Baholanmagan to'garaklarga tavsiya etilgan bahoni qo'yadi"><i class="fa-solid fa-wand-magic-sparkles"></i> Avtomatik baholash</button><button type="button" class="btn btn-outline" id="reset-rate" title="Barcha to'garaklardan bahoni olib tashlaydi"><i class="fa-solid fa-rotate-left"></i> Baholashni bekor qilish</button>${xls}`;
-    if (VIRTUAL[kind] || !(state.items[kind] || []).length && kind !== "courses") return "";
-    return xls;  // har bir bo'lim Excel'ga yuklab olinadi
+    // Excel faqat shu bo'limlarda (Bosh paneldagi «Excel hisobot» alohida)
+    const EXCEL = ["clubs", "courses", "contests", "faculties", "stats", "requests"];
+    if (!EXCEL.includes(kind) || (kind !== "courses" && !(state.items[kind] || []).length)) return "";
+    return xls;
   }
 
   function extraHtml(kind) {
