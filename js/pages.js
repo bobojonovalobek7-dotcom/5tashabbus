@@ -546,7 +546,59 @@
     });
   }
 
-  const routes = { home, markaz, rahbariyat, togaraklar, tanlovlar, reyting, kutubxona, aloqa };
+  /* ---------- Yangilik sahifasi (yangilik.html?id=...) — havolasini ulashish mumkin ---------- */
+  const isoDate = (d) => (/^\d{2}\.\d{2}\.\d{4}$/.test(d || "") ? d.split(".").reverse().join("-") : d || "");
+  function yangilik() {
+    const { dmy, richHtml, richText, galleryHtml, mediaList, newsCard, initiative } = window.UI;
+    const id = new URLSearchParams(location.search).get("id");
+    const all = [...SITE.news].sort((a, b) => isoDate(b.date).localeCompare(isoDate(a.date)));
+    const n = all.find((x) => String(x.id) === String(id));
+    const box = $("#news-article");
+    if (!n) {
+      box.innerHTML = `<div class="empty-state card"><i class="fa-regular fa-newspaper"></i><h2>Yangilik topilmadi</h2>
+        <p>Havola noto'g'ri yoki yangilik o'chirilgan bo'lishi mumkin.</p><a href="index.html" class="btn btn-primary">Bosh sahifaga</a></div>`;
+      return;
+    }
+    const i = initiative(n.initiativeId);
+    document.title = `${n.title} — UrDU Besh muhim tashabbus`;
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.content = richText(n.excerpt || n.body || "").slice(0, 200);
+    const url = location.href;
+    const share = encodeURIComponent(url), title = encodeURIComponent(n.title);
+    box.innerHTML = `
+      <nav class="crumbs" aria-label="Yo'l"><a href="index.html">Bosh sahifa</a><i class="fa-solid fa-chevron-right"></i><a href="index.html#home-news">Yangiliklar</a><i class="fa-solid fa-chevron-right"></i><span>${esc(n.title)}</span></nav>
+      <article class="news-page card">
+        ${galleryHtml(mediaList(n), n.title)}
+        <div class="news-page-body">
+          <div class="dt-meta">
+            <span class="dt-tag"><i class="fa-regular fa-newspaper"></i> Yangilik</span>
+            ${i.id ? `<span class="dt-tag" style="color:${i.color};background:color-mix(in srgb, ${i.color} 12%, transparent)"><i class="${i.icon}"></i> ${esc(i.title)}</span>` : ""}
+            <span><i class="fa-regular fa-calendar"></i> ${esc(dmy(n.date))}</span>
+          </div>
+          <h1>${esc(n.title)}</h1>
+          ${n.excerpt ? `<div class="rich rich-lead">${richHtml(n.excerpt)}</div>` : ""}
+          ${n.body ? `<div class="rich">${richHtml(n.body)}</div>` : ""}
+          <div class="share">
+            <span>Ulashish:</span>
+            <a class="share-btn tg" href="https://t.me/share/url?url=${share}&text=${title}" target="_blank" rel="noopener" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+            <a class="share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${share}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <button type="button" class="share-btn copy" id="copy-link"><i class="fa-solid fa-link"></i> <span>Havolani nusxalash</span></button>
+          </div>
+        </div>
+      </article>`;
+    $("#copy-link").addEventListener("click", async (e) => {
+      try { await navigator.clipboard.writeText(url); }
+      catch (_) { const t = document.createElement("textarea"); t.value = url; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+      e.currentTarget.classList.add("done");
+      window.UI.toast("Havola nusxalandi");
+    });
+    const more = all.filter((x) => x !== n).slice(0, 3);
+    const wrap = $("#more-news");
+    if (more.length) wrap.innerHTML = more.map(newsCard).join("");
+    else wrap.closest("section").hidden = true;
+  }
+
+  const routes = { home, markaz, rahbariyat, togaraklar, tanlovlar, reyting, kutubxona, aloqa, yangilik };
   SITE.load().then(() => {
     window.UI.refreshShell();
     const fn = routes[document.body.dataset.page];
