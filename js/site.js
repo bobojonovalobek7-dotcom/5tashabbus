@@ -76,8 +76,8 @@
       <header class="header" id="header">
         <div class="container">
           <a href="index.html" class="brand" aria-label="Bosh sahifa">
-            <img class="logo-light" src="assets/images/urdu_5t_logo.png" alt="UrDU Besh muhim tashabbus markazi" width="928" height="482">
-            <img class="logo-dark" src="assets/images/urdu_5t_logo_white.png" alt="" width="928" height="482">
+            <img class="logo-light" src="assets/images/urdu_5t_logo.png" alt="UrDU Besh muhim tashabbus markazi" width="715" height="420">
+            <img class="logo-dark" src="assets/images/urdu_5t_logo_white.png" alt="" width="715" height="420">
           </a>
           <ul class="nav" id="nav">${navHtml}</ul>
           <div class="header-actions">
@@ -114,7 +114,7 @@
         <div class="container">
           <div class="footer-grid">
             <div class="footer-brand">
-              <img src="assets/images/urdu_5t_logo_white.png" alt="UrDU Besh muhim tashabbus markazi" width="928" height="482">
+              <img src="assets/images/urdu_5t_logo_white.png" alt="UrDU Besh muhim tashabbus markazi" width="715" height="420">
               <p>${esc(U.name)} qoshidagi Besh muhim tashabbus markazining rasmiy portali.</p>
               <div class="socials">${socialLinks()}</div>
             </div>
@@ -624,7 +624,7 @@
   function newsCard(n) {
     const i = initiative(n.initiativeId);
     return `
-      <button type="button" class="card card-hover news-card" data-news="${n.id}" style="--c:${i.color}">
+      <a href="yangilik.html?id=${encodeURIComponent(n.id)}" class="card card-hover news-card" style="--c:${i.color}">
         ${newsMedia(n)}
         <div class="news-body">
           <div class="news-meta">${i.id ? `<span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span>` : ""}<span>${esc(dmy(n.date))}</span></div>
@@ -632,7 +632,7 @@
           <p>${esc(richText(n.excerpt))}</p>
           <span class="link-arrow">Batafsil <i class="fa-solid fa-arrow-right"></i></span>
         </div>
-      </button>`;
+      </a>`;
   }
 
   function showDetail(html) {
@@ -679,20 +679,6 @@
     if (thumbs[i]) thumbs[i].scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
   }
 
-  function showNews(id) {
-    const n = SITE.news.find((x) => x.id === id);
-    if (!n) return;
-    showDetail(`
-      <article class="dt">
-        ${galleryHtml(mediaList(n), n.title)}
-        <div class="dt-body">
-          <div class="dt-meta"><span class="dt-tag"><i class="fa-regular fa-newspaper"></i> Yangilik</span><span><i class="fa-regular fa-calendar"></i> ${esc(dmy(n.date))}</span></div>
-          <h2>${esc(n.title)}</h2>
-          ${n.excerpt ? `<div class="rich rich-lead">${richHtml(n.excerpt)}</div>` : ""}
-          ${n.body ? `<div class="rich">${richHtml(n.body)}</div>` : ""}
-        </div>
-      </article>`);
-  }
 
   // Tanlov: kartada qisqa ma'lumot, oynada to'liq
   function showContest(id) {
@@ -739,6 +725,7 @@
   document.addEventListener("click", (e) => {
     const sl = e.target.closest("[data-sl]");
     if (sl) {
+      e.preventDefault(); // karta havola bo'lsa ham sahifa ochilib ketmasin
       const m = sl.closest("[data-slides]");
       m.dataset.t = Date.now();
       slideGo(m, Number(m.dataset.i) + Number(sl.dataset.sl));
@@ -746,8 +733,6 @@
     }
     const r = e.target.closest("[data-rules]");
     if (r) showRules(r.dataset.rules);
-    const n = e.target.closest("[data-news]");
-    if (n) showNews(n.dataset.news);
     const ct = e.target.closest("[data-contest]");
     if (ct && !e.target.closest("a, button")) showContest(ct.dataset.contest);
     // Galereya tugmalari
@@ -765,7 +750,7 @@
   setInterval(() => {
     if (document.hidden) return;
     const now = Date.now();
-    $$("[data-slides], .modal.open [data-gallery]").forEach((m) => {
+    $$("[data-slides], .modal.open [data-gallery], .news-page [data-gallery]").forEach((m) => {
       if (now - Number(m.dataset.t || 0) < 8000) return;
       step(m, 1);
     });
@@ -799,5 +784,5 @@
   renderModals();
   bindEvents();
 
-  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, sendRequest, richHtml, richText, contestOpen, clubCard, courseCard, COURSE_COLOR, COURSE_ICON, contestCard, newsCard, initiativeCard, daysLeft, showInfo, toast, initReveal };
+  window.UI = { $, $$, esc, tel, dmy, refreshShell, fmt,initiative, groupLabel, initials, avatar, sendRequest, richHtml, richText, contestOpen, clubCard, courseCard, COURSE_COLOR, COURSE_ICON, contestCard, newsCard, initiativeCard, galleryHtml, mediaList, daysLeft, showInfo, toast, initReveal };
 })();
