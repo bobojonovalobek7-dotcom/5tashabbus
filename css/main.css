@@ -906,7 +906,6 @@ section.container > .cta { margin: 48px 0 8px; }
 .rp-btn { display: inline-flex; align-items: center; gap: 12px; padding: 16px 26px; border-radius: 18px; font-weight: 800; font-size: 1.02rem; color: #1A1300; background: var(--gold); box-shadow: 0 0 0 0 rgba(245, 184, 46, .6); animation: rp-ring 2.2s ease-out infinite; transition: transform .2s; }
 .rp-btn:hover { transform: translateY(-3px) scale(1.03); }
 .rp-btn i { font-size: 1.3rem; }
-.rp-bot { font-size: .86rem; font-weight: 600; color: rgba(255, 255, 255, .85); }
 .rp-float { position: absolute; z-index: 0; font-size: 2rem; color: rgba(255, 255, 255, .14); animation: rp-float 6s ease-in-out infinite; pointer-events: none; }
 .rp-float.f1 { right: 34%; top: 12%; } .rp-float.f2 { right: 8%; bottom: 8%; font-size: 3.4rem; animation-delay: -2s; } .rp-float.f3 { left: 46%; bottom: 10%; font-size: 1.6rem; animation-delay: -4s; } .rp-float.f4 { right: 22%; top: 8%; font-size: 1.4rem; animation-delay: -1s; }
 @keyframes rp-float { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-14px) rotate(8deg); } }
@@ -919,7 +918,7 @@ section.container > .cta { margin: 48px 0 8px; }
 
 /* ---------- Yangilik sahifasi ---------- */
 .news-page-wrap { padding-top: 24px; }
-.news-page-wrap + .section-alt { padding: 40px 0 72px; }
+main > .news-page-wrap + .section-alt:last-child { padding: 40px 0 72px; }
 #news-article { max-width: 980px; }
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 16px; font-size: .84rem; color: var(--text-3); }
 .crumbs a { color: var(--text-2); font-weight: 500; }
