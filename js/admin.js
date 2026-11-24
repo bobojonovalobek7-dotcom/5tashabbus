@@ -118,8 +118,10 @@
   }
 
   function thumbOf(kind, it) {
-    const f = (state.schema[kind].fields || []).find((x) => x.type === "image");
-    return f ? (it[f.key] || "") : null;
+    const f = (state.schema[kind].fields || []).find((x) => x.type === "image" || x.type === "images");
+    if (!f) return null;
+    const v = it[f.key];
+    return (Array.isArray(v) ? v[0] : v) || it.image || "";
   }
 
   const issueCount = (issues) => issues.filter((i) => i.lv !== "info").length;
@@ -481,9 +483,9 @@
     $("#rows").innerHTML = list.length ? list.map((it, idx) => {
       const thumb = thumbOf(state.kind, it);
       return `
-        <div class="card row${state.kind === "clubs" && RATING[it.rating] ? " rated-" + it.rating : ""}">
-          ${thumb === null ? "<span></span>" : thumb ? `<img class="thumb" src="${esc(thumb)}" alt="" loading="lazy">` : `<span class="thumb none"><i class="fa-regular fa-image"></i></span>`}
-          <div>
+        <div class="card row${thumb === null ? " no-thumb" : ""}${state.kind === "clubs" ? " has-lights" : ""}${state.kind === "clubs" && RATING[it.rating] ? " rated-" + it.rating : ""}">
+          ${thumb === null ? "" : thumb ? `<img class="thumb" src="${esc(thumb)}" alt="" loading="lazy">` : `<span class="thumb none"><i class="fa-regular fa-image"></i></span>`}
+          <div class="row-text">
             <strong>${esc(it[s.title] || it.name || it.title || "—")}</strong>
             <small>${esc(subtitle(state.kind, it).filter(Boolean).join(" · "))}</small>
           </div>
@@ -1023,7 +1025,7 @@
               <input type="file" accept="image/jpeg,image/png,image/webp" multiple data-gal-upload="${f.key}" hidden></label>
           </div>
           <input type="hidden" name="${f.key}" value="${esc(list.join("\n"))}">
-          <p class="hint">${f.hint ? esc(f.hint) + " " : ""}JPG, PNG yoki WEBP. Bir yo'la bir nechta rasm tanlash mumkin.</p></div>`;
+          <p class="hint">${f.hint ? esc(f.hint) + " " : ""}JPG, PNG yoki WEBP, bir yo'la bir nechtasini tanlash mumkin.</p></div>`;
       }
       case "pdf":
         return `<div class="field" data-pdf="${f.key}"><label>${esc(f.label)}</label>

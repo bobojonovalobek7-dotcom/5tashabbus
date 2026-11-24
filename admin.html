@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/main.css?v=20261124a">
+  <link rel="stylesheet" href="css/main.css?v=20261124b">
   <style>
     :root {
       --side-bg: #0B2C8F;
@@ -241,7 +241,9 @@
     .row:hover { border-color: color-mix(in srgb, var(--brand) 35%, var(--border)); }
     .row .thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: var(--surface-2); }
     .row .thumb.none { display: grid; place-items: center; color: var(--text-3); }
-    .row strong { display: block; font-size: .88rem; font-weight: 600; }
+    .row.no-thumb { grid-template-columns: 1fr auto; }
+    .row-text { min-width: 0; }
+    .row strong { display: block; font-size: .88rem; font-weight: 600; overflow-wrap: anywhere; }
     .row small { color: var(--text-3); font-size: .76rem; }
     .row .actions { display: flex; gap: 6px; }
     .row .icon-btn.danger:hover { color: var(--red); border-color: var(--red); }
@@ -413,8 +415,15 @@
       .kbar { grid-template-columns: 1fr auto; }
       .kbar-track { grid-column: 1 / -1; grid-row: 2; }
       .req-ic { display: none; }
+      .row, .row.no-thumb { grid-template-columns: 1fr auto; gap: 10px; padding: 12px 14px; }
       .row .thumb { display: none; }
-      .row .actions { flex-wrap: wrap; justify-content: flex-end; }
+      .row small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .row .actions { gap: 6px; }
+      .row .icon-btn { width: 36px; height: 36px; }
+      /* To'garak: baho chiroqlari ko'p joy oladi — tugmalar matn ostida bir qatorda */
+      .row.has-lights { grid-template-columns: 1fr; }
+      .row.has-lights .actions { justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border); }
+      .row.has-lights .lights { margin-right: auto; }
     }
   </style>
 </head>
@@ -524,8 +533,8 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/alifbo.js?v=20261124a"></script>
-<script src="js/data.js?v=20261124a"></script>
-<script src="js/admin.js?v=20261124a"></script>
+<script src="js/alifbo.js?v=20261124b"></script>
+<script src="js/data.js?v=20261124b"></script>
+<script src="js/admin.js?v=20261124b"></script>
 </body>
 </html>

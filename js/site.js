@@ -190,6 +190,7 @@
     const html = `
       <div class="modal modal-detail" id="detail-modal" role="dialog" aria-modal="true" aria-label="Batafsil" data-static="1">
         <div class="modal-box">
+          <span class="dt-progress" aria-hidden="true"></span>
           <button type="button" class="icon-btn modal-close" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
           <div id="detail-content"></div>
         </div>
@@ -247,11 +248,13 @@
             <i class="fa-solid fa-magnifying-glass"></i>
             <input id="search-input" type="search" placeholder="To'garak, tanlov, kitob yoki sahifa..." autocomplete="off">
             <kbd>Esc</kbd>
+            <button type="button" class="modal-close search-x" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
           </div>
           <div class="search-results" id="search-results"></div>
         </div>
       </div>
 
+      <button type="button" class="to-top" id="to-top" aria-label="Sahifa boshiga"><i class="fa-solid fa-arrow-up"></i></button>
       <div class="toast" id="toast" role="status" aria-live="polite"></div>`;
     document.body.insertAdjacentHTML("beforeend", html);
   }
@@ -391,9 +394,15 @@
 
     // Header soyasi
     const header = $("#header");
-    const onScroll = () => header.classList.toggle("scrolled", window.scrollY > 10);
+    const toTop = $("#to-top");
+    const onScroll = () => {
+      header.classList.toggle("scrolled", window.scrollY > 10);
+      toTop.classList.toggle("show", window.scrollY > 500);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
+    toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    $("#detail-content").addEventListener("scroll", detailProgress, { passive: true });
 
     // Qidiruv
     $("#search-open").addEventListener("click", openSearch);
@@ -558,10 +567,7 @@
     // Karta bosilsa to'liq oyna ochiladi; sana va sovrin har doim pastda, bir tekisda
     return `
       <article class="card card-hover contest-card${open ? "" : " ended"}" id="${c.id}" style="--c:${i.color}" data-contest="${esc(c.id)}" tabindex="0" role="button" aria-label="${esc(c.title)} — batafsil">
-        <div class="contest-media">
-          <img src="${c.image}" alt="" loading="lazy">
-          ${i.id ? `<span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span>` : ""}
-        </div>
+        ${mediaSlides(mediaList(c), "contest-media", i.id ? `<span class="tag"><i class="${i.icon}"></i> ${esc(i.title)}</span>` : "")}
         <div class="contest-body">
           <div class="club-top">${status}${open ? `<span class="countdown${d > 7 ? " ok" : ""}">${d === 0 ? "Bugun oxirgi kun" : `${d} kun qoldi`}</span>` : ""}</div>
           <h3>${esc(c.title)}</h3>
@@ -594,13 +600,26 @@
       ${r.awards ? `<h4>Mukofotlar</h4><p>${esc(r.awards)}</p>` : ""}`);
   }
 
-  // Yangilik rasmi: bir nechta bo'lsa, kartada avtomatik almashadi
-  function newsMedia(n) {
-    const imgs = [...new Set([n.image].concat(n.gallery || []).filter(Boolean))];
-    return `<div class="news-media"${imgs.length > 1 ? " data-slides" : ""}>${imgs.map((src, k) =>
-      `<img src="${esc(src)}" alt="" loading="lazy"${k ? "" : ' class="on"'}>`).join("")}${imgs.length > 1
-      ? `<span class="news-count"><i class="fa-regular fa-images"></i> ${imgs.length}</span>` : ""}</div>`;
+  // Karta rasmi: bir nechta bo'lsa — avtomatik slayd-shou, ‹ › tugmalari, nuqtalar, sichqoncha/barmoq bilan surish
+  const mediaList = (x) => [...new Set([x.image].concat(x.gallery || []).filter(Boolean))];
+  function mediaSlides(imgs, cls, extra = "") {
+    const many = imgs.length > 1;
+    return `<div class="${cls} mslides"${many ? ' data-slides data-i="0"' : ""}>${imgs.map((src, k) =>
+      `<img src="${esc(src)}" alt="" loading="lazy" draggable="false"${k ? "" : ' class="on"'}>`).join("")}${many ? `
+      <span class="ms-nav prev" data-sl="-1" role="button" aria-label="Oldingi rasm"><i class="fa-solid fa-chevron-left"></i></span>
+      <span class="ms-nav next" data-sl="1" role="button" aria-label="Keyingi rasm"><i class="fa-solid fa-chevron-right"></i></span>
+      <span class="ms-dots">${imgs.map((_, k) => `<i${k ? "" : ' class="on"'}></i>`).join("")}</span>` : ""}${extra}</div>`;
   }
+  function slideGo(m, i) {
+    const imgs = $$("img", m), dots = $$(".ms-dots i", m);
+    const n = imgs.length;
+    if (n < 2) return;
+    i = (i + n) % n;
+    m.dataset.i = i;
+    imgs.forEach((im, k) => im.classList.toggle("on", k === i));
+    dots.forEach((d, k) => d.classList.toggle("on", k === i));
+  }
+  const newsMedia = (n) => mediaSlides(mediaList(n), "news-media");
 
   function newsCard(n) {
     const i = initiative(n.initiativeId);
@@ -617,9 +636,18 @@
   }
 
   function showDetail(html) {
-    $("#detail-content").innerHTML = html;
+    const box = $("#detail-content");
+    box.innerHTML = html;
     openModal("detail-modal");
-    $("#detail-content").scrollTop = 0;
+    box.scrollTop = 0;
+    detailProgress();
+  }
+  // Oyna tepasidagi ingichka chiziq: qancha o'qilganini ko'rsatadi
+  function detailProgress() {
+    const box = $("#detail-content"), bar = $(".dt-progress");
+    if (!box || !bar) return;
+    const max = box.scrollHeight - box.clientHeight;
+    bar.style.transform = `scaleX(${max > 0 ? box.scrollTop / max : 0})`;
   }
 
   // Galereya: asosiy rasm, ← → tugmalari, kichik rasmlar, surib almashtirish
@@ -629,7 +657,7 @@
     return `
       <div class="dt-gallery" data-gallery data-i="0">
         <div class="dt-stage">
-          ${list.map((src, k) => `<img src="${esc(src)}" alt="${esc(alt)}"${k ? ' loading="lazy"' : ""} class="${k ? "" : "on"}">`).join("")}
+          ${list.map((src, k) => `<figure class="dt-slide${k ? "" : " on"}"><img class="dt-bg" src="${esc(src)}" alt="" aria-hidden="true"${k ? ' loading="lazy"' : ""} draggable="false"><img class="dt-fg" src="${esc(src)}" alt="${esc(alt)}"${k ? ' loading="lazy"' : ""} draggable="false"></figure>`).join("")}
           ${list.length > 1 ? `
             <button type="button" class="dt-nav prev" data-gal="-1" aria-label="Oldingi rasm"><i class="fa-solid fa-chevron-left"></i></button>
             <button type="button" class="dt-nav next" data-gal="1" aria-label="Keyingi rasm"><i class="fa-solid fa-chevron-right"></i></button>
@@ -639,7 +667,7 @@
       </div>`;
   }
   function galleryGo(g, i) {
-    const imgs = $$(".dt-stage img", g), thumbs = $$(".dt-thumbs button", g);
+    const imgs = $$(".dt-slide", g), thumbs = $$(".dt-thumbs button", g);
     const n = imgs.length;
     if (n < 2) return;
     i = (i + n) % n;
@@ -656,7 +684,7 @@
     if (!n) return;
     showDetail(`
       <article class="dt">
-        ${galleryHtml([n.image].concat(n.gallery || []), n.title)}
+        ${galleryHtml(mediaList(n), n.title)}
         <div class="dt-body">
           <div class="dt-meta"><span class="dt-tag"><i class="fa-regular fa-newspaper"></i> Yangilik</span><span><i class="fa-regular fa-calendar"></i> ${esc(dmy(n.date))}</span></div>
           <h2>${esc(n.title)}</h2>
@@ -675,7 +703,7 @@
     const hasRules = c.rules && (c.rules.purpose || (c.rules.requirements || []).length);
     showDetail(`
       <article class="dt">
-        ${galleryHtml([c.image], c.title)}
+        ${galleryHtml(mediaList(c), c.title)}
         <div class="dt-body">
           <div class="dt-meta">
             ${open ? `<span class="dt-tag ok"><i class="fa-solid fa-circle"></i> Qabul ochiq</span>` : `<span class="dt-tag muted"><i class="fa-solid fa-flag-checkered"></i> Tanlov tugadi</span>`}
@@ -709,6 +737,13 @@
 
   // Delegatsiya: nizom va yangilik tugmalari
   document.addEventListener("click", (e) => {
+    const sl = e.target.closest("[data-sl]");
+    if (sl) {
+      const m = sl.closest("[data-slides]");
+      m.dataset.t = Date.now();
+      slideGo(m, Number(m.dataset.i) + Number(sl.dataset.sl));
+      return;
+    }
     const r = e.target.closest("[data-rules]");
     if (r) showRules(r.dataset.rules);
     const n = e.target.closest("[data-news]");
@@ -720,32 +755,43 @@
     if (g) {
       const step = e.target.closest("[data-gal]");
       const to = e.target.closest("[data-gal-to]");
+      if (step || to) g.dataset.t = Date.now();
       if (step) galleryGo(g, Number(g.dataset.i) + Number(step.dataset.gal));
       if (to) galleryGo(g, Number(to.dataset.galTo));
     }
   });
-  // Yangilik kartalarida rasmlar 3,5 soniyada almashadi (sichqoncha ustida bo'lsa to'xtaydi)
+  // Rasmlar 4 soniyada o'zi almashadi; foydalanuvchi o'zi almashtirsa, 8 soniya kutadi
+  const step = (m, d) => (m.matches("[data-gallery]") ? galleryGo : slideGo)(m, Number(m.dataset.i || 0) + d);
   setInterval(() => {
     if (document.hidden) return;
-    $("[data-slides]").forEach((m) => {
-      if (m.matches(":hover")) return;
-      const imgs = $("img", m);
-      const i = Math.max(0, imgs.findIndex((x) => x.classList.contains("on")));
-      imgs[i].classList.toggle("on", false);
-      imgs[(i + 1) % imgs.length].classList.toggle("on", true);
+    const now = Date.now();
+    $$("[data-slides], .modal.open [data-gallery]").forEach((m) => {
+      if (now - Number(m.dataset.t || 0) < 8000) return;
+      step(m, 1);
     });
-  }, 3500);
+  }, 4000);
 
-  // Galereyada barmoq bilan surish
-  let galX = null;
-  document.addEventListener("touchstart", (e) => { galX = e.target.closest(".dt-stage") && e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
-  document.addEventListener("touchend", (e) => {
-    if (galX === null) return;
-    const g = e.target.closest("[data-gallery]");
-    const dx = e.changedTouches[0].clientX - galX;
-    galX = null;
-    if (g && Math.abs(dx) > 40) galleryGo(g, Number(g.dataset.i) + (dx < 0 ? 1 : -1));
+  // Sichqoncha bilan tortib yoki barmoq bilan surib almashtirish
+  let drag = null, dragged = false;
+  document.addEventListener("pointerdown", (e) => {
+    const m = e.button === 0 && e.target.closest("[data-slides], .dt-stage");
+    drag = m ? { m: m.closest("[data-slides], [data-gallery]"), x: e.clientX, y: e.clientY } : null;
   });
+  document.addEventListener("pointerup", (e) => {
+    if (!drag) return;
+    const { m, x, y } = drag;
+    drag = null;
+    const dx = e.clientX - x;
+    if (!m || Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(e.clientY - y)) return;
+    m.dataset.t = Date.now();
+    step(m, dx < 0 ? 1 : -1);
+    dragged = true; // tortishdan keyingi «bosish» kartani ochmasin
+    setTimeout(() => { dragged = false; }, 350);
+  });
+  document.addEventListener("pointercancel", () => { drag = null; });
+  document.addEventListener("click", (e) => {
+    if (dragged) { dragged = false; e.preventDefault(); e.stopPropagation(); }
+  }, true);
 
   /* ---------- Ishga tushirish ---------- */
   renderHeader();
