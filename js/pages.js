@@ -567,7 +567,7 @@
     const share = encodeURIComponent(url), title = encodeURIComponent(n.title);
     box.innerHTML = `
       <nav class="crumbs" aria-label="Yo'l"><a href="index.html">Bosh sahifa</a><i class="fa-solid fa-chevron-right"></i><a href="index.html#home-news">Yangiliklar</a><i class="fa-solid fa-chevron-right"></i><span>${esc(n.title)}</span></nav>
-      <article class="news-page card">
+      <article class="news-page">
         ${galleryHtml(mediaList(n), n.title)}
         <div class="news-page-body">
           <div class="dt-meta">
@@ -587,14 +587,22 @@
         </div>
       </article>`;
     $("#copy-link").addEventListener("click", async (e) => {
-      try { await navigator.clipboard.writeText(url); }
-      catch (_) { const t = document.createElement("textarea"); t.value = url; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
-      e.currentTarget.classList.add("done");
+      const btn = e.currentTarget; // await dan keyin currentTarget bo'sh bo'lib qoladi
+      const fallback = () => { const t = document.createElement("textarea"); t.value = url; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch (_) {} t.remove(); };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).catch(fallback); else fallback();
+      btn.classList.add("done");
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Nusxalandi</span>';
       window.UI.toast("Havola nusxalandi");
+      setTimeout(() => { btn.classList.remove("done"); btn.innerHTML = '<i class="fa-solid fa-link"></i> <span>Havolani nusxalash</span>'; }, 2500);
     });
     const more = all.filter((x) => x !== n).slice(0, 3);
     const wrap = $("#more-news");
-    if (more.length) wrap.innerHTML = more.map(newsCard).join("");
+    if (more.length) wrap.innerHTML = more.map((x) => `
+      <a class="mini-news" href="yangilik.html?id=${encodeURIComponent(x.id)}">
+        <img src="${esc(mediaList(x)[0] || "assets/images/urdu_main_building.jpg")}" alt="" loading="lazy">
+        <time>${esc(dmy(x.date))}</time>
+        <strong>${esc(x.title)}</strong>
+      </a>`).join("");
     else wrap.closest("section").hidden = true;
   }
 

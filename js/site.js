@@ -63,7 +63,7 @@
               ${esc(item.label)} <i class="fa-solid fa-chevron-down"></i>
             </button>
             <div class="dropdown">
-              ${item.children.map((c) => `<a href="${c.href}"${c.key === page ? ' class="active" aria-current="page"' : ""}><i class="fa-solid ${c.icon}"></i>${esc(c.label)}</a>`).join("")}
+              ${item.children.map((c) => `<a href="${c.href}"${c.key === page ? ' class="active" aria-current="page"' : ""}><i class="fa-solid ${c.icon}"></i><span>${esc(c.label)}</span></a>`).join("")}
             </div>
           </li>`;
       }
@@ -247,7 +247,6 @@
           <div class="search-field">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input id="search-input" type="search" placeholder="To'garak, tanlov, kitob yoki sahifa..." autocomplete="off">
-            <kbd>Esc</kbd>
             <button type="button" class="modal-close search-x" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
           </div>
           <div class="search-results" id="search-results"></div>
