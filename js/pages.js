@@ -232,7 +232,7 @@
     const isoDate = (d) => (/^\d{2}\.\d{2}\.\d{4}$/.test(d || "") ? d.split(".").reverse().join("-") : d || "");
     $("#home-news").innerHTML = [...SITE.news]
       .sort((a, b) => isoDate(b.date).localeCompare(isoDate(a.date)))
-      .slice(0, 6).map(newsCard).join("");
+      .slice(0, 5).map(newsCard).join("");
   }
 
   /* ---------- Markaz haqida ---------- */
@@ -595,7 +595,7 @@
       window.UI.toast("Havola nusxalandi");
       setTimeout(() => { btn.classList.remove("done"); btn.innerHTML = '<i class="fa-solid fa-link"></i> <span>Havolani nusxalash</span>'; }, 2500);
     });
-    const more = all.filter((x) => x !== n).slice(0, 3);
+    const more = all.filter((x) => x !== n).slice(0, 6);
     const wrap = $("#more-news");
     if (more.length) wrap.innerHTML = more.map((x) => `
       <a class="mini-news" href="yangilik.html?id=${encodeURIComponent(x.id)}">
@@ -606,7 +606,13 @@
     else wrap.closest("section").hidden = true;
   }
 
-  const routes = { home, markaz, rahbariyat, togaraklar, tanlovlar, reyting, kutubxona, aloqa, yangilik };
+  /* ---------- Yangiliklar ro'yxati (sana bo'yicha, eng yangisi birinchi) ---------- */
+  function yangiliklar() {
+    const all = [...SITE.news].sort((a, b) => isoDate(b.date).localeCompare(isoDate(a.date)));
+    paginate($("#news-list"), all, window.UI.newsCard, 9, '<div class="empty"><i class="fa-regular fa-newspaper"></i>Hozircha yangilik yo\'q</div>');
+  }
+
+  const routes = { home, markaz, rahbariyat, togaraklar, tanlovlar, reyting, kutubxona, aloqa, yangilik, yangiliklar };
   SITE.load().then(() => {
     window.UI.refreshShell();
     const fn = routes[document.body.dataset.page];
