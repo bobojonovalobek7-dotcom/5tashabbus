@@ -46,9 +46,9 @@
         { href: "yoriqnoma.html", label: "Yo'riqnoma", icon: "fa-circle-question", key: "yoriqnoma" }
       ]
     },
+    { href: "yangiliklar.html", label: "Yangiliklar", key: "yangiliklar" },
     { href: "togaraklar.html", label: "To'garak va kurslar", key: "togaraklar" },
     { href: "tanlovlar.html", label: "Tanlovlar", key: "tanlovlar" },
-    { href: "yangiliklar.html", label: "Yangiliklar", key: "yangiliklar" },
     { href: "reyting.html", label: "Reyting", key: "reyting" },
     { href: "kutubxona.html", label: "Kutubxona", key: "kutubxona" },
     { href: "aloqa.html", label: "Aloqa", key: "aloqa" }
@@ -603,8 +603,6 @@
     const many = imgs.length > 1;
     return `<div class="${cls} mslides"${many ? ' data-slides data-i="0"' : ""}>${imgs.map((src, k) =>
       `<img src="${esc(src)}" alt="" loading="lazy" draggable="false"${k ? "" : ' class="on"'}>`).join("")}${many ? `
-      <span class="ms-nav prev" data-sl="-1" role="button" aria-label="Oldingi rasm"><i class="fa-solid fa-chevron-left"></i></span>
-      <span class="ms-nav next" data-sl="1" role="button" aria-label="Keyingi rasm"><i class="fa-solid fa-chevron-right"></i></span>
       <span class="ms-dots">${imgs.map((_, k) => `<i${k ? "" : ' class="on"'}></i>`).join("")}</span>` : ""}${extra}</div>`;
   }
   function slideGo(m, i) {
@@ -771,6 +769,18 @@
     setTimeout(() => { dragged = false; }, 350);
   });
   document.addEventListener("pointercancel", () => { drag = null; });
+  // Kartadagi rasmni tortganda havola "sudralib" ketmasin — rasm almashsin
+  document.addEventListener("dragstart", (e) => { if (e.target.closest && e.target.closest("[data-slides]")) e.preventDefault(); });
+  let wheelAt = 0;
+  document.addEventListener("wheel", (e) => {
+    const m = e.target.closest && e.target.closest("[data-slides]");
+    if (!m || Math.abs(e.deltaX) < 20 || Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
+    e.preventDefault(); // gorizontal surish rasmni almashtiradi, sahifa siljimaydi
+    if (Date.now() - wheelAt < 500) return;
+    wheelAt = Date.now();
+    m.dataset.t = Date.now();
+    slideGo(m, Number(m.dataset.i || 0) + (e.deltaX > 0 ? 1 : -1));
+  }, { passive: false });
   document.addEventListener("click", (e) => {
     if (dragged) { dragged = false; e.preventDefault(); e.stopPropagation(); }
   }, true);

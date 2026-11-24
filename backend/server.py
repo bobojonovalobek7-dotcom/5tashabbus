@@ -330,6 +330,23 @@ def init_db():
                                  (json.dumps(it, ensure_ascii=False), kind, row[0]))
             conn.execute("INSERT INTO seeded(kind) VALUES ('media_v1')")
             print("Yangilik va tanlov rasmlari bitta ro'yxatga o'tkazildi")
+        # 2026/2027 o'quv yili kasbga o'qitish raja-grafigi (nomi bir xil bo'lgan kurs qayta qo'shilmaydi)
+        if not conn.execute("SELECT 1 FROM seeded WHERE kind='courses_v1'").fetchone():
+            path = os.path.join(HERE, "courses_v1.json")
+            have = {json.loads(r[0]).get("name", "").lower() for r in conn.execute("SELECT data FROM items WHERE kind='courses'")}
+            pos = conn.execute("SELECT COALESCE(MAX(position), 0) + 1 FROM items WHERE kind='courses'").fetchone()[0]
+            added = 0
+            for name, duration, schedule, place, teacher, count in (json.load(open(path, encoding="utf-8")) if os.path.exists(path) else []):
+                if name.lower() in have:
+                    continue
+                item = {"name": name, "duration": duration, "schedule": schedule, "place": place, "teacher": teacher,
+                        "phone": "", "audience": f"Talabalar · {count} o'rin", "certificate": False, "desc": ""}
+                item["id"] = new_id("courses", item)
+                conn.execute("INSERT INTO items(kind, id, position, data, updated_at) VALUES (?,?,?,?,?)",
+                             ("courses", item["id"], pos + added, json.dumps(item, ensure_ascii=False), now))
+                added += 1
+            conn.execute("INSERT INTO seeded(kind) VALUES ('courses_v1')")
+            print(f"Kasbga o'qitish kurslari qo'shildi: {added} ta")
 
 
 def list_items(kind):
