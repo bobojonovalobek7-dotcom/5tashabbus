@@ -172,9 +172,12 @@ main > .section:last-child { padding-bottom: 0; }
 .has-dropdown:hover .fa-chevron-down, .has-dropdown.open .fa-chevron-down { transform: rotate(180deg); }
 .dropdown a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-weight: 500; font-size: .92rem; color: var(--text-2); }
 .dropdown a i { width: 18px; color: var(--brand); text-align: center; }
-.dropdown a, .dropdown a * { transition: none; }
+.dropdown a { transition: color .25s ease; }
 .dropdown a:hover, .dropdown a.active { background: none; color: var(--brand); }
-.dropdown a:hover span, .dropdown a.active span { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.dropdown a span { position: relative; padding-bottom: 3px; }
+.dropdown a span::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; border-radius: 2px; background: var(--brand); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+.dropdown a:hover span::after, .dropdown a.active span::after { transform: scaleX(1); }
+:root[data-theme="dark"] .dropdown a span::after { background: var(--gold); }
 
 .header-actions { display: flex; align-items: center; gap: 8px; }
 .icon-btn {
