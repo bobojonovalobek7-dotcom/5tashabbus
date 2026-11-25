@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/main.css?v=20261124i">
+  <link rel="stylesheet" href="css/main.css?v=20261124j">
   <style>
     :root {
       --side-bg: #0B2C8F;
@@ -328,6 +328,10 @@
     .gal-item img { width: 100%; height: 100%; object-fit: cover; }
     .gal-item button { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: .7rem; color: #fff; background: rgba(15, 23, 42, .65); }
     .gal-item button:hover { background: var(--red); }
+    .gal-item { cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; transition: transform .15s, box-shadow .15s, opacity .15s; }
+    .gal-item img { pointer-events: none; }
+    .gal-item.dragging { cursor: grabbing; opacity: .85; transform: scale(1.06); box-shadow: 0 12px 28px rgba(15, 23, 42, .35); z-index: 3; outline: 2px solid var(--brand); }
+    .gal .gal-item:first-child::after { content: "Muqova"; position: absolute; left: 4px; bottom: 4px; padding: 2px 8px; border-radius: 999px; font-size: .64rem; font-weight: 700; color: #1A1300; background: var(--gold); pointer-events: none; }
     .field .gal-add { display: grid; margin: 0; place-content: center; justify-items: center; gap: 4px; border: 1.5px dashed var(--border); color: var(--text-3); font-size: .74rem; font-weight: 600; cursor: pointer; text-align: center; padding: 6px; }
     .field .gal-add:hover { border-color: var(--brand); color: var(--brand); }
     .field .gal-add.loading { opacity: .6; pointer-events: none; }
@@ -533,8 +537,8 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/alifbo.js?v=20261124i"></script>
-<script src="js/data.js?v=20261124i"></script>
-<script src="js/admin.js?v=20261124i"></script>
+<script src="js/alifbo.js?v=20261124j"></script>
+<script src="js/data.js?v=20261124j"></script>
+<script src="js/admin.js?v=20261124j"></script>
 </body>
 </html>

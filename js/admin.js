@@ -1565,6 +1565,45 @@ Keyin qayta baholash mumkin.`)) return;
       syncGallery(box);
     });
 
+    // Galereya tartibi: rasmni bosib ushlab, boshqa joyga olib borib qo'yiladi (sichqoncha va barmoq).
+    // Birinchi rasm — muqova. Saytda rasmlar shu tartibda chiqadi.
+    let gd = null;
+    const fields = $("#edit-fields");
+    fields.addEventListener("pointerdown", (e) => {
+      const item = e.target.closest(".gal-item");
+      if (!item || e.target.closest("[data-gal-del]") || (e.button !== undefined && e.button !== 0)) return;
+      const start = { item, x: e.clientX, y: e.clientY, id: e.pointerId, active: false, touch: e.pointerType === "touch", timer: null };
+      gd = start;
+      if (start.touch) start.timer = setTimeout(() => { if (gd === start) { start.active = true; item.classList.add("dragging"); navigator.vibrate && navigator.vibrate(15); } }, 220);
+    });
+    document.addEventListener("pointermove", (e) => {
+      if (!gd) return;
+      if (!gd.active) {
+        const moved = Math.hypot(e.clientX - gd.x, e.clientY - gd.y);
+        if (gd.touch) { if (moved > 8) { clearTimeout(gd.timer); gd = null; } return; } // barmoq: ushlab turmadi — oddiy aylantirish
+        if (moved < 6) return;
+        gd.active = true;
+        gd.item.classList.add("dragging");
+      }
+      const over = document.elementFromPoint(e.clientX, e.clientY);
+      const target = over && over.closest && over.closest(".gal-item");
+      if (!target || target === gd.item || target.parentNode !== gd.item.parentNode) return;
+      // Oldinda turgan rasm — nishondan keyin, orqada turgani — nishondan oldin qo'yiladi
+      const items = [...target.parentNode.children];
+      const forward = items.indexOf(gd.item) < items.indexOf(target);
+      target.parentNode.insertBefore(gd.item, forward ? target.nextElementSibling : target);
+    });
+    const endDrag = () => {
+      if (!gd) return;
+      clearTimeout(gd.timer);
+      if (gd.active) { gd.item.classList.remove("dragging"); syncGallery(gd.item.closest("[data-imgs]")); }
+      gd = null;
+    };
+    document.addEventListener("pointerup", endDrag);
+    document.addEventListener("pointercancel", endDrag);
+    document.addEventListener("touchmove", (e) => { if (gd && gd.active) e.preventDefault(); }, { passive: false });
+    fields.addEventListener("dragstart", (e) => { if (e.target.closest(".gal-item")) e.preventDefault(); });
+
     // «Nizomi yoki to'liq ma'lumot»: PDF yuklansa, maydonga uning manzili yoziladi
     $("#edit-fields").addEventListener("change", async (e) => {
       const input = e.target.closest("[data-upload-doc]");
